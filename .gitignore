@@ -1,0 +1,4 @@
+vendor
+.env
+tmp
+db-data
