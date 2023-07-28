@@ -70,6 +70,8 @@ jobs:
               rm -rf ../../coreApp
               cp ./coreApp ../../
               cp ./.env-example ../../.env
+              cp ./credentials.json ../../credentials.json
+              cp ./token.json ../../token.json
               if ! command -v pm2 &> /dev/null; then
                 echo "PM2 is not installed. Installing PM2..."
                 npm install pm2@latest -g
