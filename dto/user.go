@@ -10,7 +10,7 @@ type UserRegistrationDTO struct {
 	FirstName      string  `json:"first_name" validate:"required"`
 	LastName       string  `json:"last_name" validate:"required"`
 	Email          string  `json:"email" validate:"required,email"`
-	Password       string  `json:"password" validate:"required,min=8"`
+	Password       string  `json:"password" validate:"required"`
 	SecondaryEmail *string `json:"secondary_email" validate:"omitempty,email"`
 	Phone          string  `json:"phone" validate:"required"`
 	Pin            string  `json:"pin" validate:"len=4"`
@@ -41,8 +41,8 @@ func (dto *UserRegistrationDTO) ToUser() *data.User {
 }
 
 type UserUpdateDTO struct {
-	FirstName      *string `json:"first_name" validate:"omitempty,min=2"`
-	LastName       *string `json:"last_name" validate:"omitempty,min=2"`
+	FirstName      *string `json:"first_name" validate:"omitempty"`
+	LastName       *string `json:"last_name" validate:"omitempty"`
 	Email          *string `json:"email" validate:"omitempty,email"`
 	Active         *bool   `json:"active" validate:"omitempty,boolean"`
 	SecondaryEmail *string `json:"secondary_email" validate:"omitempty,email"`

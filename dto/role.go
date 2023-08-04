@@ -7,17 +7,17 @@ import (
 )
 
 type CreateRoleDTO struct {
-	Title        string  `json:"title" validate:"required,min=2"`
-	Abbreviation string  `json:"abbreviation" validate:"required,min=2"`
-	Color        *string `json:"color" validate:"omitempty,min=2"`
-	Icon         *string `json:"icon" validate:"omitempty,min=2"`
+	Title        string  `json:"title" validate:"required"`
+	Abbreviation string  `json:"abbreviation" validate:"required"`
+	Color        *string `json:"color" validate:"omitempty"`
+	Icon         *string `json:"icon" validate:"omitempty"`
 }
 
 type UpdateRoleDTO struct {
-	Title        *string `json:"title" validate:"omitempty,min=2"`
-	Abbreviation *string `json:"abbreviation" validate:"omitempty,min=2"`
-	Color        *string `json:"color" validate:"omitempty,min=2"`
-	Icon         *string `json:"icon" validate:"omitempty,min=2"`
+	Title        *string `json:"title" validate:"omitempty"`
+	Abbreviation *string `json:"abbreviation" validate:"omitempty"`
+	Color        *string `json:"color" validate:"omitempty"`
+	Icon         *string `json:"icon" validate:"omitempty"`
 }
 
 type RoleResponseDTO struct {
