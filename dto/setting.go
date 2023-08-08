@@ -69,5 +69,4 @@ type GetSettingsDTO struct {
 	Page   *int    `json:"page" validate:"omitempty"`
 	Size   *int    `json:"size" validate:"omitempty"`
 	Search *string `json:"search" validate:"omitempty"`
-	Value  *string `json:"value" validate:"omitempty"`
 }

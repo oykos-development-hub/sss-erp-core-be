@@ -85,7 +85,7 @@ func (h *SettingServiceImpl) GetSetting(id int) (*dto.SettingResponseDTO, error)
 
 func (h *SettingServiceImpl) GetSettingList(data dto.GetSettingsDTO) ([]dto.SettingResponseDTO, *uint64, error) {
 	conditionAndExp := &up.AndExpr{}
-
+	conditionAndExp = up.And(conditionAndExp, &up.Cond{"entity": data.Entity})
 	if data.Search != nil && *data.Search != "" {
 		likeCondition := fmt.Sprintf("%%%s%%", *data.Search)
 		conditionAndExp = up.And(
@@ -95,14 +95,6 @@ func (h *SettingServiceImpl) GetSettingList(data dto.GetSettingsDTO) ([]dto.Sett
 				up.Cond{"abbreviation ILIKE": likeCondition},
 			),
 		)
-	}
-
-	likeCondition := fmt.Sprintf("%%%s%%", data.Entity)
-	conditionAndExp = up.And(conditionAndExp, &up.Cond{"entity ILIKE": likeCondition})
-
-	if data.Value != nil && *data.Value != "" {
-		likeCondition := fmt.Sprintf("%%%s%%", *data.Value)
-		conditionAndExp = up.And(conditionAndExp, &up.Cond{"value ILIKE": likeCondition})
 	}
 
 	res, total, err := h.repo.GetAll(data.Page, data.Size, conditionAndExp)
