@@ -60,3 +60,11 @@ INSERT INTO settings (
     (18, 'Dobar', 'A', 'evaluation_types', 'Izvrsni rezultati', NULL, '#006699', 'fa fa-file-text-o', NOW(), NOW()),
 	(19, 'Zadovoljio', 'B', 'evaluation_types', 'Dobri rezultati', NULL, '#006699', 'fa fa-file-text-o', NOW(), NOW()),
 	(20, 'Nije zadovoljio', 'C', 'evaluation_types', 'Losi rezultati', NULL, '#006699', 'fa fa-file-text-o', NOW(), NOW());
+
+--suppliers
+INSERT INTO suppliers (
+    id,	title, abbreviation, official_id, address, description, folder_id, created_at,updated_at)
+VALUES
+    (1, 'Namos', 'S1', '123456789', 'Address 1', 'Namos Dajkovic Company', 101, NOW(), NOW()),
+    (2,'EPCG', 'S2', '987654321', 'Address 2', 'Elektroprivreda', 102, NOW(), NOW()),
+    (3,'Telekom', 'S3', '456789123', 'Address 3', 'Telekom Crna Gora', 103, NOW(), NOW());
