@@ -5,16 +5,16 @@ INSERT INTO roles (
     ('Admin', 'ADM', '#FF0000', 'admin_icon.png', '2023-08-08 10:00:00', '2023-08-08 10:00:00'),
     ('User', 'USR', '#0000FF', 'user_icon.png', '2023-08-08 11:00:00', '2023-08-08 11:00:00');
 
--- 5 users (1 admin)
+--5 users 1 admin
 INSERT INTO users (
     first_name, last_name, email, secondary_email, active, password, pin, phone, verified_email, verified_phone, folder_id, created_at, updated_at, role_id
 ) VALUES
-    ('Admin', 'Admin', 'admin@example.com', NULL, TRUE, 'admin123', '1234', '382-67-1234567', TRUE, FALSE, 1, '2023-08-08 12:00:00', '2023-08-08 12:00:00', 1),
-    ('Marko', 'Radulović', 'zaposleni1@example.com', 'marko.radulovic2@example.com', TRUE, 'zaposleni123', '1234', '382-67-7654321', TRUE, TRUE, 2, '2023-08-08 13:00:00', '2023-08-08 13:00:00', 2),
-    ('Milica', 'Petrović', 'zaposleni2@example.com', NULL, TRUE, 'zaposleni123', '1234', '382-67-1011121', TRUE, FALSE, 3, '2023-08-08 14:00:00', '2023-08-08 14:00:00', 2),
-    ('Nikola', 'Ivanović', 'zaposleni3@example.com', 'nikola.ivanovic2@example.com', TRUE, 'zaposleni123', '1234', '382-67-1213141', TRUE, TRUE, 4, '2023-08-08 15:00:00', '2023-08-08 15:00:00', 2),
-    ('Ana', 'Djurović', 'zaposleni4@example.com', NULL, TRUE, 'zaposleni123', '1234', '382-67-1415161', TRUE, FALSE, NULL, '2023-08-08 16:00:00', '2023-08-08 16:00:00', 2),
-    ('Igor', 'Milošević', 'igor.milosevic@example.com', NULL, TRUE, 'zaposleni123', '1234', '382-67-1617181', TRUE, FALSE, NULL, '2023-08-08 17:00:00', '2023-08-08 17:00:00', 2);
+    ('Admin', 'Admin', 'admin@example.com', NULL, TRUE, '$2a$12$.ilffAEExqdXIrOAAK21o.dFFx0rJEygs.GJmwx1Kcy09Br27Myxe', '1234', '382-67-1234567', TRUE, FALSE, 1, '2023-08-08 12:00:00', '2023-08-08 12:00:00', 1),
+    ('Marko', 'Radulović', 'zaposleni1@example.com', 'marko.radulovic2@example.com', TRUE, '$2a$12$EF0tqMLCtmEe/d7tZzKvO.uMfXPVdfVcgdmm6W28.XJTNqiTO4nBe', '1234', '382-67-7654321', TRUE, TRUE, 2, '2023-08-08 13:00:00', '2023-08-08 13:00:00', 2),
+    ('Milica', 'Petrović', 'zaposleni2@example.com', NULL, TRUE, '$2a$12$EF0tqMLCtmEe/d7tZzKvO.uMfXPVdfVcgdmm6W28.XJTNqiTO4nBe', '1234', '382-67-1011121', TRUE, FALSE, 3, '2023-08-08 14:00:00', '2023-08-08 14:00:00', 2),
+    ('Nikola', 'Ivanović', 'zaposleni3@example.com', 'nikola.ivanovic2@example.com', TRUE, '$2a$12$EF0tqMLCtmEe/d7tZzKvO.uMfXPVdfVcgdmm6W28.XJTNqiTO4nBe', '1234', '382-67-1213141', TRUE, TRUE, 4, '2023-08-08 15:00:00', '2023-08-08 15:00:00', 2),
+    ('Ana', 'Djurović', 'zaposleni4@example.com', NULL, TRUE, '$2a$12$EF0tqMLCtmEe/d7tZzKvO.uMfXPVdfVcgdmm6W28.XJTNqiTO4nBe', '1234', '382-67-1415161', TRUE, FALSE, NULL, '2023-08-08 16:00:00', '2023-08-08 16:00:00', 2),
+    ('Igor', 'Milošević', 'igor.milosevic@example.com', NULL, TRUE, '$2a$12$EF0tqMLCtmEe/d7tZzKvO.uMfXPVdfVcgdmm6W28.XJTNqiTO4nBe', '1234', '382-67-1617181', TRUE, FALSE, NULL, '2023-08-08 17:00:00', '2023-08-08 17:00:00', 2);
 
 -- engagements for 5 users
 INSERT INTO settings 
