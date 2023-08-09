@@ -68,3 +68,24 @@ VALUES
     (1, 'Namos', 'S1', '123456789', 'Address 1', 'Namos Dajkovic Company', 101, NOW(), NOW()),
     (2,'EPCG', 'S2', '987654321', 'Address 2', 'Elektroprivreda', 102, NOW(), NOW()),
     (3,'Telekom', 'S3', '456789123', 'Address 3', 'Telekom Crna Gora', 103, NOW(), NOW());
+
+--class_type_id for inventory
+insert into settings(
+    id, title, entity, abbreviation, description, value, created_at, updated_at)
+values
+      (21, 'Klasa 1','inventory_class_type','C1','','',NOW(), NOW()),
+	  (22, 'Klasa 2','inventory_class_type','C2','','',NOW(), NOW()),
+	  (23, 'Klasa 3','inventory_class_type','C3','','',NOW(), NOW());
+
+--settings for inventory
+insert into settings
+    (id, title, entity, abbreviation, description, value, created_at, updated_at)
+values
+	  (24, 'I','depreciation_type','D1','','',NOW(), NOW()),
+	  (25, 'II', 'depreciation_type','D2','','',NOW(), NOW()),
+	  (26, 'III','depreciation_type','D3','','',NOW(), NOW()),
+	  (27, 'Kancelarija 1','office_type','D1','','',NOW(), NOW()),
+	  (28, 'Kancelarija 2', 'office_type','D2','','',NOW(), NOW()),
+	  (29, 'Predsjednicka kancelarija','office_type','D3','','',NOW(), NOW());
+
+      
