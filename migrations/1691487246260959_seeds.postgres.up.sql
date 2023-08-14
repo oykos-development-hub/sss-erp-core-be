@@ -83,8 +83,8 @@ values
 	  ( 'I','depreciation_type','D1','','',NOW(), NOW()),
 	  ( 'II', 'depreciation_type','D2','','',NOW(), NOW()),
 	  ( 'III','depreciation_type','D3','','',NOW(), NOW()),
-	  ( 'Kancelarija 1','office_type','D1','','',NOW(), NOW()),
-	  ( 'Kancelarija 2', 'office_type','D2','','',NOW(), NOW()),
-	  ( 'Predsjednicka kancelarija','office_type','D3','','',NOW(), NOW());
+	  ( 'Kancelarija 1','office_types','D1','','',NOW(), NOW()),
+	  ( 'Kancelarija 2', 'office_types','D2','','',NOW(), NOW()),
+	  ( 'Predsjednicka kancelarija','office_types','D3','','',NOW(), NOW());
 
       
