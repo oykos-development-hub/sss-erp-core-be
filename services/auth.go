@@ -35,7 +35,7 @@ func NewAuthServiceImpl(app *celeritas.Celeritas, userRepo data.User) AuthServic
 func (s *authServiceImpl) Login(loginInput dto.LoginInput) (*dto.LoginResponse, error) {
 	user, err := s.userRepo.GetByEmail(loginInput.Email)
 	if err != nil {
-		s.App.ErrorLog.Println(err)
+		s.App.ErrorLog.Println(err.Error())
 		return nil, errors.ErrNotFound
 	}
 
