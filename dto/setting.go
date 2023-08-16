@@ -65,8 +65,9 @@ func ToSettingListResponseDTO(settings []*data.Setting) []SettingResponseDTO {
 }
 
 type GetSettingsDTO struct {
-	Entity string  `json:"entity" validate:"required"`
-	Page   *int    `json:"page" validate:"omitempty"`
-	Size   *int    `json:"size" validate:"omitempty"`
-	Search *string `json:"search" validate:"omitempty"`
+	Entity string  `json:"entity"`
+	Page   *int    `json:"page"`
+	Size   *int    `json:"size"`
+	Search *string `json:"search"`
+	Value  *string `json:"value"`
 }

@@ -97,6 +97,10 @@ func (h *SettingServiceImpl) GetSettingList(data dto.GetSettingsDTO) ([]dto.Sett
 		)
 	}
 
+	if data.Value != nil {
+		conditionAndExp = up.And(conditionAndExp, &up.Cond{"value": *data.Value})
+	}
+
 	res, total, err := h.repo.GetAll(data.Page, data.Size, conditionAndExp)
 	if err != nil {
 		h.App.ErrorLog.Println(err)

@@ -43,15 +43,16 @@ INSERT INTO settings (
 
 -- education types
 INSERT INTO settings (
-    title, abbreviation, entity, description, created_at, updated_at)
+    title, abbreviation, entity, value, description, created_at, updated_at)
 VALUES
-    ( 'Nivo 1 - Osnovna stručna osposobljenost', '1', 'education_types', 'opis', NOW(), NOW()),
-    ( 'Nivo 2 - Srednja stručna osposobljenost', '2', 'education_types', 'opis', NOW(), NOW()),
-    ( 'Nivo 3 - Srednja stručna osposobljenost s dodatnim obrazovanjem', '3', 'education_types', 'opis', NOW(), NOW()),
-    ( 'Nivo 4 - Visoka stručna sprema', '4', 'education_types', 'opis', NOW(), NOW()),
-    ( 'Nivo 5 - Diplomske studije (prva i druga godina)', '5', 'education_types', 'opis', NOW(), NOW()),
-    ( 'Nivo 6 - Bachelor diploma', '6', 'education_types', 'opis', NOW(), NOW()),
-    ( 'Nivo 7 - Postdiplomski studiji', '7', 'education_types', 'opis', NOW(), NOW());
+    ( 'Akademsko obrazovanje', 'AO', 'education_types', '0', 'opis', NOW(), NOW()),
+    ( 'Nivo 1 - Osnovna stručna osposobljenost', '1', 'education_types', '11', 'opis', NOW(), NOW()),
+    ( 'Nivo 2 - Srednja stručna osposobljenost', '2', 'education_types', '11', 'opis', NOW(), NOW()),
+    ( 'Nivo 3 - Srednja stručna osposobljenost s dodatnim obrazovanjem', '3', 'education_types', '11', 'opis', NOW(), NOW()),
+    ( 'Nivo 4 - Visoka stručna sprema', '4', 'education_types', '11', 'opis', NOW(), NOW()),
+    ( 'Nivo 5 - Diplomske studije (prva i druga godina)', '5', 'education_types', '11', 'opis', NOW(), NOW()),
+    ( 'Nivo 6 - Bachelor diploma', '6', 'education_types', '11', 'opis', NOW(), NOW()),
+    ( 'Nivo 7 - Postdiplomski studiji', '7', 'education_types', '11', 'opis', NOW(), NOW());
 
 INSERT INTO settings (
      title, abbreviation, entity, description, value, color, icon, created_at, updated_at
