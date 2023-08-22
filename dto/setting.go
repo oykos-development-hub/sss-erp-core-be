@@ -8,12 +8,12 @@ import (
 
 type SettingDTO struct {
 	Title        string  `json:"title" validate:"required"`
-	Abbreviation string  `json:"abbreviation" validate:"required"`
-	Value        *string `json:"value" validate:"omitempty"`
+	Abbreviation string  `json:"abbreviation"`
+	Value        *string `json:"value"`
 	Entity       string  `json:"entity" validate:"required"`
-	Description  *string `json:"description" validate:"omitempty"`
-	Color        *string `json:"color" validate:"omitempty"`
-	Icon         *string `json:"icon" validate:"omitempty"`
+	Description  *string `json:"description"`
+	Color        *string `json:"color"`
+	Icon         *string `json:"icon"`
 }
 
 type SettingResponseDTO struct {
