@@ -9,16 +9,16 @@ import (
 type UserRegistrationDTO struct {
 	FirstName      string  `json:"first_name" validate:"required"`
 	LastName       string  `json:"last_name" validate:"required"`
-	Email          string  `json:"email" validate:"required,email"`
+	Email          string  `json:"email" validate:"required"`
 	Password       string  `json:"password" validate:"required"`
-	SecondaryEmail *string `json:"secondary_email" validate:"omitempty,email"`
+	SecondaryEmail *string `json:"secondary_email" validate:"omitempty,ema"`
 	Phone          string  `json:"phone" validate:"required"`
 	Pin            string  `json:"pin" validate:"len=4"`
 	Active         *bool   `json:"active" validate:"omitempty,boolean"`
 	VerifiedEmail  *bool   `json:"verified_email" validate:"omitempty,boolean"`
 	VerifiedPhone  *bool   `json:"verified_phone" validate:"omitempty,boolean"`
 	FolderId       *int    `json:"folder_id" validate:"omitempty"`
-	RoleId         int     `json:"role_id" validate:"required"`
+	RoleId         int     `json:"role_id" validate:"omitempty"`
 }
 
 func (dto *UserRegistrationDTO) ToUser() *data.User {
