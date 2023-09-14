@@ -75,7 +75,7 @@ func (h *SettingServiceImpl) DeleteSetting(id int) error {
 func (h *SettingServiceImpl) GetSetting(id int) (*dto.SettingResponseDTO, error) {
 	data, err := h.repo.Get(id)
 	if err != nil {
-		h.App.ErrorLog.Println(err)
+		h.App.ErrorLog.Println(id, err)
 		return nil, errors.ErrNotFound
 	}
 	response := dto.ToSettingResponseDTO(*data)
