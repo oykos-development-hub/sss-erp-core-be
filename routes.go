@@ -24,7 +24,7 @@ func routes(app *celeritas.Celeritas, middleware *middleware.Middleware, handler
 		rt.Group(func(rt chi.Router) {
 			rt.With(middleware.JwtVerifyToken).Post("/users/validate-pin", handlers.AuthHandler.ValidatePin)
 			rt.With(middleware.JwtVerifyToken).Get("/logged-in-user", handlers.UserHandler.GetLoggedInUser)
-			rt.Post("/users/${id}/logout", handlers.AuthHandler.Logout)
+			rt.With(middleware.JwtVerifyToken).Post("/users/${id}/logout", handlers.AuthHandler.Logout)
 			rt.Get("/users/{id}", handlers.UserHandler.GetUserById)
 			rt.Get("/users", handlers.UserHandler.GetUserList)
 			rt.Patch("/users/{id}", handlers.UserHandler.UpdateUser)
