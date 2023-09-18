@@ -74,6 +74,7 @@ func (s *authServiceImpl) ValidatePin(id int, pinInput dto.ValidatePinInput) err
 }
 
 func (s *authServiceImpl) RefreshToken(userId int, refreshToken string, iat string) (*jwtdto.Token, error) {
+
 	t, err := s.App.Cache.Get(buildRefreshTokenKey(userId, iat))
 	if err != nil || t != refreshToken {
 		s.App.ErrorLog.Printf("Refresh token is revoked: %v", err)
