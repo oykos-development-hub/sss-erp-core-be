@@ -46,6 +46,7 @@ func (h *authHandlerImpl) Login(w http.ResponseWriter, r *http.Request) {
 		Expires:  time.Now().Add(cookieExpireDuration),
 		Path:     "/",
 		SameSite: http.SameSiteNoneMode,
+		Secure:   true,
 	}
 
 	http.SetCookie(w, cookie)
@@ -111,6 +112,7 @@ func (h *authHandlerImpl) RefreshToken(w http.ResponseWriter, r *http.Request) {
 		Expires:  time.Now().Add(cookieExpireDuration),
 		Path:     "/",
 		SameSite: http.SameSiteNoneMode,
+		Secure:   true,
 	}
 
 	http.SetCookie(w, cookie)
