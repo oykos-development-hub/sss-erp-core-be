@@ -9,7 +9,6 @@ import (
 	"gitlab.sudovi.me/erp/core-ms-api/errors"
 	"gitlab.sudovi.me/erp/core-ms-api/services"
 
-	"github.com/go-chi/chi/v5"
 	"github.com/oykos-development-hub/celeritas"
 )
 
@@ -121,9 +120,10 @@ func (h *authHandlerImpl) RefreshToken(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *authHandlerImpl) Logout(w http.ResponseWriter, r *http.Request) {
-	id, _ := strconv.Atoi(chi.URLParam(r, "id"))
+	id := r.Header.Get("id")
+	idNumber, _ := strconv.Atoi(id)
 
-	err := h.service.Logout(id)
+	err := h.service.Logout(idNumber)
 	if err != nil {
 		_ = h.App.WriteErrorResponse(w, errors.MapErrorToStatusCode(err), err)
 		return
