@@ -27,7 +27,7 @@ func NewUserServiceImpl(app *celeritas.Celeritas, repo data.User) UserService {
 func (h *userServiceImpl) CreateUser(userInput dto.UserRegistrationDTO) (*dto.UserResponseDTO, error) {
 	_, err := h.repo.GetByEmail(userInput.Email)
 	if err == nil {
-		return nil, errors.ErrUserExists
+		return nil, errors.ErrUserEmailExists
 	}
 
 	u := userInput.ToUser()
@@ -53,17 +53,19 @@ func (h *userServiceImpl) UpdateUser(userId int, userInput dto.UserUpdateDTO) (*
 		return nil, errors.ErrNotFound
 	}
 
-	userInput.ToUser(u)
+	if userInput.Email != nil && *userInput.Email != u.Email {
+		foundUser, _ := h.repo.GetByEmail(*userInput.Email)
+		if foundUser != nil {
+			return nil, errors.ErrUserEmailExists
+		}
+	}
 
+	userInput.ToUser(u)
 	err = h.repo.Update(*u)
 	if err != nil {
 		return nil, errors.ErrInternalServer
 	}
 
-	u, err = u.Get(userId)
-	if err != nil {
-		return nil, errors.ErrInternalServer
-	}
 	response := dto.ToUserResponseDTO(*u)
 
 	return response, nil

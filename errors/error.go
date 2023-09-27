@@ -6,7 +6,7 @@ import (
 )
 
 var (
-	ErrUserExists        = errors.New("user_email_exists")
+	ErrUserEmailExists   = errors.New("user_email_exists")
 	ErrNotFound          = errors.New("not found")
 	ErrInvalidInput      = errors.New("invalid input")
 	ErrUnauthorized      = errors.New("unauthorized")
@@ -22,7 +22,7 @@ var (
 
 func MapErrorToStatusCode(err error) int {
 	switch err {
-	case ErrUserExists:
+	case ErrUserEmailExists:
 		return http.StatusConflict
 	case ErrNotFound:
 		return http.StatusNotFound
