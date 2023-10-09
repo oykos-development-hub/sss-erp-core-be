@@ -2,3 +2,4 @@ vendor
 .env
 tmp
 db-data
+docker-compose.override.yaml
