@@ -45,12 +45,17 @@ func initApplication() *celeritas.Celeritas {
 	SupplierService := services.NewSupplierServiceImpl(cel, models.Supplier)
 	SupplierHandler := handlers.NewSupplierHandler(cel, SupplierService)
 
+		
+	AccountService := services.NewAccountServiceImpl(cel, models.Account)
+	AccountHandler := handlers.NewAccountHandler(cel, AccountService)
+
 	myHandlers := &handlers.Handlers{
 		UserHandler:     UserHandler,
 		AuthHandler:     AuthHandler,
 		RoleHandler:     RoleHandler,
 		SettingHandler:  SettingHandler,
 		SupplierHandler: SupplierHandler,
+		AccountHandler: AccountHandler,
 	}
 
 	myMiddleware := &middleware.Middleware{

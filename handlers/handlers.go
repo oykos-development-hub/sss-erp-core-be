@@ -10,7 +10,8 @@ type Handlers struct {
 	RoleHandler     RoleHandler
 	SettingHandler  SettingHandler
 	SupplierHandler SupplierHandler
-}
+	AccountHandler AccountHandler
+	}
 
 type UserHandler interface {
 	CreateUser(w http.ResponseWriter, r *http.Request)
@@ -53,4 +54,12 @@ type SupplierHandler interface {
 	DeleteSupplier(w http.ResponseWriter, r *http.Request)
 	GetSupplierById(w http.ResponseWriter, r *http.Request)
 	GetSupplierList(w http.ResponseWriter, r *http.Request)
+}
+
+type AccountHandler interface {
+	CreateAccount(w http.ResponseWriter, r *http.Request)
+	UpdateAccount(w http.ResponseWriter, r *http.Request)
+	DeleteAccount(w http.ResponseWriter, r *http.Request)
+	GetAccountById(w http.ResponseWriter, r *http.Request)
+	GetAccountList(w http.ResponseWriter, r *http.Request)
 }

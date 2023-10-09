@@ -26,6 +26,7 @@ type Models struct {
 	Setting Setting
 	UserAccountLog UserAccountLog
 		Supplier Supplier
+		Account Account
 	}
 
 func New(databasePool *sql.DB) Models {
@@ -46,6 +47,7 @@ func New(databasePool *sql.DB) Models {
 		Setting: Setting{},
 		UserAccountLog: UserAccountLog{},
 		Supplier: Supplier{},
+		Account: Account{},
 	}
 }
 

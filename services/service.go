@@ -57,3 +57,11 @@ type SupplierService interface {
 	GetSupplier(id int) (*dto.SupplierResponseDTO, error)
 	GetSupplierList(input dto.GetSupplierListInput) ([]dto.SupplierResponseDTO, *uint64, error)
 }
+
+type AccountService interface {
+	CreateAccount(input dto.AccountDTO) (*dto.AccountResponseDTO, error)
+	UpdateAccount(id int, input dto.AccountDTO) (*dto.AccountResponseDTO, error)
+	DeleteAccount(id int) error
+	GetAccount(id int) (*dto.AccountResponseDTO, error)
+	GetAccountList() ([]dto.AccountResponseDTO, error)
+}

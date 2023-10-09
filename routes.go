@@ -50,6 +50,12 @@ func routes(app *celeritas.Celeritas, middleware *middleware.Middleware, handler
 		rt.Get("/suppliers", handlers.SupplierHandler.GetSupplierList)
 		rt.Put("/suppliers/{id}", handlers.SupplierHandler.UpdateSupplier)
 		rt.Delete("/suppliers/{id}", handlers.SupplierHandler.DeleteSupplier)
+	
+		rt.Post("/accounts", handlers.AccountHandler.CreateAccount)
+rt.Get("/accounts/{id}", handlers.AccountHandler.GetAccountById)
+rt.Get("/accounts", handlers.AccountHandler.GetAccountList)
+rt.Put("/accounts/{id}", handlers.AccountHandler.UpdateAccount)
+rt.Delete("/accounts/{id}", handlers.AccountHandler.DeleteAccount)
 	})
 
 	return app.Routes
