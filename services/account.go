@@ -83,7 +83,7 @@ func (h *AccountServiceImpl) GetAccount(id int) (*dto.AccountResponseDTO, error)
 func (h *AccountServiceImpl) GetAccountList(input dto.GetAccountsFilter) ([]dto.AccountResponseDTO, int, error) {
 	var cond []up.LogicalExpr
 	var combinedCond *up.AndExpr
-	if input.Search != nil {
+	if input.Search != nil && *input.Search != "" {
 		search := "%" + *input.Search + "%"
 		searchCond := up.Or(
 			db.Cond{"title ILIKE": search},
