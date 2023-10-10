@@ -6,7 +6,6 @@ import (
 	"gitlab.sudovi.me/erp/core-ms-api/errors"
 
 	"github.com/oykos-development-hub/celeritas"
-	"github.com/upper/db/v4"
 	up "github.com/upper/db/v4"
 )
 
@@ -81,24 +80,21 @@ func (h *AccountServiceImpl) GetAccount(id int) (*dto.AccountResponseDTO, error)
 }
 
 func (h *AccountServiceImpl) GetAccountList(input dto.GetAccountsFilter) ([]dto.AccountResponseDTO, int, error) {
-	var cond []up.LogicalExpr
-	var combinedCond *up.AndExpr
+	conditionAndExp := &up.AndExpr{}
+
 	if input.Search != nil && *input.Search != "" {
 		search := "%" + *input.Search + "%"
 		searchCond := up.Or(
-			db.Cond{"title ILIKE": search},
-			db.Cond{"serial_number ILIKE": search},
+			up.Cond{"title ILIKE": search},
+			up.Cond{"serial_number ILIKE": search},
 		)
-		cond = append(cond, searchCond)
+		conditionAndExp = up.And(conditionAndExp, searchCond)
 	}
 	if input.ID != nil && *input.ID != 0 {
-		cond = append(cond, up.And(db.Cond{"id": input.ID}))
-	}
-	if len(cond) > 0 {
-		combinedCond = up.And(cond...)
+		conditionAndExp = up.And(conditionAndExp, up.Cond{"id": input.ID})
 	}
 
-	data, total, err := h.repo.GetAll(input.Page, input.Size, combinedCond)
+	data, total, err := h.repo.GetAll(input.Page, input.Size, conditionAndExp)
 	if err != nil {
 		h.App.ErrorLog.Println(err)
 		return nil, -1, errors.ErrInternalServer
