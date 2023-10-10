@@ -10,8 +10,8 @@ import (
 type Account struct {
 	ID           int       `db:"id,omitempty"`
 	Title        string    `db:"title"`
-	ParentID     int       `db:"parent_id"`
-	SerialNumber int       `db:"serial_number"`
+	ParentID     *int      `db:"parent_id"`
+	SerialNumber string    `db:"serial_number"`
 	CreatedAt    time.Time `db:"created_at"`
 	UpdatedAt    time.Time `db:"updated_at"`
 }
@@ -33,7 +33,7 @@ func (t *Account) GetAll(condition *up.Cond) ([]*Account, error) {
 		res = collection.Find()
 	}
 
-	err := res.All(&all)
+	err := res.OrderBy("serial_number").All(&all)
 	if err != nil {
 		return nil, err
 	}

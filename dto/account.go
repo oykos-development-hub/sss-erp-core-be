@@ -8,15 +8,15 @@ import (
 
 type AccountDTO struct {
 	Title        string `json:"title" validate:"required,min=2"`
-	ParentID     int    `json:"parent_id"`
-	SerialNumber int    `json:"serial_number"`
+	ParentID     *int   `json:"parent_id"`
+	SerialNumber string `json:"serial_number"`
 }
 
 type AccountResponseDTO struct {
 	ID           int       `json:"id"`
 	Title        string    `json:"title"`
-	ParentID     int       `json:"parent_id"`
-	SerialNumber int       `json:"serial_number"`
+	ParentID     *int      `json:"parent_id"`
+	SerialNumber string    `json:"serial_number"`
 	CreatedAt    time.Time `json:"created_at"`
 	UpdatedAt    time.Time `json:"updated_at"`
 }
