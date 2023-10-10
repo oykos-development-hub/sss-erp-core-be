@@ -22,7 +22,7 @@ func (t *Account) Table() string {
 }
 
 // GetAll gets all records from the database, using upper
-func (t *Account) GetAll(condition *up.Cond) ([]*Account, error) {
+func (t *Account) GetAll(page *int, size *int, condition *up.AndExpr) ([]*Account, int, error) {
 	collection := upper.Collection(t.Table())
 	var all []*Account
 	var res up.Result
@@ -33,12 +33,21 @@ func (t *Account) GetAll(condition *up.Cond) ([]*Account, error) {
 		res = collection.Find()
 	}
 
-	err := res.OrderBy("serial_number").All(&all)
+	total, err := res.Count()
 	if err != nil {
-		return nil, err
+		return nil, -1, err
 	}
 
-	return all, err
+	if page != nil && size != nil {
+		res = paginateResult(res, *page, *size)
+	}
+
+	err = res.OrderBy("serial_number").All(&all)
+	if err != nil {
+		return nil, -2, err
+	}
+
+	return all, int(total), err
 }
 
 // Get gets one record from the database, by id, using upper

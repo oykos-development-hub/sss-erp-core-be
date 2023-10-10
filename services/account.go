@@ -6,6 +6,8 @@ import (
 	"gitlab.sudovi.me/erp/core-ms-api/errors"
 
 	"github.com/oykos-development-hub/celeritas"
+	"github.com/upper/db/v4"
+	up "github.com/upper/db/v4"
 )
 
 type AccountServiceImpl struct {
@@ -78,13 +80,27 @@ func (h *AccountServiceImpl) GetAccount(id int) (*dto.AccountResponseDTO, error)
 	return &response, nil
 }
 
-func (h *AccountServiceImpl) GetAccountList() ([]dto.AccountResponseDTO, error) {
-	data, err := h.repo.GetAll(nil)
+func (h *AccountServiceImpl) GetAccountList(input dto.GetAccountsFilter) ([]dto.AccountResponseDTO, int, error) {
+	var cond []up.LogicalExpr
+	var combinedCond *up.AndExpr
+	if input.Search != nil {
+		search := "%" + *input.Search + "%"
+		searchCond := up.Or(
+			db.Cond{"title ILIKE": search},
+			db.Cond{"serial_number ILIKE": search},
+		)
+		cond = append(cond, searchCond)
+	}
+	if len(cond) > 0 {
+		combinedCond = up.And(cond...)
+	}
+
+	data, total, err := h.repo.GetAll(input.Page, input.Size, combinedCond)
 	if err != nil {
 		h.App.ErrorLog.Println(err)
-		return nil, errors.ErrInternalServer
+		return nil, -1, errors.ErrInternalServer
 	}
 	response := dto.ToAccountListResponseDTO(data)
 
-	return response, nil
+	return response, total, nil
 }

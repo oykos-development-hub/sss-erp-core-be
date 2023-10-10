@@ -8,8 +8,8 @@ import (
 	"gitlab.sudovi.me/erp/core-ms-api/errors"
 	"gitlab.sudovi.me/erp/core-ms-api/services"
 
-	"github.com/oykos-development-hub/celeritas"
 	"github.com/go-chi/chi/v5"
+	"github.com/oykos-development-hub/celeritas"
 )
 
 // AccountHandler is a concrete type that implements AccountHandler
@@ -99,11 +99,18 @@ func (h *accountHandlerImpl) GetAccountById(w http.ResponseWriter, r *http.Reque
 }
 
 func (h *accountHandlerImpl) GetAccountList(w http.ResponseWriter, r *http.Request) {
-	res, err := h.service.GetAccountList()
+	var input dto.GetAccountsFilter
+	err := h.App.ReadJSON(w, r, &input)
+	if err != nil {
+		_ = h.App.WriteErrorResponse(w, http.StatusBadRequest, err)
+		return
+	}
+
+	res, total, err := h.service.GetAccountList(input)
 	if err != nil {
 		_ = h.App.WriteErrorResponse(w, errors.MapErrorToStatusCode(err), err)
 		return
 	}
 
-	_ = h.App.WriteDataResponse(w, http.StatusOK, "", res)
+	_ = h.App.WriteDataResponseWithTotal(w, http.StatusOK, "", res, total)
 }

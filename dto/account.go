@@ -6,6 +6,13 @@ import (
 	"gitlab.sudovi.me/erp/core-ms-api/data"
 )
 
+type GetAccountsFilter struct {
+	ID     *int    `json:"id"`
+	Search *string `json:"search"`
+	Page   *int    `json:"page"`
+	Size   *int    `json:"size"`
+}
+
 type AccountDTO struct {
 	Title        string `json:"title" validate:"required,min=2"`
 	ParentID     *int   `json:"parent_id"`
