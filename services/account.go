@@ -91,7 +91,7 @@ func (h *AccountServiceImpl) GetAccountList(input dto.GetAccountsFilter) ([]dto.
 		)
 		cond = append(cond, searchCond)
 	}
-	if input.Search != nil && *input.Search != "" {
+	if input.ID != nil && *input.ID != 0 {
 		cond = append(cond, up.And(db.Cond{"id": input.ID}))
 	}
 	if len(cond) > 0 {
