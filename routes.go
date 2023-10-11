@@ -28,6 +28,7 @@ func routes(app *celeritas.Celeritas, middleware *middleware.Middleware, handler
 			rt.Get("/users/{id}", handlers.UserHandler.GetUserById)
 			rt.Get("/users", handlers.UserHandler.GetUserList)
 			rt.Patch("/users/{id}", handlers.UserHandler.UpdateUser)
+			rt.Put("/users/{id}", handlers.UserHandler.UpdateUser)
 			rt.Delete("/users/{id}", handlers.UserHandler.DeleteUser)
 		})
 
