@@ -185,7 +185,7 @@ func (s *authServiceImpl) ForgotPasswordV2(input dto.ForgotPassword) error {
 		s.App.ErrorLog.Printf("Error generating hash from password: %v", err)
 		return errors.ErrInternalServer
 	}
-	s.App.InfoLog.Println(newHash)
+	s.App.InfoLog.Println("TEST1")
 
 	u.Password = string(newHash)
 
@@ -194,6 +194,7 @@ func (s *authServiceImpl) ForgotPasswordV2(input dto.ForgotPassword) error {
 		s.App.ErrorLog.Printf("Error updating user: %v", err)
 		return errors.ErrInternalServer
 	}
+	s.App.InfoLog.Println("TEST2")
 
 	// email the message
 	var data struct {
@@ -207,6 +208,7 @@ func (s *authServiceImpl) ForgotPasswordV2(input dto.ForgotPassword) error {
 		Template: "password-reset",
 		Data:     data,
 	}
+	s.App.InfoLog.Println("TEST3")
 
 	s.App.Mail.Jobs <- msg
 	res := <-s.App.Mail.Results
