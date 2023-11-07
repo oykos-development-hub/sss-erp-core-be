@@ -212,11 +212,11 @@ func (s *authServiceImpl) ForgotPasswordV2(input dto.ForgotPassword) error {
 
 	s.App.Mail.Jobs <- msg
 	res := <-s.App.Mail.Results
+	s.App.InfoLog.Println(u.Email, res.Error, res.Success)
+
 	if res.Error != nil {
 		return err
 	}
-
-	s.App.InfoLog.Println(u.Email, res.Error, res.Success)
 
 	return nil
 }
