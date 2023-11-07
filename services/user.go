@@ -34,6 +34,7 @@ func (h *userServiceImpl) CreateUser(userInput dto.UserRegistrationDTO) (*dto.Us
 
 	id, err := h.repo.Insert(*u)
 	if err != nil {
+		h.App.ErrorLog.Println(err)
 		return nil, errors.ErrInternalServer
 	}
 

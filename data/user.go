@@ -2,6 +2,7 @@ package data
 
 import (
 	"errors"
+	"regexp"
 	"time"
 
 	up "github.com/upper/db/v4"
@@ -101,8 +102,40 @@ func (u *User) Update(theUser User) error {
 	return nil
 }
 
+// ValidatePassword checks if the given password meets the required criteria
+func ValidatePassword(password string) error {
+	var (
+		upperCase    = regexp.MustCompile(`[A-Z]`)
+		lowerCase    = regexp.MustCompile(`[a-z]`)
+		number       = regexp.MustCompile(`[0-9]`)
+		specialChars = regexp.MustCompile(`[!@#$%^&*(),.?":{}|<>]`)
+	)
+
+	if len(password) < 8 {
+		return errors.New("password must be at least 8 characters long")
+	}
+	if !upperCase.MatchString(password) {
+		return errors.New("password must contain at least one uppercase letter")
+	}
+	if !lowerCase.MatchString(password) {
+		return errors.New("password must contain at least one lowercase letter")
+	}
+	if !number.MatchString(password) {
+		return errors.New("password must contain at least one number")
+	}
+	if !specialChars.MatchString(password) {
+		return errors.New("password must contain at least one special character")
+	}
+
+	return nil
+}
+
 // Insert inserts a new user, and returns the newly inserted id
 func (u *User) Insert(theUser User) (int, error) {
+	if err := ValidatePassword(theUser.Password); err != nil {
+		return 0, err
+	}
+
 	newHash, err := bcrypt.GenerateFromPassword([]byte(theUser.Password), 12)
 	if err != nil {
 		return 0, err
