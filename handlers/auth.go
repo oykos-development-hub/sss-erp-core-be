@@ -145,6 +145,19 @@ func (h *authHandlerImpl) ForgotPassword(w http.ResponseWriter, r *http.Request)
 	_ = h.App.WriteSuccessResponse(w, http.StatusOK, "Email sent")
 }
 
+func (h *authHandlerImpl) ForgotPasswordV2(w http.ResponseWriter, r *http.Request) {
+	var forgotPasswordInput dto.ForgotPassword
+	_ = h.App.ReadJSON(w, r, &forgotPasswordInput)
+
+	err := h.service.ForgotPasswordV2(forgotPasswordInput)
+	if err != nil {
+		_ = h.App.WriteErrorResponse(w, errors.MapErrorToStatusCode(err), err)
+		return
+	}
+
+	_ = h.App.WriteSuccessResponse(w, http.StatusOK, "Email sent")
+}
+
 func (h *authHandlerImpl) ResetPasswordVerify(w http.ResponseWriter, r *http.Request) {
 	var input dto.ResetPasswordVerify
 	_ = h.App.ReadJSON(w, r, &input)

@@ -19,6 +19,7 @@ func routes(app *celeritas.Celeritas, middleware *middleware.Middleware, handler
 		rt.Post("/users/password/forgot", handlers.AuthHandler.ForgotPassword)
 		rt.Get("/users/password/validate-email", handlers.AuthHandler.ResetPasswordVerify)
 		rt.Post("/users/password/reset", handlers.AuthHandler.ResetPassword)
+		rt.Post("/v2/users/password/forgot", handlers.AuthHandler.ForgotPasswordV2)
 		rt.Post("/users", handlers.UserHandler.CreateUser)
 
 		rt.Group(func(rt chi.Router) {

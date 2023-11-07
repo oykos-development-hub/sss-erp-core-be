@@ -1,13 +1,17 @@
 package services
 
 import (
+	"crypto/rand"
 	"fmt"
+	"math/big"
 	"net/url"
 	"strconv"
+	"strings"
 
 	"gitlab.sudovi.me/erp/core-ms-api/data"
 	"gitlab.sudovi.me/erp/core-ms-api/dto"
 	"gitlab.sudovi.me/erp/core-ms-api/errors"
+	"golang.org/x/crypto/bcrypt"
 
 	"github.com/golang-jwt/jwt"
 	"github.com/oykos-development-hub/celeritas"
@@ -106,11 +110,116 @@ func (s *authServiceImpl) Logout(userId int) error {
 	return nil
 }
 
+// RandomCharset generates a random character from the provided charset.
+func RandomCharset(charset string) (string, error) {
+	max := big.NewInt(int64(len(charset)))
+	n, err := rand.Int(rand.Reader, max)
+	if err != nil {
+		return "", err
+	}
+	return string(charset[n.Int64()]), nil
+}
+
+// GeneratePassword generates a random password with at least one character from each category.
+func GeneratePassword(length int) (string, error) {
+	if length < 6 {
+		return "", fmt.Errorf("password length must be at least 6 characters")
+	}
+
+	const (
+		lowercase = "abcdefghijklmnopqrstuvwxyz"
+		uppercase = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+		digits    = "0123456789"
+		special   = "!@#$%^&*()-_+=[]{}|;:,.<>?"
+	)
+
+	password := make([]string, length)
+	charsets := []string{lowercase, uppercase, digits, special}
+
+	// Ensure each category is represented
+	for i, set := range charsets {
+		char, err := RandomCharset(set)
+		if err != nil {
+			return "", err
+		}
+		password[i] = char
+	}
+
+	// Fill the rest of the password with random characters from all categories
+	for i := len(charsets); i < length; i++ {
+		char, err := RandomCharset(lowercase + uppercase + digits + special)
+		if err != nil {
+			return "", err
+		}
+		password[i] = char
+	}
+
+	// Shuffle the password to prevent predictable sequences
+	for i := range password {
+		j, err := rand.Int(rand.Reader, big.NewInt(int64(length)))
+		if err != nil {
+			return "", err
+		}
+		password[i], password[j.Int64()] = password[j.Int64()], password[i]
+	}
+
+	return strings.Join(password, ""), nil
+}
+
+func (s *authServiceImpl) ForgotPasswordV2(input dto.ForgotPassword) error {
+	// verify that supplied email exists
+	var u *data.User
+	u, err := u.GetByEmail(input.Email)
+	if err != nil {
+		return errors.ErrNotFound
+	}
+
+	password, err := GeneratePassword(8)
+	if err != nil {
+		s.App.ErrorLog.Printf("Error revoking refresh token: %v", err)
+		return errors.ErrInternalServer
+	}
+
+	newHash, err := bcrypt.GenerateFromPassword([]byte(password), 12)
+	if err != nil {
+		s.App.ErrorLog.Printf("Error generating hash from password: %v", err)
+		return errors.ErrInternalServer
+	}
+
+	u.Password = string(newHash)
+
+	err = u.Update(*u)
+	if err != nil {
+		s.App.ErrorLog.Printf("Error updating user: %v", err)
+		return errors.ErrInternalServer
+	}
+
+	// email the message
+	var data struct {
+		Password string
+	}
+	data.Password = password
+
+	msg := mailer.Message{
+		To:       u.Email,
+		Subject:  "Predmet: Instrukcije za resetovanje šifre",
+		Template: "password-reset",
+		Data:     data,
+	}
+
+	s.App.Mail.Jobs <- msg
+	res := <-s.App.Mail.Results
+	if res.Error != nil {
+		return err
+	}
+
+	return nil
+}
+
 func (s *authServiceImpl) ForgotPassword(input dto.ForgotPassword) error {
 	// verify that supplied email exists
 	var u *data.User
 	u, err := u.GetByEmail(input.Email)
-	s.App.ErrorLog.Println("aloooo", u, err)
 	if err != nil {
 		return errors.ErrNotFound
 	}
