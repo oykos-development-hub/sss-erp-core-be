@@ -185,6 +185,7 @@ func (s *authServiceImpl) ForgotPasswordV2(input dto.ForgotPassword) error {
 		s.App.ErrorLog.Printf("Error generating hash from password: %v", err)
 		return errors.ErrInternalServer
 	}
+	s.App.InfoLog.Println(newHash)
 
 	u.Password = string(newHash)
 
