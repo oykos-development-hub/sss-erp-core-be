@@ -130,7 +130,7 @@ func GeneratePassword(length int) (string, error) {
 		lowercase = "abcdefghijklmnopqrstuvwxyz"
 		uppercase = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 		digits    = "0123456789"
-		special   = "!@#$%^&*()-_+=[]{}|;:,.<>?"
+		special   = ",.-*/%$#@!^&?<>=+"
 	)
 
 	password := make([]string, length)
