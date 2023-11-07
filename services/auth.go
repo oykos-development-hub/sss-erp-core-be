@@ -202,7 +202,7 @@ func (s *authServiceImpl) ForgotPasswordV2(input dto.ForgotPassword) error {
 
 	msg := mailer.Message{
 		To:       u.Email,
-		Subject:  "Predmet: Instrukcije za resetovanje šifre",
+		Subject:  "Predmet: Instrukcije za resetovanje lozinke",
 		Template: "password-reset",
 		Data:     data,
 	}
