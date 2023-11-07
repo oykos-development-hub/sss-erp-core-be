@@ -213,6 +213,8 @@ func (s *authServiceImpl) ForgotPasswordV2(input dto.ForgotPassword) error {
 		return err
 	}
 
+	s.App.InfoLog.Println(u.Email, res.Error, res.Success)
+
 	return nil
 }
 
