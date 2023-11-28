@@ -26,11 +26,13 @@ func (h *NotificationServiceImpl) CreateNotification(input dto.NotificationDTO) 
 
 	id, err := h.repo.Insert(*data)
 	if err != nil {
+		h.App.ErrorLog.Println(err)
 		return nil, errors.ErrInternalServer
 	}
 
 	data, err = data.Get(id)
 	if err != nil {
+		h.App.ErrorLog.Println(err)
 		return nil, errors.ErrInternalServer
 	}
 
