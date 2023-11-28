@@ -88,7 +88,7 @@ func (h *userServiceImpl) GetUserList(data dto.GetUserListDTO) ([]dto.UserRespon
 	var conditionAndExp *up.AndExpr
 	if data.IsActive != nil {
 		conditionAndExp = &up.AndExpr{}
-		conditionAndExp = up.And(conditionAndExp, &up.Cond{"active": data.IsActive})
+		conditionAndExp = up.And(conditionAndExp, &up.Cond{"active": *data.IsActive})
 	}
 	if data.Email != nil && *data.Email != "" {
 		if conditionAndExp == nil {
@@ -97,6 +97,11 @@ func (h *userServiceImpl) GetUserList(data dto.GetUserListDTO) ([]dto.UserRespon
 		likeCondition := fmt.Sprintf("%%%s%%", *data.Email)
 		conditionAndExp = up.And(conditionAndExp, &up.Cond{"email ILIKE": likeCondition})
 	}
+	if data.RoleID != nil {
+		conditionAndExp = &up.AndExpr{}
+		conditionAndExp = up.And(conditionAndExp, &up.Cond{"role_id": *data.RoleID})
+	}
+
 	u, total, err := h.repo.GetAll(data.Page, data.Size, conditionAndExp)
 	if err != nil {
 		h.App.ErrorLog.Println(err)

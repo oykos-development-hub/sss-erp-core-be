@@ -98,10 +98,11 @@ type UserResponseDTO struct {
 }
 
 type GetUserListDTO struct {
-	Page     *int    `json:"page" validate:"omitempty"`
-	Size     *int    `json:"size" validate:"omitempty"`
-	IsActive *bool   `json:"is_active" validate:"omitempty"`
-	Email    *string `json:"email" validate:"omitempty"`
+	Page     *int    `json:"page"`
+	Size     *int    `json:"size"`
+	IsActive *bool   `json:"is_active"`
+	Email    *string `json:"email"`
+	RoleID   *int    `json:"role_id"`
 }
 
 func ToUserResponseDTO(user data.User) *UserResponseDTO {
