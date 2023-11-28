@@ -5,12 +5,13 @@ import (
 )
 
 type Handlers struct {
-	UserHandler     UserHandler
-	AuthHandler     AuthHandler
-	RoleHandler     RoleHandler
-	SettingHandler  SettingHandler
-	SupplierHandler SupplierHandler
-	AccountHandler  AccountHandler
+	UserHandler         UserHandler
+	AuthHandler         AuthHandler
+	RoleHandler         RoleHandler
+	SettingHandler      SettingHandler
+	SupplierHandler     SupplierHandler
+	AccountHandler      AccountHandler
+	NotificationHandler NotificationHandler
 }
 
 type UserHandler interface {
@@ -63,4 +64,12 @@ type AccountHandler interface {
 	DeleteAccount(w http.ResponseWriter, r *http.Request)
 	GetAccountById(w http.ResponseWriter, r *http.Request)
 	GetAccountList(w http.ResponseWriter, r *http.Request)
+}
+
+type NotificationHandler interface {
+	CreateNotification(w http.ResponseWriter, r *http.Request)
+	UpdateNotification(w http.ResponseWriter, r *http.Request)
+	DeleteNotification(w http.ResponseWriter, r *http.Request)
+	GetNotificationById(w http.ResponseWriter, r *http.Request)
+	GetNotificationList(w http.ResponseWriter, r *http.Request)
 }

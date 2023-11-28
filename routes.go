@@ -58,6 +58,12 @@ func routes(app *celeritas.Celeritas, middleware *middleware.Middleware, handler
 		rt.Get("/accounts", handlers.AccountHandler.GetAccountList)
 		rt.Put("/accounts/{id}", handlers.AccountHandler.UpdateAccount)
 		rt.Delete("/accounts/{id}", handlers.AccountHandler.DeleteAccount)
+
+		rt.Post("/notifications", handlers.NotificationHandler.CreateNotification)
+		rt.Get("/notifications/{id}", handlers.NotificationHandler.GetNotificationById)
+		rt.Get("/notifications", handlers.NotificationHandler.GetNotificationList)
+		rt.Put("/notifications/{id}", handlers.NotificationHandler.UpdateNotification)
+		rt.Delete("/notifications/{id}", handlers.NotificationHandler.DeleteNotification)
 	})
 
 	return app.Routes

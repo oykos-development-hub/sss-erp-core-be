@@ -66,3 +66,11 @@ type AccountService interface {
 	GetAccount(id int) (*dto.AccountResponseDTO, error)
 	GetAccountList(input dto.GetAccountsFilter) ([]dto.AccountResponseDTO, int, error)
 }
+
+type NotificationService interface {
+	CreateNotification(input dto.NotificationDTO) (*dto.NotificationResponseDTO, error)
+	UpdateNotification(id int, input dto.NotificationDTO) (*dto.NotificationResponseDTO, error)
+	DeleteNotification(id int) error
+	GetNotification(id int) (*dto.NotificationResponseDTO, error)
+	GetNotificationList() ([]dto.NotificationResponseDTO, error)
+}
