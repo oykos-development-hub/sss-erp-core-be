@@ -7,9 +7,9 @@ import (
 )
 
 type GetNotificationListInput struct {
-	ToUserID *string `json:"to_user_id"`
-	Page     *int    `json:"page"`
-	Size     *int    `json:"size"`
+	ToUserID *int `json:"to_user_id"`
+	Page     *int `json:"page"`
+	Size     *int `json:"size"`
 }
 
 type NotificationDTO struct {
