@@ -6,6 +6,7 @@ import (
 	"gitlab.sudovi.me/erp/core-ms-api/errors"
 
 	"github.com/oykos-development-hub/celeritas"
+	"github.com/upper/db/v4"
 )
 
 type NotificationServiceImpl struct {
@@ -78,13 +79,18 @@ func (h *NotificationServiceImpl) GetNotification(id int) (*dto.NotificationResp
 	return &response, nil
 }
 
-func (h *NotificationServiceImpl) GetNotificationList() ([]dto.NotificationResponseDTO, error) {
-	data, err := h.repo.GetAll(nil)
+func (h *NotificationServiceImpl) GetNotificationList(input dto.GetNotificationListInput) ([]dto.NotificationResponseDTO, *uint64, error) {
+	cond := db.Cond{}
+	if input.ToUserID != nil {
+		cond["to_user_id"] = *input.ToUserID
+	}
+
+	data, total, err := h.repo.GetAll(input.Page, input.Size, &cond)
 	if err != nil {
 		h.App.ErrorLog.Println(err)
-		return nil, errors.ErrInternalServer
+		return nil, nil, errors.ErrInternalServer
 	}
 	response := dto.ToNotificationListResponseDTO(data)
 
-	return response, nil
+	return response, total, nil
 }

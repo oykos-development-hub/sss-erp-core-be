@@ -25,23 +25,34 @@ func (t *Notification) Table() string {
 }
 
 // GetAll gets all records from the database, using upper
-func (t *Notification) GetAll(condition *up.Cond) ([]*Notification, error) {
+func (t *Notification) GetAll(page *int, size *int, condition *up.Cond) ([]*Notification, *uint64, error) {
 	collection := upper.Collection(t.Table())
 	var all []*Notification
 	var res up.Result
 
 	if condition != nil {
-		res = collection.Find(*condition)
+		res = collection.Find(condition)
 	} else {
 		res = collection.Find()
 	}
 
-	err := res.All(&all)
+	total, err := res.Count()
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 
-	return all, err
+	if page != nil && size != nil {
+		res = paginateResult(res, *page, *size)
+	}
+
+	res.OrderBy("is_read", "-created_at")
+
+	err = res.All(&all)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	return all, &total, err
 }
 
 // Get gets one record from the database, by id, using upper

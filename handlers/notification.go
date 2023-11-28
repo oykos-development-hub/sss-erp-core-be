@@ -99,11 +99,18 @@ func (h *notificationHandlerImpl) GetNotificationById(w http.ResponseWriter, r *
 }
 
 func (h *notificationHandlerImpl) GetNotificationList(w http.ResponseWriter, r *http.Request) {
-	res, err := h.service.GetNotificationList()
+	var input dto.GetNotificationListInput
+	err := h.App.ReadJSON(w, r, &input)
+	if err != nil {
+		_ = h.App.WriteErrorResponse(w, http.StatusBadRequest, err)
+		return
+	}
+
+	res, total, err := h.service.GetNotificationList(input)
 	if err != nil {
 		_ = h.App.WriteErrorResponse(w, errors.MapErrorToStatusCode(err), err)
 		return
 	}
 
-	_ = h.App.WriteDataResponse(w, http.StatusOK, "", res)
+	_ = h.App.WriteDataResponseWithTotal(w, http.StatusOK, "", res, int(*total))
 }

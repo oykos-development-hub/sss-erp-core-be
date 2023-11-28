@@ -6,6 +6,12 @@ import (
 	"gitlab.sudovi.me/erp/core-ms-api/data"
 )
 
+type GetNotificationListInput struct {
+	ToUserID *string `json:"to_user_id"`
+	Page     *int    `json:"page"`
+	Size     *int    `json:"size"`
+}
+
 type NotificationDTO struct {
 	From       string `json:"from"`
 	FromUserID int    `json:"from_user_id"`

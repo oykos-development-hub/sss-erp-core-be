@@ -72,5 +72,5 @@ type NotificationService interface {
 	UpdateNotification(id int, input dto.NotificationDTO) (*dto.NotificationResponseDTO, error)
 	DeleteNotification(id int) error
 	GetNotification(id int) (*dto.NotificationResponseDTO, error)
-	GetNotificationList() ([]dto.NotificationResponseDTO, error)
+	GetNotificationList(input dto.GetNotificationListInput) ([]dto.NotificationResponseDTO, *uint64, error)
 }
