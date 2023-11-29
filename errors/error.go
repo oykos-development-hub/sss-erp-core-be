@@ -15,6 +15,8 @@ var (
 	ErrDatabaseError     = errors.New("database error")
 	ErrInternalServer    = errors.New("internal server error")
 	ErrBadRequest        = errors.New("invalid input")
+	ErrIncorrectPassword = errors.New("incorrect_password")
+	ErrEmailNotFound     = errors.New("email_not_found")
 	ErrDatabase          = errors.New("database error")
 	ErrRoleStillAssigned = errors.New("cannot delete role as it is still assigned to one or more users")
 	// define more custom errors as needed
@@ -38,7 +40,7 @@ func MapErrorToStatusCode(err error) int {
 		return http.StatusForbidden
 	case ErrInternalServer:
 		return http.StatusInternalServerError
-	case ErrBadRequest:
+	case ErrBadRequest, ErrEmailNotFound, ErrIncorrectPassword:
 		return http.StatusBadRequest
 	case ErrDatabase:
 		return http.StatusInternalServerError
