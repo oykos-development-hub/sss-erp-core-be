@@ -40,12 +40,12 @@ func (s *authServiceImpl) Login(loginInput dto.LoginInput) (*dto.LoginResponse, 
 	user, err := s.userRepo.GetByEmail(loginInput.Email)
 	if err != nil {
 		s.App.ErrorLog.Println(err.Error())
-		return nil, errors.ErrNotFound
+		return nil, errors.ErrEmailNotFound
 	}
 
 	matches, err := user.PasswordMatches(loginInput.Password)
 	if err != nil || !matches {
-		return nil, errors.ErrBadRequest
+		return nil, errors.ErrIncorrectPassword
 	}
 
 	userToken, err := s.generateAndSaveToken(user.ID)
