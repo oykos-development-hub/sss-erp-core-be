@@ -168,9 +168,9 @@ func (u *User) ResetPassword(id int, password string) error {
 		return err
 	}
 
-	u.Password = string(newHash)
+	theUser.Password = string(newHash)
 
-	err = theUser.Update(*u)
+	err = theUser.Update(*theUser)
 	if err != nil {
 		return err
 	}
