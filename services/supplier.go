@@ -6,7 +6,6 @@ import (
 	"gitlab.sudovi.me/erp/core-ms-api/errors"
 
 	"github.com/oykos-development-hub/celeritas"
-	"github.com/upper/db/v4"
 	up "github.com/upper/db/v4"
 )
 
@@ -87,11 +86,11 @@ func (h *SupplierServiceImpl) GetSupplierList(input dto.GetSupplierListInput) ([
 		search := "%" + *input.Search + "%"
 		h.App.InfoLog.Println(search)
 		searchCond := up.Or(
-			db.Cond{"title ILIKE": search},
-			db.Cond{"abbreviation ILIKE": search},
-			db.Cond{"address ILIKE": search},
-			db.Cond{"description ILIKE": search},
-			db.Cond{"official_id ILIKE": search},
+			up.Cond{"title ILIKE": search},
+			up.Cond{"abbreviation ILIKE": search},
+			up.Cond{"address ILIKE": search},
+			up.Cond{"description ILIKE": search},
+			up.Cond{"official_id ILIKE": search},
 		)
 		cond = append(cond, searchCond)
 	}

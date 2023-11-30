@@ -24,8 +24,7 @@ type AuthService interface {
 	RefreshToken(userId int, refreshToken string, iat string) (*jwtdto.Token, error)
 	Logout(userId int) error
 	ForgotPassword(input dto.ForgotPassword) error
-	ForgotPasswordV2(input dto.ForgotPassword) error
-	ResetPasswordVerify(email, token string) (bool, error)
+	ResetPasswordVerify(email, token string) (*dto.ResetPasswordVerifyResponse, error)
 	ResetPassword(input dto.ResetPassword) error
 	ValidatePin(id int, data dto.ValidatePinInput) error
 }

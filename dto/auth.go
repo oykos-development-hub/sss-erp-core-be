@@ -16,10 +16,13 @@ type ResetPasswordVerify struct {
 	Token string `json:"token" validate:"required"`
 }
 
+type ResetPasswordVerifyResponse struct {
+	EncryptedEmail string `json:"encrypted_email"`
+}
+
 type ResetPassword struct {
-	Email    string `json:"email" validate:"required"`
-	Token    string `json:"token" validate:"required"`
-	Password string `json:"password" validate:"required"`
+	EncryptedEmail string `json:"encrypted_email" validate:"required"`
+	Password       string `json:"password" validate:"required"`
 }
 
 type LoginResponse struct {

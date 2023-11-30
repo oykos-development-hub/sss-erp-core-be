@@ -6,12 +6,10 @@ import (
 	"math/big"
 	"net/url"
 	"strconv"
-	"strings"
 
 	"gitlab.sudovi.me/erp/core-ms-api/data"
 	"gitlab.sudovi.me/erp/core-ms-api/dto"
 	"gitlab.sudovi.me/erp/core-ms-api/errors"
-	"golang.org/x/crypto/bcrypt"
 
 	"github.com/golang-jwt/jwt"
 	"github.com/oykos-development-hub/celeritas"
@@ -120,103 +118,6 @@ func RandomCharset(charset string) (string, error) {
 	return string(charset[n.Int64()]), nil
 }
 
-// GeneratePassword generates a random password with at least one character from each category.
-func GeneratePassword(length int) (string, error) {
-	if length < 6 {
-		return "", fmt.Errorf("password length must be at least 6 characters")
-	}
-
-	const (
-		lowercase = "abcdefghijklmnopqrstuvwxyz"
-		uppercase = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-		digits    = "0123456789"
-		special   = ",.-*/%$#@!^&?<>=+"
-	)
-
-	password := make([]string, length)
-	charsets := []string{lowercase, uppercase, digits, special}
-
-	// Ensure each category is represented
-	for i, set := range charsets {
-		char, err := RandomCharset(set)
-		if err != nil {
-			return "", err
-		}
-		password[i] = char
-	}
-
-	// Fill the rest of the password with random characters from all categories
-	for i := len(charsets); i < length; i++ {
-		char, err := RandomCharset(lowercase + uppercase + digits + special)
-		if err != nil {
-			return "", err
-		}
-		password[i] = char
-	}
-
-	// Shuffle the password to prevent predictable sequences
-	for i := range password {
-		j, err := rand.Int(rand.Reader, big.NewInt(int64(length)))
-		if err != nil {
-			return "", err
-		}
-		password[i], password[j.Int64()] = password[j.Int64()], password[i]
-	}
-
-	return strings.Join(password, ""), nil
-}
-
-func (s *authServiceImpl) ForgotPasswordV2(input dto.ForgotPassword) error {
-	// verify that supplied email exists
-	var u *data.User
-	u, err := u.GetByEmail(input.Email)
-	if err != nil {
-		return errors.ErrNotFound
-	}
-
-	password, err := GeneratePassword(8)
-	if err != nil {
-		s.App.ErrorLog.Printf("Error revoking refresh token: %v", err)
-		return errors.ErrInternalServer
-	}
-
-	newHash, err := bcrypt.GenerateFromPassword([]byte(password), 12)
-	if err != nil {
-		s.App.ErrorLog.Printf("Error generating hash from password: %v", err)
-		return errors.ErrInternalServer
-	}
-
-	u.Password = string(newHash)
-
-	err = u.Update(*u)
-	if err != nil {
-		s.App.ErrorLog.Printf("Error updating user: %v", err)
-		return errors.ErrInternalServer
-	}
-
-	// email the message
-	var data struct {
-		Password string
-	}
-	data.Password = password
-
-	msg := mailer.Message{
-		To:       u.Email,
-		Subject:  "Predmet: Instrukcije za resetovanje lozinke",
-		Template: "password-reset",
-		Data:     data,
-	}
-
-	s.App.Mail.Jobs <- msg
-	res := <-s.App.Mail.Results
-
-	if !res.Success {
-		return res.Error
-	}
-
-	return nil
-}
-
 func (s *authServiceImpl) ForgotPassword(input dto.ForgotPassword) error {
 	// verify that supplied email exists
 	var u *data.User
@@ -240,7 +141,7 @@ func (s *authServiceImpl) ForgotPassword(input dto.ForgotPassword) error {
 
 	msg := mailer.Message{
 		To:       u.Email,
-		Subject:  "Password reset",
+		Subject:  "Zahtjev za izmjenu šifre",
 		Template: "password-reset",
 		Data:     data,
 	}
@@ -254,7 +155,7 @@ func (s *authServiceImpl) ForgotPassword(input dto.ForgotPassword) error {
 	return nil
 }
 
-func (s *authServiceImpl) ResetPasswordVerify(email, token string) (bool, error) {
+func (s *authServiceImpl) ResetPasswordVerify(email, token string) (*dto.ResetPasswordVerifyResponse, error) {
 	link := s.buildPasswordResetLink(email, token)
 
 	// validate the url
@@ -263,22 +164,32 @@ func (s *authServiceImpl) ResetPasswordVerify(email, token string) (bool, error)
 	}
 	valid := signer.VerifyToken(link)
 	if !valid {
-		return false, errors.ErrUnauthorized
+		return nil, errors.ErrUnauthorized
 	}
 
 	// make sure it's not expired
 	expired := signer.Expired(link, 60)
 	if expired {
-		return false, errors.ErrExpired
+		return nil, errors.ErrExpired
 	}
 
-	return true, nil
+	encryptedEmail, _ := s.Encrypt(email)
+	var response dto.ResetPasswordVerifyResponse
+	response.EncryptedEmail = encryptedEmail
+
+	return &response, nil
 }
 
 func (s *authServiceImpl) ResetPassword(input dto.ResetPassword) error {
+	email, err := s.Decrypt(input.EncryptedEmail)
+	if err != nil {
+		s.App.ErrorLog.Printf("Failed to decrypt email: %v", err)
+		return errors.ErrInternalServer
+	}
+
 	// get the user
 	var u data.User
-	user, err := u.GetByEmail(input.Email)
+	user, err := u.GetByEmail(email)
 	if err != nil {
 		s.App.ErrorLog.Printf("Failed to retrieve user: %v", err)
 		return errors.ErrInternalServer

@@ -29,7 +29,6 @@ type AuthHandler interface {
 	RefreshToken(w http.ResponseWriter, r *http.Request)
 	Logout(w http.ResponseWriter, r *http.Request)
 	ForgotPassword(w http.ResponseWriter, r *http.Request)
-	ForgotPasswordV2(w http.ResponseWriter, r *http.Request)
 	ResetPasswordVerify(w http.ResponseWriter, r *http.Request)
 	ResetPassword(w http.ResponseWriter, r *http.Request)
 }

@@ -145,40 +145,18 @@ func (h *authHandlerImpl) ForgotPassword(w http.ResponseWriter, r *http.Request)
 	_ = h.App.WriteSuccessResponse(w, http.StatusOK, "Email sent")
 }
 
-func (h *authHandlerImpl) ForgotPasswordV2(w http.ResponseWriter, r *http.Request) {
-	var forgotPasswordInput dto.ForgotPassword
-	_ = h.App.ReadJSON(w, r, &forgotPasswordInput)
-
-	err := h.service.ForgotPasswordV2(forgotPasswordInput)
-	if err != nil {
-		_ = h.App.WriteErrorResponse(w, errors.MapErrorToStatusCode(err), err)
-		return
-	}
-
-	_ = h.App.WriteSuccessResponse(w, http.StatusOK, "Email sent")
-}
-
 func (h *authHandlerImpl) ResetPasswordVerify(w http.ResponseWriter, r *http.Request) {
-	var input dto.ResetPasswordVerify
-	_ = h.App.ReadJSON(w, r, &input)
 
-	v := h.App.Validator().ValidateStruct(&input)
-	if !v.Valid() {
-		_ = h.App.WriteErrorResponseWithData(w, errors.MapErrorToStatusCode(errors.ErrBadRequest), errors.ErrBadRequest, v.Errors)
-		return
-	}
+	email := r.URL.Query().Get("email")
+	token := r.URL.Query().Get("hash")
 
-	ok, err := h.service.ResetPasswordVerify(input.Email, input.Token)
+	res, err := h.service.ResetPasswordVerify(email, token)
 	if err != nil {
 		_ = h.App.WriteErrorResponse(w, errors.MapErrorToStatusCode(err), err)
 		return
 	}
 
-	if ok {
-		_ = h.App.WriteSuccessResponse(w, http.StatusOK, "Reset password link verified")
-	} else {
-		_ = h.App.WriteErrorResponse(w, http.StatusOK, errors.ErrBadRequest)
-	}
+	_ = h.App.WriteDataResponse(w, http.StatusOK, "Reset password link verified", res)
 }
 
 func (h *authHandlerImpl) ResetPassword(w http.ResponseWriter, r *http.Request) {
@@ -191,17 +169,7 @@ func (h *authHandlerImpl) ResetPassword(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
-	ok, err := h.service.ResetPasswordVerify(input.Email, input.Token)
-	if err != nil {
-		_ = h.App.WriteErrorResponse(w, errors.MapErrorToStatusCode(err), err)
-		return
-	}
-
-	if !ok {
-		_ = h.App.WriteErrorResponse(w, http.StatusOK, errors.ErrBadRequest)
-	}
-
-	err = h.service.ResetPassword(input)
+	err := h.service.ResetPassword(input)
 	if err != nil {
 		_ = h.App.WriteErrorResponse(w, errors.MapErrorToStatusCode(err), err)
 		return
