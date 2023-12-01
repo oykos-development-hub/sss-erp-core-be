@@ -19,6 +19,7 @@ type NotificationDTO struct {
 	Module      string `json:"module"`
 	Content     string `json:"content"`
 	IsRead      bool   `json:"is_read"`
+	Path        string `json:"path"`
 }
 
 type NotificationResponseDTO struct {
@@ -29,6 +30,7 @@ type NotificationResponseDTO struct {
 	Module      string    `json:"module"`
 	Content     string    `json:"content"`
 	IsRead      bool      `json:"is_read"`
+	Path        string    `json:"path"`
 	CreatedAt   time.Time `json:"created_at"`
 	UpdatedAt   time.Time `json:"updated_at"`
 }
@@ -41,6 +43,7 @@ func (dto NotificationDTO) ToNotification() *data.Notification {
 		Module:      dto.Module,
 		Content:     dto.Content,
 		IsRead:      dto.IsRead,
+		Path:        dto.Path,
 	}
 }
 
@@ -53,6 +56,7 @@ func ToNotificationResponseDTO(data data.Notification) NotificationResponseDTO {
 		Module:      data.Module,
 		Content:     data.Content,
 		IsRead:      data.IsRead,
+		Path:        data.Path,
 		CreatedAt:   data.CreatedAt,
 		UpdatedAt:   data.UpdatedAt,
 	}
