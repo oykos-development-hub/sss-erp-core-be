@@ -147,20 +147,10 @@ func (h *authHandlerImpl) ForgotPassword(w http.ResponseWriter, r *http.Request)
 
 func (h *authHandlerImpl) ResetPasswordVerify(w http.ResponseWriter, r *http.Request) {
 
-	var input dto.ResetPasswordVerify
-	err := h.App.ReadJSON(w, r, &input)
-	if err != nil {
-		_ = h.App.WriteErrorResponse(w, http.StatusBadRequest, err)
-		return
-	}
+	email := r.URL.Query().Get("email")
+	token := r.URL.Query().Get("hash")
 
-	validator := h.App.Validator().ValidateStruct(&input)
-	if !validator.Valid() {
-		_ = h.App.WriteErrorResponseWithData(w, errors.MapErrorToStatusCode(errors.ErrBadRequest), errors.ErrBadRequest, validator.Errors)
-		return
-	}
-
-	res, err := h.service.ResetPasswordVerify(input.Email, input.Token)
+	res, err := h.service.ResetPasswordVerify(email, token)
 	if err != nil {
 		_ = h.App.WriteErrorResponse(w, errors.MapErrorToStatusCode(err), err)
 		return
