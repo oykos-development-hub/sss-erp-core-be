@@ -2,6 +2,7 @@ package services
 
 import (
 	"crypto/rand"
+	"encoding/base64"
 	"fmt"
 	"math/big"
 	"net/url"
@@ -133,7 +134,6 @@ func (s *authServiceImpl) ForgotPassword(input dto.ForgotPassword) error {
 	}
 	signedLink := sign.GenerateTokenFromString(link)
 
-	// email the message
 	var data struct {
 		Link string
 	}
@@ -141,7 +141,7 @@ func (s *authServiceImpl) ForgotPassword(input dto.ForgotPassword) error {
 
 	msg := mailer.Message{
 		To:       u.Email,
-		Subject:  "Zahtjev za izmjenu šifre",
+		Subject:  "=?UTF-8?B?" + base64.StdEncoding.EncodeToString([]byte("Zahtjev za izmjenu šifre")) + "?=",
 		Template: "password-reset",
 		Data:     data,
 	}
@@ -210,7 +210,7 @@ func (s *authServiceImpl) buildPasswordResetLink(email string, hash string) stri
 	hash = url.QueryEscape(hash)
 
 	if hash != "" {
-		return fmt.Sprintf("%s/reset-password?email=%s&token=%s", s.App.Frontend.URL, email, hash)
+		return fmt.Sprintf("%s/reset-password?email=%s&hash=%s", s.App.Frontend.URL, email, hash)
 	}
 	return fmt.Sprintf("%s/reset-password?email=%s", s.App.Frontend.URL, email)
 }

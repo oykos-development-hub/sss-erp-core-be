@@ -12,7 +12,7 @@ type Account struct {
 	Title        string    `db:"title"`
 	ParentID     *int      `db:"parent_id"`
 	SerialNumber string    `db:"serial_number"`
-	CreatedAt    time.Time `db:"created_at,omitempty"`
+	CreatedAt    time.Time `db:"created_at"`
 	UpdatedAt    time.Time `db:"updated_at"`
 }
 

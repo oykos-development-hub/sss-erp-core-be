@@ -12,11 +12,10 @@ type Notification struct {
 	FromContent string    `db:"from_content"`
 	FromUserID  int       `db:"from_user_id"`
 	ToUserID    int       `db:"to_user_id"`
-	Path        string    `db:"path"`
 	Module      string    `db:"module"`
 	Content     string    `db:"content"`
 	IsRead      bool      `db:"is_read"`
-	CreatedAt   time.Time `db:"created_at,omitempty"`
+	CreatedAt   time.Time `db:"created_at"`
 	UpdatedAt   time.Time `db:"updated_at"`
 }
 

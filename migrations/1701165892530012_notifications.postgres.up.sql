@@ -6,7 +6,6 @@ CREATE TABLE IF NOT EXISTS notifications (
     to_user_id INTEGER NOT NULL,
     from_content TEXT NOT NULL,
     is_read bool NOT NULL,
-    path TEXT,
     created_at TIMESTAMP,
     updated_at TIMESTAMP
 );
