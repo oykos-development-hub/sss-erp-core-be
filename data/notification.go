@@ -1,6 +1,7 @@
 package data
 
 import (
+	"encoding/json"
 	"time"
 
 	up "github.com/upper/db/v4"
@@ -8,17 +9,17 @@ import (
 
 // Notification struct
 type Notification struct {
-	ID          int       `db:"id,omitempty"`
-	FromContent string    `db:"from_content"`
-	FromUserID  int       `db:"from_user_id"`
-	ToUserID    int       `db:"to_user_id"`
-	Path        string    `db:"path"`
-	Module      string    `db:"module"`
-	Content     string    `db:"content"`
-	IsRead      bool      `db:"is_read"`
-	Data        []byte    `db:"data"`
-	CreatedAt   time.Time `db:"created_at,omitempty"`
-	UpdatedAt   time.Time `db:"updated_at"`
+	ID          int             `db:"id,omitempty"`
+	FromContent string          `db:"from_content"`
+	FromUserID  int             `db:"from_user_id"`
+	ToUserID    int             `db:"to_user_id"`
+	Path        string          `db:"path"`
+	Module      string          `db:"module"`
+	Content     string          `db:"content"`
+	IsRead      bool            `db:"is_read"`
+	Data        json.RawMessage `db:"data"`
+	CreatedAt   time.Time       `db:"created_at,omitempty"`
+	UpdatedAt   time.Time       `db:"updated_at"`
 }
 
 // Table returns the table name

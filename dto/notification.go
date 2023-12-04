@@ -1,6 +1,7 @@
 package dto
 
 import (
+	"encoding/json"
 	"time"
 
 	"gitlab.sudovi.me/erp/core-ms-api/data"
@@ -13,28 +14,28 @@ type GetNotificationListInput struct {
 }
 
 type NotificationDTO struct {
-	FromContent string `json:"from_content"`
-	FromUserID  int    `json:"from_user_id"`
-	ToUserID    int    `json:"to_user_id"`
-	Module      string `json:"module"`
-	Content     string `json:"content"`
-	IsRead      bool   `json:"is_read"`
-	Path        string `json:"path"`
-	Data        []byte `json:"data"`
+	FromContent string          `json:"from_content"`
+	FromUserID  int             `json:"from_user_id"`
+	ToUserID    int             `json:"to_user_id"`
+	Module      string          `json:"module"`
+	Content     string          `json:"content"`
+	IsRead      bool            `json:"is_read"`
+	Path        string          `json:"path"`
+	Data        json.RawMessage `json:"data"`
 }
 
 type NotificationResponseDTO struct {
-	ID          int       `json:"id"`
-	FromContent string    `json:"from_content"`
-	FromUserID  int       `json:"from_user_id"`
-	ToUserID    int       `json:"to_user_id"`
-	Module      string    `json:"module"`
-	Content     string    `json:"content"`
-	IsRead      bool      `json:"is_read"`
-	Path        string    `json:"path"`
-	Data        []byte    `json:"data"`
-	CreatedAt   time.Time `json:"created_at"`
-	UpdatedAt   time.Time `json:"updated_at"`
+	ID          int             `json:"id"`
+	FromContent string          `json:"from_content"`
+	FromUserID  int             `json:"from_user_id"`
+	ToUserID    int             `json:"to_user_id"`
+	Module      string          `json:"module"`
+	Content     string          `json:"content"`
+	IsRead      bool            `json:"is_read"`
+	Path        string          `json:"path"`
+	Data        json.RawMessage `json:"data"`
+	CreatedAt   time.Time       `json:"created_at"`
+	UpdatedAt   time.Time       `json:"updated_at"`
 }
 
 func (dto NotificationDTO) ToNotification() *data.Notification {
