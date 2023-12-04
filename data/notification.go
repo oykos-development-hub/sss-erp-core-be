@@ -16,6 +16,7 @@ type Notification struct {
 	Module      string    `db:"module"`
 	Content     string    `db:"content"`
 	IsRead      bool      `db:"is_read"`
+	Data        []byte    `db:"data"`
 	CreatedAt   time.Time `db:"created_at,omitempty"`
 	UpdatedAt   time.Time `db:"updated_at"`
 }
