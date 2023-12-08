@@ -141,7 +141,7 @@ func (s *authServiceImpl) ForgotPassword(input dto.ForgotPassword) error {
 
 	msg := mailer.Message{
 		To:       u.Email,
-		Subject:  "=?UTF-8?B?" + base64.StdEncoding.EncodeToString([]byte("Zahtjev za izmjenu šifre")) + "?=",
+		Subject:  "=?UTF-8?B?" + base64.StdEncoding.EncodeToString([]byte("Zahtjev za izmjenu lozinke")) + "?=",
 		Template: "password-reset",
 		Data:     data,
 	}
