@@ -15,7 +15,7 @@ type Supplier struct {
 	Address      string    `db:"address"`
 	Description  string    `db:"description"`
 	FolderID     int       `db:"folder_id"`
-	CreatedAt    time.Time `db:"created_at"`
+	CreatedAt    time.Time `db:"created_at,omitempty"`
 	UpdatedAt    time.Time `db:"updated_at"`
 }
 

@@ -6,25 +6,28 @@ import (
 	up "github.com/upper/db/v4"
 )
 
-// Role struct
-type Role struct {
+// RolesPermission struct
+type RolesPermission struct {
 	ID           int       `db:"id,omitempty"`
-	Title        string    `db:"title"`
-	Abbreviation string    `db:"abbreviation"`
-	Active       bool      `db:"active"`
-	CreatedAt    time.Time `db:"created_at"`
+	PermissionID int       `db:"permission_id"`
+	RoleID       int       `db:"role_id"`
+	CanCreate    bool      `db:"can_create"`
+	CanRead      bool      `db:"can_read"`
+	CanUpdate    bool      `db:"can_update"`
+	CanDelete    bool      `db:"can_delete"`
+	CreatedAt    time.Time `db:"created_at,omitempty"`
 	UpdatedAt    time.Time `db:"updated_at"`
 }
 
 // Table returns the table name
-func (t *Role) Table() string {
-	return "roles"
+func (t *RolesPermission) Table() string {
+	return "roles_permissions"
 }
 
 // GetAll gets all records from the database, using upper
-func (t *Role) GetAll(condition *up.Cond) ([]*Role, error) {
+func (t *RolesPermission) GetAll(condition *up.Cond) ([]*RolesPermission, error) {
 	collection := upper.Collection(t.Table())
-	var all []*Role
+	var all []*RolesPermission
 	var res up.Result
 
 	if condition != nil {
@@ -42,8 +45,8 @@ func (t *Role) GetAll(condition *up.Cond) ([]*Role, error) {
 }
 
 // Get gets one record from the database, by id, using upper
-func (t *Role) Get(id int) (*Role, error) {
-	var one Role
+func (t *RolesPermission) Get(id int) (*RolesPermission, error) {
+	var one RolesPermission
 	collection := upper.Collection(t.Table())
 
 	res := collection.Find(up.Cond{"id": id})
@@ -55,7 +58,7 @@ func (t *Role) Get(id int) (*Role, error) {
 }
 
 // Update updates a record in the database, using upper
-func (t *Role) Update(m Role) error {
+func (t *RolesPermission) Update(m RolesPermission) error {
 	m.UpdatedAt = time.Now()
 	collection := upper.Collection(t.Table())
 	res := collection.Find(m.ID)
@@ -67,7 +70,7 @@ func (t *Role) Update(m Role) error {
 }
 
 // Delete deletes a record from the database by id, using upper
-func (t *Role) Delete(id int) error {
+func (t *RolesPermission) Delete(id int) error {
 	collection := upper.Collection(t.Table())
 	res := collection.Find(id)
 	err := res.Delete()
@@ -78,7 +81,7 @@ func (t *Role) Delete(id int) error {
 }
 
 // Insert inserts a model into the database, using upper
-func (t *Role) Insert(m Role) (int, error) {
+func (t *RolesPermission) Insert(m RolesPermission) (int, error) {
 	m.CreatedAt = time.Now()
 	m.UpdatedAt = time.Now()
 	collection := upper.Collection(t.Table())

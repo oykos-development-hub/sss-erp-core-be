@@ -21,13 +21,15 @@ var upper db2.Session
 type Models struct {
 	// any models inserted here (and in the New function)
 	// are easily accessible throughout the entire application
-	User           User
-	Role           Role
-	Setting        Setting
-	UserAccountLog UserAccountLog
-	Supplier       Supplier
-	Account        Account
-	Notification   Notification
+	User            User
+	Role            Role
+	Setting         Setting
+	UserAccountLog  UserAccountLog
+	Supplier        Supplier
+	Account         Account
+	Notification    Notification
+	RolesPermission RolesPermission
+	Permission      Permission
 }
 
 func New(databasePool *sql.DB) Models {
@@ -43,13 +45,15 @@ func New(databasePool *sql.DB) Models {
 	}
 
 	return Models{
-		User:           User{},
-		Role:           Role{},
-		Setting:        Setting{},
-		UserAccountLog: UserAccountLog{},
-		Supplier:       Supplier{},
-		Account:        Account{},
-		Notification:   Notification{},
+		User:            User{},
+		Role:            Role{},
+		Setting:         Setting{},
+		UserAccountLog:  UserAccountLog{},
+		Supplier:        Supplier{},
+		Account:         Account{},
+		Notification:    Notification{},
+		RolesPermission: RolesPermission{},
+		Permission:      Permission{},
 	}
 }
 

@@ -5,13 +5,15 @@ import (
 )
 
 type Handlers struct {
-	UserHandler         UserHandler
-	AuthHandler         AuthHandler
-	RoleHandler         RoleHandler
-	SettingHandler      SettingHandler
-	SupplierHandler     SupplierHandler
-	AccountHandler      AccountHandler
-	NotificationHandler NotificationHandler
+	UserHandler            UserHandler
+	AuthHandler            AuthHandler
+	RoleHandler            RoleHandler
+	SettingHandler         SettingHandler
+	SupplierHandler        SupplierHandler
+	AccountHandler         AccountHandler
+	NotificationHandler    NotificationHandler
+	RolesPermissionHandler RolesPermissionHandler
+	PermissionHandler      PermissionHandler
 }
 
 type UserHandler interface {
@@ -71,4 +73,21 @@ type NotificationHandler interface {
 	DeleteNotification(w http.ResponseWriter, r *http.Request)
 	GetNotificationById(w http.ResponseWriter, r *http.Request)
 	GetNotificationList(w http.ResponseWriter, r *http.Request)
+}
+
+type RolesPermissionHandler interface {
+	CreateRolesPermission(w http.ResponseWriter, r *http.Request)
+	UpdateRolesPermission(w http.ResponseWriter, r *http.Request)
+	DeleteRolesPermission(w http.ResponseWriter, r *http.Request)
+	GetRolesPermissionById(w http.ResponseWriter, r *http.Request)
+	GetRolesPermissionList(w http.ResponseWriter, r *http.Request)
+}
+
+type PermissionHandler interface {
+	CreatePermission(w http.ResponseWriter, r *http.Request)
+	UpdatePermission(w http.ResponseWriter, r *http.Request)
+	DeletePermission(w http.ResponseWriter, r *http.Request)
+	GetPermissionById(w http.ResponseWriter, r *http.Request)
+	GetPermissionList(w http.ResponseWriter, r *http.Request)
+	GetPermissionListForRole(w http.ResponseWriter, r *http.Request)
 }

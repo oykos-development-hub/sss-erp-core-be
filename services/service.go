@@ -73,3 +73,20 @@ type NotificationService interface {
 	GetNotification(id int) (*dto.NotificationResponseDTO, error)
 	GetNotificationList(input dto.GetNotificationListInput) ([]dto.NotificationResponseDTO, *uint64, error)
 }
+
+type RolesPermissionService interface {
+	CreateRolesPermission(input dto.RolesPermissionDTO) (*dto.RolesPermissionResponseDTO, error)
+	UpdateRolesPermission(id int, input dto.RolesPermissionDTO) (*dto.RolesPermissionResponseDTO, error)
+	DeleteRolesPermission(id int) error
+	GetRolesPermission(id int) (*dto.RolesPermissionResponseDTO, error)
+	GetRolesPermissionList() ([]dto.RolesPermissionResponseDTO, error)
+}
+
+type PermissionService interface {
+	CreatePermission(input dto.PermissionDTO) (*dto.PermissionResponseDTO, error)
+	UpdatePermission(id int, input dto.PermissionDTO) (*dto.PermissionResponseDTO, error)
+	DeletePermission(id int) error
+	GetPermission(id int) (*dto.PermissionResponseDTO, error)
+	GetPermissionList() ([]dto.PermissionResponseDTO, error)
+	GetPermissionListForRole(roleID int) ([]dto.PermissionWithRolesResponseDTO, error)
+}

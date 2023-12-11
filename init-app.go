@@ -51,14 +51,22 @@ func initApplication() *celeritas.Celeritas {
 	NotificationService := services.NewNotificationServiceImpl(cel, models.Notification)
 	NotificationHandler := handlers.NewNotificationHandler(cel, NotificationService)
 
+	RolesPermissionService := services.NewRolesPermissionServiceImpl(cel, models.RolesPermission)
+	RolesPermissionHandler := handlers.NewRolesPermissionHandler(cel, RolesPermissionService)
+
+	PermissionService := services.NewPermissionServiceImpl(cel, models.Permission)
+	PermissionHandler := handlers.NewPermissionHandler(cel, PermissionService)
+
 	myHandlers := &handlers.Handlers{
-		UserHandler:         UserHandler,
-		AuthHandler:         AuthHandler,
-		RoleHandler:         RoleHandler,
-		SettingHandler:      SettingHandler,
-		SupplierHandler:     SupplierHandler,
-		AccountHandler:      AccountHandler,
-		NotificationHandler: NotificationHandler,
+		UserHandler:            UserHandler,
+		AuthHandler:            AuthHandler,
+		RoleHandler:            RoleHandler,
+		SettingHandler:         SettingHandler,
+		SupplierHandler:        SupplierHandler,
+		AccountHandler:         AccountHandler,
+		NotificationHandler:    NotificationHandler,
+		RolesPermissionHandler: RolesPermissionHandler,
+		PermissionHandler:      PermissionHandler,
 	}
 
 	myMiddleware := &middleware.Middleware{

@@ -6,8 +6,7 @@ CREATE TABLE roles (
   id serial PRIMARY KEY,
   title VARCHAR(255) NOT NULL,
   abbreviation VARCHAR(8) NOT NULL,
-  color VARCHAR(32),
-  icon text,
+  active BOOLEAN NOT NULL,
   created_at timestamp without time zone NOT NULL DEFAULT now(),
   updated_at timestamp without time zone NOT NULL DEFAULT now()
 );
