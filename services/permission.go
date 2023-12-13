@@ -91,6 +91,7 @@ func (h *PermissionServiceImpl) GetPermissionList() ([]dto.PermissionResponseDTO
 
 func (h *PermissionServiceImpl) GetPermissionListForRole(roleID int) ([]dto.PermissionWithRolesResponseDTO, error) {
 	data, err := h.repo.GetAllPermissionOfRole(roleID)
+	data[0].CanRead = true
 	if err != nil {
 		h.App.ErrorLog.Println(err)
 		return nil, errors.ErrInternalServer
