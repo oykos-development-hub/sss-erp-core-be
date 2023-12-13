@@ -31,7 +31,7 @@ type AuthService interface {
 
 type RoleService interface {
 	CreateRole(input dto.CreateRoleDTO) (*dto.RoleResponseDTO, error)
-	UpdateRole(id int, input dto.UpdateRoleDTO) (*dto.RoleResponseDTO, error)
+	UpdateRole(id int, input dto.CreateRoleDTO) (*dto.RoleResponseDTO, error)
 	DeleteRole(id int) error
 	GetRole(id int) (*dto.RoleResponseDTO, error)
 	GetRoleList() ([]dto.RoleResponseDTO, error)
@@ -75,11 +75,7 @@ type NotificationService interface {
 }
 
 type RolesPermissionService interface {
-	CreateRolesPermission(input dto.RolesPermissionDTO) (*dto.RolesPermissionResponseDTO, error)
-	UpdateRolesPermission(id int, input dto.RolesPermissionDTO) (*dto.RolesPermissionResponseDTO, error)
-	DeleteRolesPermission(id int) error
-	GetRolesPermission(id int) (*dto.RolesPermissionResponseDTO, error)
-	GetRolesPermissionList() ([]dto.RolesPermissionResponseDTO, error)
+	SyncPermissions(roleID int, input []dto.RolesPermissionDTO) ([]dto.RolesPermissionResponseDTO, error)
 }
 
 type PermissionService interface {

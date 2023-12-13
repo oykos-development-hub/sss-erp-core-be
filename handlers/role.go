@@ -48,7 +48,7 @@ func (h *RoleHandlerImpl) CreateRole(w http.ResponseWriter, r *http.Request) {
 func (h *RoleHandlerImpl) UpdateRole(w http.ResponseWriter, r *http.Request) {
 	id, _ := strconv.Atoi(chi.URLParam(r, "id"))
 
-	var input dto.UpdateRoleDTO
+	var input dto.CreateRoleDTO
 	_ = h.App.ReadJSON(w, r, &input)
 
 	validator := h.App.Validator().ValidateStruct(&input)

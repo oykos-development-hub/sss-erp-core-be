@@ -36,9 +36,10 @@ func routes(app *celeritas.Celeritas, middleware *middleware.Middleware, handler
 			rt.Post("/roles", handlers.RoleHandler.CreateRole)
 			rt.Get("/roles/{id}", handlers.RoleHandler.GetRoleById)
 			rt.Get("/roles", handlers.RoleHandler.GetRoleList)
-			rt.Patch("/roles/{id}", handlers.RoleHandler.UpdateRole)
+			rt.Put("/roles/{id}", handlers.RoleHandler.UpdateRole)
 			rt.Delete("/roles/{id}", handlers.RoleHandler.DeleteRole)
 			rt.Get("/roles/{id}/permissions", handlers.PermissionHandler.GetPermissionListForRole)
+			rt.Post("/roles/{id}/permissions/sync", handlers.RolesPermissionHandler.SyncPermissions)
 		})
 
 		rt.Post("/settings", handlers.SettingHandler.CreateSetting)
@@ -64,12 +65,6 @@ func routes(app *celeritas.Celeritas, middleware *middleware.Middleware, handler
 		rt.Get("/notifications", handlers.NotificationHandler.GetNotificationList)
 		rt.Put("/notifications/{id}", handlers.NotificationHandler.UpdateNotification)
 		rt.Delete("/notifications/{id}", handlers.NotificationHandler.DeleteNotification)
-
-		rt.Post("/roles-permissions", handlers.RolesPermissionHandler.CreateRolesPermission)
-		rt.Get("/roles-permissions/{id}", handlers.RolesPermissionHandler.GetRolesPermissionById)
-		rt.Get("/roles-permissions", handlers.RolesPermissionHandler.GetRolesPermissionList)
-		rt.Put("/roles-permissions/{id}", handlers.RolesPermissionHandler.UpdateRolesPermission)
-		rt.Delete("/roles-permissions/{id}", handlers.RolesPermissionHandler.DeleteRolesPermission)
 
 		rt.Post("/permissions", handlers.PermissionHandler.CreatePermission)
 		rt.Get("/permissions/{id}", handlers.PermissionHandler.GetPermissionById)

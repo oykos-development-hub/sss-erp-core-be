@@ -20,70 +20,28 @@ func NewRolesPermissionServiceImpl(app *celeritas.Celeritas, repo data.RolesPerm
 	}
 }
 
-func (h *RolesPermissionServiceImpl) CreateRolesPermission(input dto.RolesPermissionDTO) (*dto.RolesPermissionResponseDTO, error) {
-	data := input.ToRolesPermission()
-
-	id, err := h.repo.Insert(*data)
-	if err != nil {
-		return nil, errors.ErrInternalServer
-	}
-
-	data, err = data.Get(id)
-	if err != nil {
-		return nil, errors.ErrInternalServer
-	}
-
-	res := dto.ToRolesPermissionResponseDTO(*data)
-
-	return &res, nil
-}
-
-func (h *RolesPermissionServiceImpl) UpdateRolesPermission(id int, input dto.RolesPermissionDTO) (*dto.RolesPermissionResponseDTO, error) {
-	data := input.ToRolesPermission()
-	data.ID = id
-
-	err := h.repo.Update(*data)
-	if err != nil {
-		return nil, errors.ErrInternalServer
-	}
-
-	data, err = h.repo.Get(id)
-	if err != nil {
-		return nil, errors.ErrInternalServer
-	}
-
-	response := dto.ToRolesPermissionResponseDTO(*data)
-
-	return &response, nil
-}
-
-func (h *RolesPermissionServiceImpl) DeleteRolesPermission(id int) error {
-	err := h.repo.Delete(id)
+func (h *RolesPermissionServiceImpl) SyncPermissions(roleID int, input []dto.RolesPermissionDTO) ([]dto.RolesPermissionResponseDTO, error) {
+	err := h.repo.DeleteAllPermissionsByRole(roleID)
 	if err != nil {
 		h.App.ErrorLog.Println(err)
-		return errors.ErrInternalServer
+		return nil, errors.ErrInternalServer
 	}
 
-	return nil
-}
+	for _, rolePermission := range input {
+		data := rolePermission.ToRolesPermission()
 
-func (h *RolesPermissionServiceImpl) GetRolesPermission(id int) (*dto.RolesPermissionResponseDTO, error) {
-	data, err := h.repo.Get(id)
-	if err != nil {
-		h.App.ErrorLog.Println(err)
-		return nil, errors.ErrNotFound
+		_, err := h.repo.Insert(*data)
+		if err != nil {
+			return nil, errors.ErrInternalServer
+		}
 	}
-	response := dto.ToRolesPermissionResponseDTO(*data)
 
-	return &response, nil
-}
-
-func (h *RolesPermissionServiceImpl) GetRolesPermissionList() ([]dto.RolesPermissionResponseDTO, error) {
 	data, err := h.repo.GetAll(nil)
 	if err != nil {
 		h.App.ErrorLog.Println(err)
 		return nil, errors.ErrInternalServer
 	}
+
 	response := dto.ToRolesPermissionListResponseDTO(data)
 
 	return response, nil

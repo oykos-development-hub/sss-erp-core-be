@@ -26,8 +26,10 @@ func NewRolesPermissionHandler(app *celeritas.Celeritas, rolespermissionService 
 	}
 }
 
-func (h *rolespermissionHandlerImpl) CreateRolesPermission(w http.ResponseWriter, r *http.Request) {
-	var input dto.RolesPermissionDTO
+func (h *rolespermissionHandlerImpl) SyncPermissions(w http.ResponseWriter, r *http.Request) {
+	roleID, _ := strconv.Atoi(chi.URLParam(r, "id"))
+
+	var input []dto.RolesPermissionDTO
 	err := h.App.ReadJSON(w, r, &input)
 	if err != nil {
 		_ = h.App.WriteErrorResponse(w, http.StatusBadRequest, err)
@@ -40,70 +42,11 @@ func (h *rolespermissionHandlerImpl) CreateRolesPermission(w http.ResponseWriter
 		return
 	}
 
-	res, err := h.service.CreateRolesPermission(input)
+	res, err := h.service.SyncPermissions(roleID, input)
 	if err != nil {
 		_ = h.App.WriteErrorResponse(w, errors.MapErrorToStatusCode(err), err)
 		return
 	}
 
-	_ = h.App.WriteDataResponse(w, http.StatusOK, "RolesPermission created successfuly", res)
-}
-
-func (h *rolespermissionHandlerImpl) UpdateRolesPermission(w http.ResponseWriter, r *http.Request) {
-	id, _ := strconv.Atoi(chi.URLParam(r, "id"))
-
-	var input dto.RolesPermissionDTO
-	err := h.App.ReadJSON(w, r, &input)
-	if err != nil {
-		_ = h.App.WriteErrorResponse(w, http.StatusBadRequest, err)
-		return
-	}
-
-	validator := h.App.Validator().ValidateStruct(&input)
-	if !validator.Valid() {
-		_ = h.App.WriteErrorResponseWithData(w, errors.MapErrorToStatusCode(errors.ErrBadRequest), errors.ErrBadRequest, validator.Errors)
-		return
-	}
-
-	res, err := h.service.UpdateRolesPermission(id, input)
-	if err != nil {
-		_ = h.App.WriteErrorResponse(w, errors.MapErrorToStatusCode(err), err)
-		return
-	}
-
-	_ = h.App.WriteDataResponse(w, http.StatusOK, "RolesPermission updated successfuly", res)
-}
-
-func (h *rolespermissionHandlerImpl) DeleteRolesPermission(w http.ResponseWriter, r *http.Request) {
-	id, _ := strconv.Atoi(chi.URLParam(r, "id"))
-
-	err := h.service.DeleteRolesPermission(id)
-	if err != nil {
-		_ = h.App.WriteErrorResponse(w, errors.MapErrorToStatusCode(err), err)
-		return
-	}
-
-	_ = h.App.WriteSuccessResponse(w, http.StatusOK, "RolesPermission deleted successfuly")
-}
-
-func (h *rolespermissionHandlerImpl) GetRolesPermissionById(w http.ResponseWriter, r *http.Request) {
-	id, _ := strconv.Atoi(chi.URLParam(r, "id"))
-
-	res, err := h.service.GetRolesPermission(id)
-	if err != nil {
-		_ = h.App.WriteErrorResponse(w, errors.MapErrorToStatusCode(err), err)
-		return
-	}
-
-	_ = h.App.WriteDataResponse(w, http.StatusOK, "", res)
-}
-
-func (h *rolespermissionHandlerImpl) GetRolesPermissionList(w http.ResponseWriter, r *http.Request) {
-	res, err := h.service.GetRolesPermissionList()
-	if err != nil {
-		_ = h.App.WriteErrorResponse(w, errors.MapErrorToStatusCode(err), err)
-		return
-	}
-
-	_ = h.App.WriteDataResponse(w, http.StatusOK, "", res)
+	_ = h.App.WriteDataResponse(w, http.StatusOK, "Permission created successfuly", res)
 }

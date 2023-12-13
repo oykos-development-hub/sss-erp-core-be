@@ -4,8 +4,8 @@ drop table if exists roles cascade;
 -- Create roles table
 CREATE TABLE roles (
   id serial PRIMARY KEY,
-  title VARCHAR(255) NOT NULL,
-  abbreviation VARCHAR(8) NOT NULL,
+  title TEXT NOT NULL,
+  abbreviation TEXT NOT NULL,
   active BOOLEAN NOT NULL,
   created_at timestamp without time zone NOT NULL DEFAULT now(),
   updated_at timestamp without time zone NOT NULL DEFAULT now()

@@ -76,11 +76,7 @@ type NotificationHandler interface {
 }
 
 type RolesPermissionHandler interface {
-	CreateRolesPermission(w http.ResponseWriter, r *http.Request)
-	UpdateRolesPermission(w http.ResponseWriter, r *http.Request)
-	DeleteRolesPermission(w http.ResponseWriter, r *http.Request)
-	GetRolesPermissionById(w http.ResponseWriter, r *http.Request)
-	GetRolesPermissionList(w http.ResponseWriter, r *http.Request)
+	SyncPermissions(w http.ResponseWriter, r *http.Request)
 }
 
 type PermissionHandler interface {

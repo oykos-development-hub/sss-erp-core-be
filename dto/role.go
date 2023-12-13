@@ -9,17 +9,14 @@ import (
 type CreateRoleDTO struct {
 	Title        string `json:"title" validate:"required"`
 	Abbreviation string `json:"abbreviation" validate:"required"`
-}
-
-type UpdateRoleDTO struct {
-	Title        *string `json:"title" validate:"omitempty"`
-	Abbreviation *string `json:"abbreviation" validate:"omitempty"`
+	Active       bool   `json:"active"`
 }
 
 type RoleResponseDTO struct {
 	ID           int       `json:"id"`
 	Title        string    `json:"title"`
 	Abbreviation string    `json:"abbreviation"`
+	Active       bool      `json:"active"`
 	CreatedAt    time.Time `json:"created_at"`
 	UpdatedAt    time.Time `json:"updated_at"`
 }
@@ -28,20 +25,10 @@ func (dto CreateRoleDTO) ToRole() *data.Role {
 	return &data.Role{
 		Title:        dto.Title,
 		Abbreviation: dto.Abbreviation,
+		Active:       dto.Active,
 		CreatedAt:    time.Now(),
 		UpdatedAt:    time.Now(),
 	}
-}
-
-func (dto UpdateRoleDTO) ToRole(data *data.Role) {
-	if dto.Title != nil {
-		data.Title = *dto.Title
-	}
-	if dto.Abbreviation != nil {
-		data.Abbreviation = *dto.Abbreviation
-	}
-
-	data.UpdatedAt = time.Now()
 }
 
 func ToRoleResponseDTO(data data.Role) RoleResponseDTO {
@@ -49,6 +36,7 @@ func ToRoleResponseDTO(data data.Role) RoleResponseDTO {
 		ID:           data.ID,
 		Title:        data.Title,
 		Abbreviation: data.Abbreviation,
+		Active:       data.Active,
 		CreatedAt:    data.CreatedAt,
 		UpdatedAt:    data.UpdatedAt,
 	}

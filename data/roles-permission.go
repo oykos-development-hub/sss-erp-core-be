@@ -80,6 +80,17 @@ func (t *RolesPermission) Delete(id int) error {
 	return nil
 }
 
+// Delete deletes a record from the database by id, using upper
+func (t *RolesPermission) DeleteAllPermissionsByRole(roleID int) error {
+	collection := upper.Collection(t.Table())
+	res := collection.Find(up.Cond{"role_id": roleID})
+	err := res.Delete()
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 // Insert inserts a model into the database, using upper
 func (t *RolesPermission) Insert(m RolesPermission) (int, error) {
 	m.CreatedAt = time.Now()

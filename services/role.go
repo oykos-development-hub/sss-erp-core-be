@@ -40,11 +40,16 @@ func (h *RoleServiceImpl) CreateRole(input dto.CreateRoleDTO) (*dto.RoleResponse
 	return &res, nil
 }
 
-func (h *RoleServiceImpl) UpdateRole(id int, input dto.UpdateRoleDTO) (*dto.RoleResponseDTO, error) {
-	data, _ := h.repo.Get(id)
-	input.ToRole(data)
+func (h *RoleServiceImpl) UpdateRole(id int, input dto.CreateRoleDTO) (*dto.RoleResponseDTO, error) {
+	data := input.ToRole()
+	data.ID = id
 
 	err := h.repo.Update(*data)
+	if err != nil {
+		return nil, errors.ErrInternalServer
+	}
+
+	data, err = h.repo.Get(id)
 	if err != nil {
 		return nil, errors.ErrInternalServer
 	}
