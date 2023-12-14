@@ -35,4 +35,8 @@ VALUES
     ('Sudije', '/hr/judges', 6, now(), now()),
     ('Oglasi', '/hr/job-tenders', 6, now(), now()),
     ('Preporuke interne revizije', '/hr/revision-recommendations', 6, now(), now()),
-    ('Izvještaji', '/hr/reports', 6, now(), now());
+    ('Unos računa', '/finance/liabilities-receivables/invoices', 9, now(), now()),
+    ('Unos rješenja', '/finance/liabilities-receivables/decisions', 9, now(), now()),
+    ('Unos ugovora', '/finance/liabilities-receivables/contracts', 9, now(), now()),
+    ('Unos zarada', '/finance/liabilities-receivables/salaries', 9, now(), now()),
+    ('Vezani troškovi', '/finance/liabilities-receivables/related-expenses', 9, now(), now());
