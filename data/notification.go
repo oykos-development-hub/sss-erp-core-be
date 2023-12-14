@@ -48,7 +48,7 @@ func (t *Notification) GetAll(page *int, size *int, condition *up.Cond) ([]*Noti
 		res = paginateResult(res, *page, *size)
 	}
 
-	res.OrderBy("is_read", "-created_at")
+	res.OrderBy("-created_at")
 
 	err = res.All(&all)
 	if err != nil {
