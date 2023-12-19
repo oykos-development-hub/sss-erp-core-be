@@ -8,6 +8,7 @@ import (
 
 type GetSupplierListInput struct {
 	Search *string `json:"search"`
+	Entity *string `json:"entity"`
 	Page   *int    `json:"page"`
 	Size   *int    `json:"size"`
 }
@@ -19,6 +20,7 @@ type SupplierDTO struct {
 	Address      string `json:"address"`
 	Description  string `json:"description"`
 	FolderID     int    `json:"folder_id"`
+	Entity       string `json:"entity"`
 }
 
 type SupplierResponseDTO struct {
@@ -28,6 +30,7 @@ type SupplierResponseDTO struct {
 	OfficialID   string    `json:"official_id"`
 	Address      string    `json:"address"`
 	Description  string    `json:"description"`
+	Entity       string    `json:"entity"`
 	FolderID     int       `json:"folder_id"`
 	CreatedAt    time.Time `json:"created_at"`
 	UpdatedAt    time.Time `json:"updated_at"`

@@ -94,6 +94,15 @@ func (h *SupplierServiceImpl) GetSupplierList(input dto.GetSupplierListInput) ([
 		)
 		cond = append(cond, searchCond)
 	}
+
+	if input.Entity != nil {
+		searchCond := up.Cond{"entity": input.Entity}
+		cond = append(cond, searchCond)
+	} else {
+		searchCond := up.Cond{"entity": "supplier"}
+		cond = append(cond, searchCond)
+	}
+
 	if len(cond) > 0 {
 		combinedCond = up.And(cond...)
 	}

@@ -5,6 +5,7 @@ CREATE TABLE IF NOT EXISTS suppliers (
     official_id TEXT,
     address TEXT,
     description TEXT,
+    entity TEXT DEFAULT 'supplier',
     folder_id INTEGER,
     created_at TIMESTAMP,
     updated_at TIMESTAMP
