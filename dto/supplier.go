@@ -42,6 +42,7 @@ func (dto SupplierDTO) ToSupplier() *data.Supplier {
 		Abbreviation: dto.Abbreviation,
 		OfficialID:   dto.OfficialID,
 		Address:      dto.Address,
+		Entity:       dto.Entity,
 		Description:  dto.Description,
 		FolderID:     dto.FolderID,
 	}
