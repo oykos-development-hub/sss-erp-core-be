@@ -11,3 +11,42 @@ CREATE TABLE IF NOT EXISTS roles_permissions (
     FOREIGN KEY (permission_id) REFERENCES permissions(id) ON UPDATE CASCADE ON DELETE CASCADE,
     FOREIGN KEY (role_id) REFERENCES roles(id) ON UPDATE CASCADE ON DELETE CASCADE
 );
+
+insert into roles_permissions (permission_id, role_id, can_create, can_read, can_update, can_delete, created_at, updated_at)
+VALUES 
+(1, 1, true, true, true, true, now(), now()),
+(2, 1, true, true, true, true, now(), now()),
+(3, 1, true, true, true, true, now(), now()),
+(4, 1, true, true, true, true, now(), now()),
+(5, 1, true, true, true, true, now(), now()),
+(6, 1, true, true, true, true, now(), now()),
+(7, 1, true, true, true, true, now(), now()),
+(8, 1, true, true, true, true, now(), now()),
+(9, 1, true, true, true, true, now(), now()),
+(10, 1, true, true, true, true, now(), now()),
+(11, 1, true, true, true, true, now(), now()),
+(12, 1, true, true, true, true, now(), now()),
+(13, 1, true, true, true, true, now(), now()),
+(14, 1, true, true, true, true, now(), now()),
+(15, 1, true, true, true, true, now(), now()),
+(16, 1, true, true, true, true, now(), now()),
+(17, 1, true, true, true, true, now(), now()),
+(18, 1, true, true, true, true, now(), now()),
+(19, 1, true, true, true, true, now(), now()),
+(20, 1, true, true, true, true, now(), now()),
+(21, 1, true, true, true, true, now(), now()),
+(22, 1, true, true, true, true, now(), now()),
+(23, 1, true, true, true, true, now(), now()),
+(24, 1, true, true, true, true, now(), now()),
+(25, 1, true, true, true, true, now(), now()),
+(26, 1, true, true, true, true, now(), now()),
+(27, 1, true, true, true, true, now(), now()),
+(28, 1, true, true, true, true, now(), now()),
+(29, 1, true, true, true, true, now(), now()),
+(30, 1, true, true, true, true, now(), now()),
+(31, 1, true, true, true, true, now(), now()),
+(32, 1, true, true, true, true, now(), now()),
+(33, 1, true, true, true, true, now(), now()),
+(34, 1, true, true, true, true, now(), now()),
+(35, 1, true, true, true, true, now(), now())
+;

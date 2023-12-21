@@ -39,4 +39,8 @@ VALUES
     ('Unos rješenja', '/finance/liabilities-receivables/decisions', 9, now(), now()),
     ('Unos ugovora', '/finance/liabilities-receivables/contracts', 9, now(), now()),
     ('Unos zarada', '/finance/liabilities-receivables/salaries', 9, now(), now()),
-    ('Vezani troškovi', '/finance/liabilities-receivables/related-expenses', 9, now(), now());
+    ('Vezani troškovi', '/finance/liabilities-receivables/related-expenses', 9, now(), now()),
+    ('Odluka o broju sudija', '/hr/judges/number-decision', 22, now(), now()),
+    ('Pregled Sudija i predsjednika', '/hr/judges/overview-judges-presidents', 22, now(), now()),
+    ('Pregled svih oglasa', '/hr/job-tenders/job-tenders-list', 23, now(), now()),
+    ('Pregled svih kandidata', '/hr/job-tenders/job-tender-applications', 23, now(), now());
