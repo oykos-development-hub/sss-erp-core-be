@@ -13,7 +13,7 @@ VALUES
     ('Finansije', '/finance', 1, now(), now()),
     ('Osnovna sredstva', '/inventory', 1, now(), now()),
     ('Javne nabavke', '/procurements', 1, now(), now()),
-    ('Materijalno knjigovođstvo', '/accounting', 1, now(), now()),
+    ('Materijalno knjigovodstvo', '/accounting', 1, now(), now()),
     ('Ljudski resursi', '/hr', 1, now(), now()),
     ('Budžet', '/finance/budget', 2, now(), now()),
     ('Trenutni budžet', '/finance/current-budget', 2, now(), now()),
