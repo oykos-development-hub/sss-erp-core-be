@@ -38,6 +38,7 @@ func (t *Notification) GetAll(page *int, size *int, condition *up.Cond) ([]*Noti
 	} else {
 		res = collection.Find()
 	}
+	res = res.OrderBy("-created_at")
 
 	total, err := res.Count()
 	if err != nil {
@@ -47,8 +48,6 @@ func (t *Notification) GetAll(page *int, size *int, condition *up.Cond) ([]*Noti
 	if page != nil && size != nil {
 		res = paginateResult(res, *page, *size)
 	}
-
-	res.OrderBy("-created_at")
 
 	err = res.All(&all)
 	if err != nil {
