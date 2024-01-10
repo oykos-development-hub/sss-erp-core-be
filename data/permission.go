@@ -41,7 +41,7 @@ func (t *Permission) GetAll(condition *up.Cond) ([]*Permission, error) {
 		res = collection.Find()
 	}
 
-	err := res.All(&all)
+	err := res.OrderBy("parent_id").All(&all)
 	if err != nil {
 		return nil, err
 	}
@@ -65,6 +65,7 @@ func (p *Permission) GetAllPermissionOfRole(roleID int) ([]*PermissionWithRoles,
 		).
 		From("permissions p").
 		LeftJoin("roles_permissions rp").On("p.id = rp.permission_id AND rp.role_id = ?", roleID).
+		OrderBy("parent_id").
 		All(&all)
 
 	if err != nil {
