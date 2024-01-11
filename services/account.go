@@ -1,6 +1,8 @@
 package services
 
 import (
+	"fmt"
+
 	"gitlab.sudovi.me/erp/core-ms-api/data"
 	"gitlab.sudovi.me/erp/core-ms-api/dto"
 	"gitlab.sudovi.me/erp/core-ms-api/errors"
@@ -92,6 +94,14 @@ func (h *AccountServiceImpl) GetAccountList(input dto.GetAccountsFilter) ([]dto.
 	}
 	if input.ID != nil && *input.ID != 0 {
 		conditionAndExp = up.And(conditionAndExp, up.Cond{"id": input.ID})
+	}
+	if input.Version != nil && *input.Version != 0 {
+		conditionAndExp = up.And(conditionAndExp, up.Cond{"version": input.Version})
+	} else {
+		latestVersionSubquery := `SELECT id FROM accounts WHERE version = (SELECT MAX(version) FROM accounts)`
+		conditionAndExp = up.And(conditionAndExp, up.Raw(fmt.Sprintf("id IN (%s)", latestVersionSubquery)))
+		deb := fmt.Sprintf("id IN (%s)", latestVersionSubquery)
+		fmt.Println(deb)
 	}
 
 	data, total, err := h.repo.GetAll(input.Page, input.Size, conditionAndExp)
