@@ -59,8 +59,7 @@ type SupplierService interface {
 }
 
 type AccountService interface {
-	CreateAccount(input dto.AccountDTO) (*dto.AccountResponseDTO, error)
-	UpdateAccount(id int, input dto.AccountDTO) (*dto.AccountResponseDTO, error)
+	CreateAccountList(input []dto.AccountDTO) ([]dto.AccountResponseDTO, error)
 	DeleteAccount(id int) error
 	GetAccount(id int) (*dto.AccountResponseDTO, error)
 	GetAccountList(input dto.GetAccountsFilter) ([]dto.AccountResponseDTO, int, error)

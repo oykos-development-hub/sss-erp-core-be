@@ -61,7 +61,6 @@ type SupplierHandler interface {
 
 type AccountHandler interface {
 	CreateAccount(w http.ResponseWriter, r *http.Request)
-	UpdateAccount(w http.ResponseWriter, r *http.Request)
 	DeleteAccount(w http.ResponseWriter, r *http.Request)
 	GetAccountById(w http.ResponseWriter, r *http.Request)
 	GetAccountList(w http.ResponseWriter, r *http.Request)

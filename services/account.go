@@ -23,41 +23,36 @@ func NewAccountServiceImpl(app *celeritas.Celeritas, repo data.Account) AccountS
 	}
 }
 
-func (h *AccountServiceImpl) CreateAccount(input dto.AccountDTO) (*dto.AccountResponseDTO, error) {
-	data := input.ToAccount()
-
-	id, err := h.repo.Insert(*data)
+func (h *AccountServiceImpl) CreateAccountList(input []dto.AccountDTO) ([]dto.AccountResponseDTO, error) {
+	var latestCountVersion int
+	counts, total, err := h.GetAccountList(dto.GetAccountsFilter{})
 	if err != nil {
 		return nil, errors.ErrInternalServer
 	}
-
-	data, err = data.Get(id)
-	if err != nil {
-		return nil, errors.ErrInternalServer
+	if total > 0 {
+		latestCountVersion = counts[0].Version
 	}
 
-	res := dto.ToAccountResponseDTO(*data)
+	var accountData []*data.Account
+	for _, account := range input {
+		data := account.ToAccount()
+		data.Version = latestCountVersion + 1
 
-	return &res, nil
-}
+		id, err := h.repo.Insert(*data)
+		if err != nil {
+			return nil, errors.ErrInternalServer
+		}
 
-func (h *AccountServiceImpl) UpdateAccount(id int, input dto.AccountDTO) (*dto.AccountResponseDTO, error) {
-	data := input.ToAccount()
-	data.ID = id
-
-	err := h.repo.Update(*data)
-	if err != nil {
-		return nil, errors.ErrInternalServer
+		data, err = data.Get(id)
+		if err != nil {
+			return nil, errors.ErrInternalServer
+		}
+		accountData = append(accountData, data)
 	}
 
-	data, err = h.repo.Get(id)
-	if err != nil {
-		return nil, errors.ErrInternalServer
-	}
+	res := dto.ToAccountListResponseDTO(accountData)
 
-	response := dto.ToAccountResponseDTO(*data)
-
-	return &response, nil
+	return res, nil
 }
 
 func (h *AccountServiceImpl) DeleteAccount(id int) error {

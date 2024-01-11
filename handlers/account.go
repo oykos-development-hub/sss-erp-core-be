@@ -27,7 +27,7 @@ func NewAccountHandler(app *celeritas.Celeritas, accountService services.Account
 }
 
 func (h *accountHandlerImpl) CreateAccount(w http.ResponseWriter, r *http.Request) {
-	var input dto.AccountDTO
+	var input []dto.AccountDTO
 	err := h.App.ReadJSON(w, r, &input)
 	if err != nil {
 		_ = h.App.WriteErrorResponse(w, http.StatusBadRequest, err)
@@ -40,38 +40,13 @@ func (h *accountHandlerImpl) CreateAccount(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
-	res, err := h.service.CreateAccount(input)
+	res, err := h.service.CreateAccountList(input)
 	if err != nil {
 		_ = h.App.WriteErrorResponse(w, errors.MapErrorToStatusCode(err), err)
 		return
 	}
 
 	_ = h.App.WriteDataResponse(w, http.StatusOK, "Account created successfuly", res)
-}
-
-func (h *accountHandlerImpl) UpdateAccount(w http.ResponseWriter, r *http.Request) {
-	id, _ := strconv.Atoi(chi.URLParam(r, "id"))
-
-	var input dto.AccountDTO
-	err := h.App.ReadJSON(w, r, &input)
-	if err != nil {
-		_ = h.App.WriteErrorResponse(w, http.StatusBadRequest, err)
-		return
-	}
-
-	validator := h.App.Validator().ValidateStruct(&input)
-	if !validator.Valid() {
-		_ = h.App.WriteErrorResponseWithData(w, errors.MapErrorToStatusCode(errors.ErrBadRequest), errors.ErrBadRequest, validator.Errors)
-		return
-	}
-
-	res, err := h.service.UpdateAccount(id, input)
-	if err != nil {
-		_ = h.App.WriteErrorResponse(w, errors.MapErrorToStatusCode(err), err)
-		return
-	}
-
-	_ = h.App.WriteDataResponse(w, http.StatusOK, "Account updated successfuly", res)
 }
 
 func (h *accountHandlerImpl) DeleteAccount(w http.ResponseWriter, r *http.Request) {
