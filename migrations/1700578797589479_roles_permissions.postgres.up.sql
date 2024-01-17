@@ -48,5 +48,6 @@ VALUES
 (32, 1, true, true, true, true, now(), now()),
 (33, 1, true, true, true, true, now(), now()),
 (34, 1, true, true, true, true, now(), now()),
-(35, 1, true, true, true, true, now(), now())
+(35, 1, true, true, true, true, now(), now()),
+(36, 1, true, true, true, true, now(), now())
 ;
