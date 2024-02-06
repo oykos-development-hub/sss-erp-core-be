@@ -11,17 +11,23 @@ CREATE TABLE settings (
     updated_at timestamp without time zone NOT NULL DEFAULT now()
 );
 
--- add auto update of updated_at. If you already have this trigger
--- you can delete the next 7 lines
-CREATE OR REPLACE FUNCTION trigger_set_timestamp()
-RETURNS TRIGGER AS $$
-BEGIN
-  NEW.updated_at = NOW();
-RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
+INSERT INTO settings(title, entity, abbreviation, value) VALUES (
+  "Rješenje o prekidu radnog odnosa",
+  "resolution_types",
+  "PRO",
+  "employment_termination"
+);
 
-CREATE TRIGGER set_timestamp
-    BEFORE UPDATE ON settings
-    FOR EACH ROW
-    EXECUTE PROCEDURE trigger_set_timestamp();
+INSERT INTO settings(title, entity, abbreviation, value) VALUES (
+  "Rješenje o korišćenju I dijela godišnjeg odmora",
+  "resolution_types",
+  "1GO",
+  "vacation_details"
+);
+
+INSERT INTO settings(title, entity, abbreviation, value) VALUES (
+  "Rješenje o prekidu radnog odnosa",
+  "resolution_types",
+  "GO",
+  "vacation"
+);
