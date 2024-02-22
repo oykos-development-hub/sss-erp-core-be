@@ -66,4 +66,9 @@ INSERT INTO permissions (title, path, parent_id, created_at, updated_at) VALUES
 ('Pregled svih oglasa', '/hr/job-tenders/job-tenders-list', 17, NOW(), NOW()),
 ('Pregled svih kandidata', '/hr/job-tenders/job-tender-applications', 17, NOW(), NOW()),
 ('Planiranje budžeta', '/finance/budget/planning', 7, NOW(), NOW()),
-('Tekući budžet', '/finance/budget/current', 7, NOW(), NOW());
+('Tekući budžet', '/finance/budget/current', 7, NOW(), NOW()),
+('Dinamika potrošnje', '/finance/budget/current/spending-dynamics', 59, NOW(), NOW()),
+('Otpuštanje sredstava', '/finance/budget/current/fund-release', 59, NOW(), NOW()),
+('Interno preusmjerenje', '/finance/budget/current/internal-reallocation', 59, NOW(), NOW()),
+('Ekterno preusmjerenje', '/finance/budget/current/external-reallocation', 59, NOW(), NOW()),
+('Nefinansijski dio', '/finance/budget/current/non-financial', 59, NOW(), NOW());

@@ -7,11 +7,13 @@ import (
 )
 
 type GetAccountsFilter struct {
-	ID      *int    `json:"id"`
-	Search  *string `json:"search"`
-	Page    *int    `json:"page"`
-	Size    *int    `json:"size"`
-	Version *int    `json:"version"`
+	ID           *int    `json:"id"`
+	Search       *string `json:"search"`
+	SerialNumber *string `json:"serial_number"`
+	Title        *string `json:"title"`
+	Page         *int    `json:"page"`
+	Size         *int    `json:"size"`
+	Version      *int    `json:"version"`
 }
 
 type AccountDTO struct {

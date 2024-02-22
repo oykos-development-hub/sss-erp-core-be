@@ -90,6 +90,12 @@ func (h *AccountServiceImpl) GetAccountList(input dto.GetAccountsFilter) ([]dto.
 	if input.ID != nil && *input.ID != 0 {
 		conditionAndExp = up.And(conditionAndExp, up.Cond{"id": input.ID})
 	}
+	if input.SerialNumber != nil && *input.SerialNumber != "" {
+		conditionAndExp = up.And(conditionAndExp, up.Cond{"serial_number": up.Like(*input.SerialNumber)})
+	}
+	if input.Title != nil && *input.Title != "" {
+		conditionAndExp = up.And(conditionAndExp, up.Cond{"title": up.Like(*input.Title)})
+	}
 	if input.Version != nil && *input.Version != 0 {
 		conditionAndExp = up.And(conditionAndExp, up.Cond{"version": input.Version})
 	} else {
