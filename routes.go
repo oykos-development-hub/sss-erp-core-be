@@ -70,6 +70,12 @@ func routes(app *celeritas.Celeritas, middleware *middleware.Middleware, handler
 		rt.Get("/permissions", handlers.PermissionHandler.GetPermissionList)
 		rt.Put("/permissions/{id}", handlers.PermissionHandler.UpdatePermission)
 		rt.Delete("/permissions/{id}", handlers.PermissionHandler.DeletePermission)
+
+		rt.Post("/bank-accounts", handlers.BankAccountHandler.CreateBankAccount)
+		rt.Get("/bank-accounts/{id}", handlers.BankAccountHandler.GetBankAccountById)
+		rt.Get("/bank-accounts", handlers.BankAccountHandler.GetBankAccountList)
+		rt.Put("/bank-accounts/{id}", handlers.BankAccountHandler.UpdateBankAccount)
+		rt.Delete("/bank-accounts/{title}", handlers.BankAccountHandler.DeleteBankAccount)
 	})
 
 	return app.Routes

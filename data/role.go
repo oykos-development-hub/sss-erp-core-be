@@ -23,7 +23,7 @@ func (t *Role) Table() string {
 
 // GetAll gets all records from the database, using upper
 func (t *Role) GetAll(condition *up.Cond) ([]*Role, error) {
-	collection := upper.Collection(t.Table())
+	collection := Upper.Collection(t.Table())
 	var all []*Role
 	var res up.Result
 
@@ -44,7 +44,7 @@ func (t *Role) GetAll(condition *up.Cond) ([]*Role, error) {
 // Get gets one record from the database, by id, using upper
 func (t *Role) Get(id int) (*Role, error) {
 	var one Role
-	collection := upper.Collection(t.Table())
+	collection := Upper.Collection(t.Table())
 
 	res := collection.Find(up.Cond{"id": id})
 	err := res.One(&one)
@@ -57,7 +57,7 @@ func (t *Role) Get(id int) (*Role, error) {
 // Update updates a record in the database, using upper
 func (t *Role) Update(m Role) error {
 	m.UpdatedAt = time.Now()
-	collection := upper.Collection(t.Table())
+	collection := Upper.Collection(t.Table())
 	res := collection.Find(m.ID)
 	err := res.Update(&m)
 	if err != nil {
@@ -68,7 +68,7 @@ func (t *Role) Update(m Role) error {
 
 // Delete deletes a record from the database by id, using upper
 func (t *Role) Delete(id int) error {
-	collection := upper.Collection(t.Table())
+	collection := Upper.Collection(t.Table())
 	res := collection.Find(id)
 	err := res.Delete()
 	if err != nil {
@@ -81,7 +81,7 @@ func (t *Role) Delete(id int) error {
 func (t *Role) Insert(m Role) (int, error) {
 	m.CreatedAt = time.Now()
 	m.UpdatedAt = time.Now()
-	collection := upper.Collection(t.Table())
+	collection := Upper.Collection(t.Table())
 	res, err := collection.Insert(m)
 	if err != nil {
 		return 0, err

@@ -3,6 +3,7 @@ package data
 import (
 	"time"
 
+	db2 "github.com/upper/db/v4"
 	up "github.com/upper/db/v4"
 )
 
@@ -16,6 +17,7 @@ type Supplier struct {
 	Description  string    `db:"description"`
 	FolderID     int       `db:"folder_id"`
 	Entity       string    `db:"entity"`
+	BankAccounts []string 
 	CreatedAt    time.Time `db:"created_at,omitempty"`
 	UpdatedAt    time.Time `db:"updated_at"`
 }
@@ -27,14 +29,14 @@ func (t *Supplier) Table() string {
 
 // GetAll gets all records from the database, using upper
 func (t *Supplier) GetAll(page *int, size *int, condition *up.AndExpr) ([]*Supplier, *uint64, error) {
-	collection := upper.Collection(t.Table())
+	collection := Upper.Collection(t.Table())
 	var all []*Supplier
 	var res up.Result
 
 	if condition != nil {
 		res = collection.Find(condition)
 	} else {
-		res = collection.Find()
+		res = collection.Find()   
 	}
 
 	total, err := res.Count()
@@ -57,31 +59,34 @@ func (t *Supplier) GetAll(page *int, size *int, condition *up.AndExpr) ([]*Suppl
 // Get gets one record from the database, by id, using upper
 func (t *Supplier) Get(id int) (*Supplier, error) {
 	var one Supplier
-	collection := upper.Collection(t.Table())
+	collection := Upper.Collection(t.Table())
 
 	res := collection.Find(up.Cond{"id": id})
 	err := res.One(&one)
 	if err != nil {
 		return nil, err
 	}
+
 	return &one, nil
 }
 
 // Update updates a record in the database, using upper
 func (t *Supplier) Update(m Supplier) error {
 	m.UpdatedAt = time.Now()
-	collection := upper.Collection(t.Table())
+	collection := Upper.Collection(t.Table())
 	res := collection.Find(m.ID)
 	err := res.Update(&m)
+
 	if err != nil {
 		return err
 	}
+
 	return nil
 }
 
 // Delete deletes a record from the database by id, using upper
 func (t *Supplier) Delete(id int) error {
-	collection := upper.Collection(t.Table())
+	collection := Upper.Collection(t.Table())
 	res := collection.Find(id)
 	err := res.Delete()
 	if err != nil {
@@ -91,10 +96,10 @@ func (t *Supplier) Delete(id int) error {
 }
 
 // Insert inserts a model into the database, using upper
-func (t *Supplier) Insert(m Supplier) (int, error) {
+func (t *Supplier) Insert( tx db2.Session, m Supplier) (int, error) {
 	m.CreatedAt = time.Now()
 	m.UpdatedAt = time.Now()
-	collection := upper.Collection(t.Table())
+	collection := tx.Collection(t.Table())
 	res, err := collection.Insert(m)
 	if err != nil {
 		return 0, err

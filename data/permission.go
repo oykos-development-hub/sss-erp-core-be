@@ -31,7 +31,7 @@ func (t *Permission) Table() string {
 
 // GetAll gets all records from the database, using upper
 func (t *Permission) GetAll(condition *up.Cond) ([]*Permission, error) {
-	collection := upper.Collection(t.Table())
+	collection := Upper.Collection(t.Table())
 	var all []*Permission
 	var res up.Result
 
@@ -51,7 +51,7 @@ func (t *Permission) GetAll(condition *up.Cond) ([]*Permission, error) {
 
 // GetAll gets all records from the database, using upper
 func (p *Permission) GetAllPermissionOfRole(roleID int) ([]*PermissionWithRoles, error) {
-	collection := upper.Collection(p.Table())
+	collection := Upper.Collection(p.Table())
 	var all []*PermissionWithRoles
 
 	err := collection.Session().
@@ -78,7 +78,7 @@ func (p *Permission) GetAllPermissionOfRole(roleID int) ([]*PermissionWithRoles,
 // Get gets one record from the database, by id, using upper
 func (t *Permission) Get(id int) (*Permission, error) {
 	var one Permission
-	collection := upper.Collection(t.Table())
+	collection := Upper.Collection(t.Table())
 
 	res := collection.Find(up.Cond{"id": id})
 	err := res.One(&one)
@@ -90,7 +90,7 @@ func (t *Permission) Get(id int) (*Permission, error) {
 
 // Update updates a record in the database, using upper
 func (t *Permission) Update(m Permission) error {
-	collection := upper.Collection(t.Table())
+	collection := Upper.Collection(t.Table())
 	res := collection.Find(m.ID)
 	err := res.Update(&m)
 	if err != nil {
@@ -101,7 +101,7 @@ func (t *Permission) Update(m Permission) error {
 
 // Delete deletes a record from the database by id, using upper
 func (t *Permission) Delete(id int) error {
-	collection := upper.Collection(t.Table())
+	collection := Upper.Collection(t.Table())
 	res := collection.Find(id)
 	err := res.Delete()
 	if err != nil {
@@ -112,7 +112,7 @@ func (t *Permission) Delete(id int) error {
 
 // Insert inserts a model into the database, using upper
 func (t *Permission) Insert(m Permission) (int, error) {
-	collection := upper.Collection(t.Table())
+	collection := Upper.Collection(t.Table())
 	res, err := collection.Insert(m)
 	if err != nil {
 		return 0, err

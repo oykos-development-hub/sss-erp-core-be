@@ -12,22 +12,22 @@ CREATE TABLE settings (
 );
 
 INSERT INTO settings(title, entity, abbreviation, value) VALUES (
-  "Rješenje o prekidu radnog odnosa",
-  "resolution_types",
-  "PRO",
-  "employment_termination"
+  'Rješenje o prekidu radnog odnosa',
+  'resolution_types',
+  'PRO',
+  'employment_termination'
 );
 
 INSERT INTO settings(title, entity, abbreviation, value) VALUES (
-  "Rješenje o korišćenju I dijela godišnjeg odmora",
-  "resolution_types",
-  "1GO",
-  "vacation_details"
+  'Rješenje o korišćenju I dijela godišnjeg odmora',
+  'resolution_types',
+  '1GO',
+  'vacation_details'
 );
 
 INSERT INTO settings(title, entity, abbreviation, value) VALUES (
-  "Rješenje o prekidu radnog odnosa",
-  "resolution_types",
-  "GO",
-  "vacation"
+  'Rješenje o prekidu radnog odnosa',
+  'resolution_types',
+  'GO',
+  'vacation'
 );

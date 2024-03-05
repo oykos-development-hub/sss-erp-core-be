@@ -26,7 +26,7 @@ func (t *RolesPermission) Table() string {
 
 // GetAll gets all records from the database, using upper
 func (t *RolesPermission) GetAll(condition *up.Cond) ([]*RolesPermission, error) {
-	collection := upper.Collection(t.Table())
+	collection := Upper.Collection(t.Table())
 	var all []*RolesPermission
 	var res up.Result
 
@@ -47,7 +47,7 @@ func (t *RolesPermission) GetAll(condition *up.Cond) ([]*RolesPermission, error)
 // Get gets one record from the database, by id, using upper
 func (t *RolesPermission) Get(id int) (*RolesPermission, error) {
 	var one RolesPermission
-	collection := upper.Collection(t.Table())
+	collection := Upper.Collection(t.Table())
 
 	res := collection.Find(up.Cond{"id": id})
 	err := res.One(&one)
@@ -60,7 +60,7 @@ func (t *RolesPermission) Get(id int) (*RolesPermission, error) {
 // Update updates a record in the database, using upper
 func (t *RolesPermission) Update(m RolesPermission) error {
 	m.UpdatedAt = time.Now()
-	collection := upper.Collection(t.Table())
+	collection := Upper.Collection(t.Table())
 	res := collection.Find(m.ID)
 	err := res.Update(&m)
 	if err != nil {
@@ -71,7 +71,7 @@ func (t *RolesPermission) Update(m RolesPermission) error {
 
 // Delete deletes a record from the database by id, using upper
 func (t *RolesPermission) Delete(id int) error {
-	collection := upper.Collection(t.Table())
+	collection := Upper.Collection(t.Table())
 	res := collection.Find(id)
 	err := res.Delete()
 	if err != nil {
@@ -82,7 +82,7 @@ func (t *RolesPermission) Delete(id int) error {
 
 // Delete deletes a record from the database by id, using upper
 func (t *RolesPermission) DeleteAllPermissionsByRole(roleID int) error {
-	collection := upper.Collection(t.Table())
+	collection := Upper.Collection(t.Table())
 	res := collection.Find(up.Cond{"role_id": roleID})
 	err := res.Delete()
 	if err != nil {
@@ -95,7 +95,7 @@ func (t *RolesPermission) DeleteAllPermissionsByRole(roleID int) error {
 func (t *RolesPermission) Insert(m RolesPermission) (int, error) {
 	m.CreatedAt = time.Now()
 	m.UpdatedAt = time.Now()
-	collection := upper.Collection(t.Table())
+	collection := Upper.Collection(t.Table())
 	res, err := collection.Insert(m)
 	if err != nil {
 		return 0, err

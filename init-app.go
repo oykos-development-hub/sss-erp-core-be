@@ -42,7 +42,10 @@ func initApplication() *celeritas.Celeritas {
 	SettingService := services.NewSettingServiceImpl(cel, models.Setting)
 	SettingHandler := handlers.NewSettingHandler(cel, SettingService)
 
-	SupplierService := services.NewSupplierServiceImpl(cel, models.Supplier)
+	BankAccountService := services.NewBankAccountServiceImpl(cel, models.BankAccount)
+	BankAccountHandler := handlers.NewBankAccountHandler(cel, BankAccountService)
+
+	SupplierService := services.NewSupplierServiceImpl(cel, models.Supplier, models.BankAccount)
 	SupplierHandler := handlers.NewSupplierHandler(cel, SupplierService)
 
 	AccountService := services.NewAccountServiceImpl(cel, models.Account)
@@ -67,6 +70,7 @@ func initApplication() *celeritas.Celeritas {
 		NotificationHandler:    NotificationHandler,
 		RolesPermissionHandler: RolesPermissionHandler,
 		PermissionHandler:      PermissionHandler,
+		BankAccountHandler:     BankAccountHandler,
 	}
 
 	myMiddleware := &middleware.Middleware{

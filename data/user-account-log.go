@@ -25,7 +25,7 @@ func (t *UserAccountLog) Table() string {
 
 // GetAll gets all records from the database, using upper
 func (t *UserAccountLog) GetAll(condition *up.Cond) ([]*UserAccountLog, error) {
-	collection := upper.Collection(t.Table())
+	collection := Upper.Collection(t.Table())
 	var all []*UserAccountLog
 	var res up.Result
 
@@ -46,7 +46,7 @@ func (t *UserAccountLog) GetAll(condition *up.Cond) ([]*UserAccountLog, error) {
 // Get gets one record from the database, by id, using upper
 func (t *UserAccountLog) Get(id int) (*UserAccountLog, error) {
 	var one UserAccountLog
-	collection := upper.Collection(t.Table())
+	collection := Upper.Collection(t.Table())
 
 	res := collection.Find(up.Cond{"id": id})
 	err := res.One(&one)
@@ -58,7 +58,7 @@ func (t *UserAccountLog) Get(id int) (*UserAccountLog, error) {
 
 // Update updates a record in the database, using upper
 func (t *UserAccountLog) Update(m UserAccountLog) error {
-	collection := upper.Collection(t.Table())
+	collection := Upper.Collection(t.Table())
 	res := collection.Find(m.ID)
 	err := res.Update(&m)
 	if err != nil {
@@ -69,7 +69,7 @@ func (t *UserAccountLog) Update(m UserAccountLog) error {
 
 // Delete deletes a record from the database by id, using upper
 func (t *UserAccountLog) Delete(id int) error {
-	collection := upper.Collection(t.Table())
+	collection := Upper.Collection(t.Table())
 	res := collection.Find(id)
 	err := res.Delete()
 	if err != nil {
@@ -81,7 +81,7 @@ func (t *UserAccountLog) Delete(id int) error {
 // Insert inserts a model into the database, using upper
 func (t *UserAccountLog) Insert(m UserAccountLog) (int, error) {
 	m.CreatedAt = time.Now()
-	collection := upper.Collection(t.Table())
+	collection := Upper.Collection(t.Table())
 	res, err := collection.Insert(m)
 	if err != nil {
 		return 0, err
@@ -94,7 +94,7 @@ func (t *UserAccountLog) Insert(m UserAccountLog) (int, error) {
 
 // Builder is an example of using upper's sql builder
 func (t *UserAccountLog) Builder(id int) ([]*UserAccountLog, error) {
-	collection := upper.Collection(t.Table())
+	collection := Upper.Collection(t.Table())
 
 	var result []*UserAccountLog
 

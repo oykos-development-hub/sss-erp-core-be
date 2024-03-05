@@ -35,7 +35,7 @@ func (u *User) Table() string {
 
 // GetAll returns a slice of all users
 func (u *User) GetAll(page *int, size *int, conditions *up.AndExpr) ([]*User, *uint64, error) {
-	collection := upper.Collection(u.Table())
+	collection := Upper.Collection(u.Table())
 
 	var all []*User
 	var res up.Result
@@ -66,7 +66,7 @@ func (u *User) GetAll(page *int, size *int, conditions *up.AndExpr) ([]*User, *u
 // GetByEmail gets one user, by email
 func (u *User) GetByEmail(email string) (*User, error) {
 	var theUser User
-	collection := upper.Collection(u.Table())
+	collection := Upper.Collection(u.Table())
 	res := collection.Find(up.Cond{"email =": email})
 	err := res.One(&theUser)
 	if err != nil {
@@ -79,7 +79,7 @@ func (u *User) GetByEmail(email string) (*User, error) {
 // Get gets one user by id
 func (u *User) Get(id int) (*User, error) {
 	var theUser User
-	collection := upper.Collection(u.Table())
+	collection := Upper.Collection(u.Table())
 	res := collection.Find(up.Cond{"id =": id})
 
 	err := res.One(&theUser)
@@ -93,7 +93,7 @@ func (u *User) Get(id int) (*User, error) {
 // Update updates a user record in the database
 func (u *User) Update(theUser User) error {
 	theUser.UpdatedAt = time.Now()
-	collection := upper.Collection(u.Table())
+	collection := Upper.Collection(u.Table())
 	res := collection.Find(theUser.ID)
 	err := res.Update(&theUser)
 	if err != nil {
@@ -145,7 +145,7 @@ func (u *User) Insert(theUser User) (int, error) {
 	theUser.UpdatedAt = time.Now()
 	theUser.Password = string(newHash)
 
-	collection := upper.Collection(u.Table())
+	collection := Upper.Collection(u.Table())
 	res, err := collection.Insert(theUser)
 	if err != nil {
 		return 0, err
@@ -200,7 +200,7 @@ func (u *User) PasswordMatches(plainText string) (bool, error) {
 
 // Delete deletes a record from the database by id, using upper
 func (t *User) Delete(id int) error {
-	collection := upper.Collection(t.Table())
+	collection := Upper.Collection(t.Table())
 	res := collection.Find(id)
 	err := res.Delete()
 	if err != nil {

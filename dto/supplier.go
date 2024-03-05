@@ -20,6 +20,7 @@ type SupplierDTO struct {
 	Address      string `json:"address"`
 	Description  string `json:"description"`
 	FolderID     int    `json:"folder_id"`
+	BankAccounts []string `json:"bank_accounts"`
 	Entity       string `json:"entity"`
 }
 
@@ -33,6 +34,7 @@ type SupplierResponseDTO struct {
 	Entity       string    `json:"entity"`
 	FolderID     int       `json:"folder_id"`
 	CreatedAt    time.Time `json:"created_at"`
+	BankAccounts []string `json:"bank_accounts"`
 	UpdatedAt    time.Time `json:"updated_at"`
 }
 
@@ -57,6 +59,7 @@ func ToSupplierResponseDTO(data data.Supplier) SupplierResponseDTO {
 		Address:      data.Address,
 		Description:  data.Description,
 		FolderID:     data.FolderID,
+		BankAccounts: data.BankAccounts,
 		CreatedAt:    data.CreatedAt,
 		UpdatedAt:    data.UpdatedAt,
 	}

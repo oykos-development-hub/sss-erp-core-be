@@ -27,7 +27,7 @@ func (t *Setting) Table() string {
 
 // GetAll gets all records from the database, using upper
 func (t *Setting) GetAll(page *int, size *int, conditions *up.AndExpr) ([]*Setting, *uint64, error) {
-	collection := upper.Collection(t.Table())
+	collection := Upper.Collection(t.Table())
 	var all []*Setting
 	var res up.Result
 
@@ -57,7 +57,7 @@ func (t *Setting) GetAll(page *int, size *int, conditions *up.AndExpr) ([]*Setti
 // Get gets one record from the database, by id, using upper
 func (t *Setting) Get(id int) (*Setting, error) {
 	var one Setting
-	collection := upper.Collection(t.Table())
+	collection := Upper.Collection(t.Table())
 
 	res := collection.Find(up.Cond{"id": id})
 	err := res.One(&one)
@@ -70,7 +70,7 @@ func (t *Setting) Get(id int) (*Setting, error) {
 // Update updates a record in the database, using upper
 func (t *Setting) Update(m Setting) error {
 	m.UpdatedAt = time.Now()
-	collection := upper.Collection(t.Table())
+	collection := Upper.Collection(t.Table())
 	res := collection.Find(m.ID)
 	err := res.Update(&m)
 	if err != nil {
@@ -81,7 +81,7 @@ func (t *Setting) Update(m Setting) error {
 
 // Delete deletes a record from the database by id, using upper
 func (t *Setting) Delete(id int) error {
-	collection := upper.Collection(t.Table())
+	collection := Upper.Collection(t.Table())
 	res := collection.Find(id)
 	err := res.Delete()
 	if err != nil {
@@ -94,7 +94,7 @@ func (t *Setting) Delete(id int) error {
 func (t *Setting) Insert(m Setting) (int, error) {
 	m.CreatedAt = time.Now()
 	m.UpdatedAt = time.Now()
-	collection := upper.Collection(t.Table())
+	collection := Upper.Collection(t.Table())
 	res, err := collection.Insert(m)
 	if err != nil {
 		return 0, err
@@ -107,7 +107,7 @@ func (t *Setting) Insert(m Setting) (int, error) {
 
 // Builder is an example of using upper's sql builder
 func (t *Setting) Builder(id int) ([]*Setting, error) {
-	collection := upper.Collection(t.Table())
+	collection := Upper.Collection(t.Table())
 
 	var result []*Setting
 

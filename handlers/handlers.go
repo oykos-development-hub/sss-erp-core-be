@@ -14,7 +14,8 @@ type Handlers struct {
 	NotificationHandler    NotificationHandler
 	RolesPermissionHandler RolesPermissionHandler
 	PermissionHandler      PermissionHandler
-}
+	BankAccountHandler BankAccountHandler
+	}
 
 type UserHandler interface {
 	CreateUser(w http.ResponseWriter, r *http.Request)
@@ -85,4 +86,12 @@ type PermissionHandler interface {
 	GetPermissionById(w http.ResponseWriter, r *http.Request)
 	GetPermissionList(w http.ResponseWriter, r *http.Request)
 	GetPermissionListForRole(w http.ResponseWriter, r *http.Request)
+}
+
+type BankAccountHandler interface {
+	CreateBankAccount(w http.ResponseWriter, r *http.Request)
+	UpdateBankAccount(w http.ResponseWriter, r *http.Request)
+	DeleteBankAccount(w http.ResponseWriter, r *http.Request)
+	GetBankAccountById(w http.ResponseWriter, r *http.Request)
+	GetBankAccountList(w http.ResponseWriter, r *http.Request)
 }

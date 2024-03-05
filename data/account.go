@@ -24,7 +24,7 @@ func (t *Account) Table() string {
 
 // GetAll gets all records from the database, using upper
 func (t *Account) GetAll(page *int, size *int, condition *up.AndExpr) ([]*Account, int, error) {
-	collection := upper.Collection(t.Table())
+	collection := Upper.Collection(t.Table())
 	var all []*Account
 	var res up.Result
 
@@ -54,7 +54,7 @@ func (t *Account) GetAll(page *int, size *int, condition *up.AndExpr) ([]*Accoun
 // Get gets one record from the database, by id, using upper
 func (t *Account) Get(id int) (*Account, error) {
 	var one Account
-	collection := upper.Collection(t.Table())
+	collection := Upper.Collection(t.Table())
 
 	res := collection.Find(up.Cond{"id": id})
 	err := res.One(&one)
@@ -67,7 +67,7 @@ func (t *Account) Get(id int) (*Account, error) {
 // Update updates a record in the database, using upper
 func (t *Account) Update(m Account) error {
 	m.UpdatedAt = time.Now()
-	collection := upper.Collection(t.Table())
+	collection := Upper.Collection(t.Table())
 	res := collection.Find(m.ID)
 	err := res.Update(&m)
 	if err != nil {
@@ -78,7 +78,7 @@ func (t *Account) Update(m Account) error {
 
 // Delete deletes a record from the database by id, using upper
 func (t *Account) Delete(id int) error {
-	collection := upper.Collection(t.Table())
+	collection := Upper.Collection(t.Table())
 	res := collection.Find(id)
 	err := res.Delete()
 	if err != nil {
@@ -91,7 +91,7 @@ func (t *Account) Delete(id int) error {
 func (t *Account) Insert(m Account) (int, error) {
 	m.CreatedAt = time.Now()
 	m.UpdatedAt = time.Now()
-	collection := upper.Collection(t.Table())
+	collection := Upper.Collection(t.Table())
 	res, err := collection.Insert(m)
 	if err != nil {
 		return 0, err

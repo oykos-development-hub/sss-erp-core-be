@@ -29,7 +29,7 @@ func (t *Notification) Table() string {
 
 // GetAll gets all records from the database, using upper
 func (t *Notification) GetAll(page *int, size *int, condition *up.Cond) ([]*Notification, *uint64, error) {
-	collection := upper.Collection(t.Table())
+	collection := Upper.Collection(t.Table())
 	var all []*Notification
 	var res up.Result
 
@@ -60,7 +60,7 @@ func (t *Notification) GetAll(page *int, size *int, condition *up.Cond) ([]*Noti
 // Get gets one record from the database, by id, using upper
 func (t *Notification) Get(id int) (*Notification, error) {
 	var one Notification
-	collection := upper.Collection(t.Table())
+	collection := Upper.Collection(t.Table())
 
 	res := collection.Find(up.Cond{"id": id})
 	err := res.One(&one)
@@ -73,7 +73,7 @@ func (t *Notification) Get(id int) (*Notification, error) {
 // Update updates a record in the database, using upper
 func (t *Notification) Update(m Notification) error {
 	m.UpdatedAt = time.Now()
-	collection := upper.Collection(t.Table())
+	collection := Upper.Collection(t.Table())
 	res := collection.Find(m.ID)
 	err := res.Update(&m)
 	if err != nil {
@@ -84,7 +84,7 @@ func (t *Notification) Update(m Notification) error {
 
 // Delete deletes a record from the database by id, using upper
 func (t *Notification) Delete(id int) error {
-	collection := upper.Collection(t.Table())
+	collection := Upper.Collection(t.Table())
 	res := collection.Find(id)
 	err := res.Delete()
 	if err != nil {
@@ -97,7 +97,7 @@ func (t *Notification) Delete(id int) error {
 func (t *Notification) Insert(m Notification) (int, error) {
 	m.CreatedAt = time.Now()
 	m.UpdatedAt = time.Now()
-	collection := upper.Collection(t.Table())
+	collection := Upper.Collection(t.Table())
 	res, err := collection.Insert(m)
 	if err != nil {
 		return 0, err
