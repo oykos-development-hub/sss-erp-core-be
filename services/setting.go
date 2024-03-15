@@ -88,13 +88,14 @@ func (h *SettingServiceImpl) GetSettingList(data dto.GetSettingsDTO) ([]dto.Sett
 	conditionAndExp = up.And(conditionAndExp, &up.Cond{"entity": data.Entity})
 	if data.Search != nil && *data.Search != "" {
 		likeCondition := fmt.Sprintf("%%%s%%", *data.Search)
-		conditionAndExp = up.And(
+		cond := up.And(
 			up.Or(
 				up.Cond{"title ILIKE": likeCondition},
 				up.Cond{"description ILIKE": likeCondition},
 				up.Cond{"abbreviation ILIKE": likeCondition},
 			),
 		)
+		conditionAndExp = up.And(conditionAndExp, cond)
 	}
 
 	if data.Value != nil {
