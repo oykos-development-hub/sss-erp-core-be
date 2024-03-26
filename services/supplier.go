@@ -12,15 +12,15 @@ import (
 )
 
 type SupplierServiceImpl struct {
-	App  *celeritas.Celeritas
-	repo data.Supplier
+	App             *celeritas.Celeritas
+	repo            data.Supplier
 	bankAccountRepo data.BankAccount
 }
 
 func NewSupplierServiceImpl(app *celeritas.Celeritas, repo data.Supplier, bankAccountRepo data.BankAccount) SupplierService {
 	return &SupplierServiceImpl{
-		App:  app,
-		repo: repo,
+		App:             app,
+		repo:            repo,
 		bankAccountRepo: bankAccountRepo,
 	}
 }
@@ -29,35 +29,36 @@ func (h *SupplierServiceImpl) CreateSupplier(input dto.SupplierDTO) (*dto.Suppli
 	supplier := input.ToSupplier()
 	var id int
 
- 	err := data.Upper.Tx(func(tx up.Session) error {
+	err := data.Upper.Tx(func(tx up.Session) error {
 		if supplier.Entity == "" {
 			supplier.Entity = "supplier"
 		}
 
-		id, err := h.repo.Insert(tx, *supplier)
+		var err error
+		id, err = h.repo.Insert(tx, *supplier)
 		if err != nil {
 			return errors.ErrInternalServer
 		}
 
 		for _, account := range input.BankAccounts {
 			newAccount := data.BankAccount{
-				Title: account, 
-				SupplierID: id, 
-				CreatedAt: time.Now(), 
-				UpdatedAt: time.Now(),
+				Title:      account,
+				SupplierID: id,
+				CreatedAt:  time.Now(),
+				UpdatedAt:  time.Now(),
 			}
 
-			if _, err = h.bankAccountRepo.Insert(tx, newAccount); err != nil { 
-				return  err
+			if _, err = h.bankAccountRepo.Insert(tx, newAccount); err != nil {
+				return err
 			}
 		}
 
 		return nil
- 	})
+	})
 
 	if err != nil {
-    return nil, err
-  }
+		return nil, err
+	}
 
 	supplier, err = supplier.Get(id)
 	if err != nil {
@@ -70,7 +71,6 @@ func (h *SupplierServiceImpl) CreateSupplier(input dto.SupplierDTO) (*dto.Suppli
 
 	return &res, nil
 }
-
 
 func (h *SupplierServiceImpl) UpdateSupplier(id int, input dto.SupplierDTO) (*dto.SupplierResponseDTO, error) {
 	updatedData := input.ToSupplier()
@@ -96,14 +96,14 @@ func (h *SupplierServiceImpl) UpdateSupplier(id int, input dto.SupplierDTO) (*dt
 		for account := range receivedAccountSet {
 			if _, ok := existingBankAccountSet[account]; !ok {
 				newAccount := data.BankAccount{
-					Title: account, 
-					SupplierID: id, 
-					CreatedAt: time.Now(), 
-					UpdatedAt: time.Now(),
+					Title:      account,
+					SupplierID: id,
+					CreatedAt:  time.Now(),
+					UpdatedAt:  time.Now(),
 				}
 
-				if _, err = h.bankAccountRepo.Insert(tx, newAccount); err != nil { 
-					return  err
+				if _, err = h.bankAccountRepo.Insert(tx, newAccount); err != nil {
+					return err
 				}
 			}
 		}
@@ -111,8 +111,8 @@ func (h *SupplierServiceImpl) UpdateSupplier(id int, input dto.SupplierDTO) (*dt
 		// Delete bank accounts which exist in the existing list but not in the received list
 		for account := range existingBankAccountSet {
 			if _, ok := receivedAccountSet[account]; !ok {
-				if err = h.bankAccountRepo.Delete(tx, account); err != nil { 
-					return  err
+				if err = h.bankAccountRepo.Delete(tx, account); err != nil {
+					return err
 				}
 			}
 		}
@@ -141,7 +141,7 @@ func (h *SupplierServiceImpl) UpdateSupplier(id int, input dto.SupplierDTO) (*dt
 	}
 
 	updatedData.BankAccounts = input.BankAccounts
-	
+
 	response := dto.ToSupplierResponseDTO(*updatedData)
 
 	return &response, nil
