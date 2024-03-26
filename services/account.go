@@ -101,8 +101,7 @@ func (h *AccountServiceImpl) GetAccountList(input dto.GetAccountsFilter) ([]dto.
 	} else {
 		latestVersionSubquery := `SELECT id FROM accounts WHERE version = (SELECT MAX(version) FROM accounts)`
 		conditionAndExp = up.And(conditionAndExp, up.Raw(fmt.Sprintf("id IN (%s)", latestVersionSubquery)))
-		deb := fmt.Sprintf("id IN (%s)", latestVersionSubquery)
-		fmt.Println(deb)
+		//deb := fmt.Sprintf("id IN (%s)", latestVersionSubquery)
 	}
 
 	data, total, err := h.repo.GetAll(input.Page, input.Size, conditionAndExp)

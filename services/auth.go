@@ -220,8 +220,6 @@ func (s *authServiceImpl) generateAndSaveToken(userID int) (*jwtdto.Token, error
 		"id": userID,
 	})
 
-	fmt.Printf("error: %v, token: %v", err, userToken)
-
 	if err != nil {
 		return nil, err
 	}

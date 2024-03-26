@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"fmt"
 	"net/http"
 	"strconv"
 
@@ -102,9 +101,8 @@ func (h *supplierHandlerImpl) GetSupplierById(w http.ResponseWriter, r *http.Req
 func (h *supplierHandlerImpl) GetSupplierList(w http.ResponseWriter, r *http.Request) {
 	var input dto.GetSupplierListInput
 	err := h.App.ReadJSON(w, r, &input)
-	
+
 	if err != nil {
-		fmt.Println(err)
 		_ = h.App.WriteErrorResponse(w, http.StatusBadRequest, err)
 		return
 	}
