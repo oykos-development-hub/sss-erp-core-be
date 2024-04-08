@@ -9,17 +9,18 @@ import (
 
 // Supplier struct
 type Supplier struct {
-	ID           int       `db:"id,omitempty"`
-	Title        string    `db:"title" validate:"required"`
-	Abbreviation string    `db:"abbreviation"`
-	OfficialID   string    `db:"official_id"`
-	Address      string    `db:"address"`
-	Description  string    `db:"description"`
-	FolderID     int       `db:"folder_id"`
-	Entity       string    `db:"entity"`
-	BankAccounts []string 
-	CreatedAt    time.Time `db:"created_at,omitempty"`
-	UpdatedAt    time.Time `db:"updated_at"`
+	ID            int    `db:"id,omitempty"`
+	Title         string `db:"title" validate:"required"`
+	Abbreviation  string `db:"abbreviation"`
+	OfficialID    string `db:"official_id"`
+	Address       string `db:"address"`
+	Description   string `db:"description"`
+	FolderID      int    `db:"folder_id"`
+	Entity        string `db:"entity"`
+	BankAccounts  []string
+	TaxPercentage int       `db:"tax_percentage"`
+	CreatedAt     time.Time `db:"created_at,omitempty"`
+	UpdatedAt     time.Time `db:"updated_at"`
 }
 
 // Table returns the table name
@@ -36,7 +37,7 @@ func (t *Supplier) GetAll(page *int, size *int, condition *up.AndExpr) ([]*Suppl
 	if condition != nil {
 		res = collection.Find(condition)
 	} else {
-		res = collection.Find()   
+		res = collection.Find()
 	}
 
 	total, err := res.Count()
@@ -96,7 +97,7 @@ func (t *Supplier) Delete(id int) error {
 }
 
 // Insert inserts a model into the database, using upper
-func (t *Supplier) Insert( tx db2.Session, m Supplier) (int, error) {
+func (t *Supplier) Insert(tx db2.Session, m Supplier) (int, error) {
 	m.CreatedAt = time.Now()
 	m.UpdatedAt = time.Now()
 	collection := tx.Collection(t.Table())
