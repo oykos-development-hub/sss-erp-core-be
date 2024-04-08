@@ -3,7 +3,7 @@ CREATE TABLE IF NOT EXISTS suppliers (
     title TEXT NOT NULL,
     abbreviation TEXT,
     official_id TEXT,
-    tax_percentage INTEGER,
+    tax_percentage FLOAT,
     address TEXT,
     description TEXT,
     entity TEXT DEFAULT 'supplier',

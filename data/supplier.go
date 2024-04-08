@@ -18,7 +18,7 @@ type Supplier struct {
 	FolderID      int    `db:"folder_id"`
 	Entity        string `db:"entity"`
 	BankAccounts  []string
-	TaxPercentage int       `db:"tax_percentage"`
+	TaxPercentage float32   `db:"tax_percentage"`
 	CreatedAt     time.Time `db:"created_at,omitempty"`
 	UpdatedAt     time.Time `db:"updated_at"`
 }

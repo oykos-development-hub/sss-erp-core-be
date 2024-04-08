@@ -21,7 +21,7 @@ type SupplierDTO struct {
 	Description   string   `json:"description"`
 	FolderID      int      `json:"folder_id"`
 	BankAccounts  []string `json:"bank_accounts"`
-	TaxPercentage int      `json:"tax_percentage"`
+	TaxPercentage float32  `json:"tax_percentage"`
 	Entity        string   `json:"entity"`
 }
 
@@ -35,7 +35,7 @@ type SupplierResponseDTO struct {
 	Entity        string    `json:"entity"`
 	FolderID      int       `json:"folder_id"`
 	CreatedAt     time.Time `json:"created_at"`
-	TaxPercentage int       `json:"tax_percentage"`
+	TaxPercentage float32   `json:"tax_percentage"`
 	BankAccounts  []string  `json:"bank_accounts"`
 	UpdatedAt     time.Time `json:"updated_at"`
 }
