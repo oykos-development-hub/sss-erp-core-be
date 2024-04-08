@@ -14,6 +14,7 @@ type SettingDTO struct {
 	Description  *string `json:"description"`
 	Color        *string `json:"color"`
 	Icon         *string `json:"icon"`
+	ParentID     *int    `json:"parent_id"`
 }
 
 type SettingResponseDTO struct {
@@ -25,6 +26,7 @@ type SettingResponseDTO struct {
 	Description  *string   `json:"description"`
 	Color        *string   `json:"color"`
 	Icon         *string   `json:"icon"`
+	ParentID     *int      `json:"parent_id"`
 	CreatedAt    time.Time `json:"created_at"`
 	UpdatedAt    time.Time `json:"updated_at"`
 }
@@ -38,6 +40,7 @@ func (dto SettingDTO) ToSetting() *data.Setting {
 		Value:        dto.Value,
 		Color:        dto.Color,
 		Icon:         dto.Icon,
+		ParentID:     dto.ParentID,
 	}
 }
 
@@ -51,6 +54,7 @@ func ToSettingResponseDTO(data data.Setting) SettingResponseDTO {
 		Value:        data.Value,
 		Color:        data.Color,
 		Icon:         data.Icon,
+		ParentID:     data.ParentID,
 		CreatedAt:    data.CreatedAt,
 		UpdatedAt:    data.UpdatedAt,
 	}
@@ -65,9 +69,10 @@ func ToSettingListResponseDTO(settings []*data.Setting) []SettingResponseDTO {
 }
 
 type GetSettingsDTO struct {
-	Entity string  `json:"entity"`
-	Page   *int    `json:"page"`
-	Size   *int    `json:"size"`
-	Search *string `json:"search"`
-	Value  *string `json:"value"`
+	Entity   string  `json:"entity"`
+	Page     *int    `json:"page"`
+	Size     *int    `json:"size"`
+	Search   *string `json:"search"`
+	Value    *string `json:"value"`
+	ParentID *int    `json:"parent_id"`
 }

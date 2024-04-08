@@ -13,6 +13,7 @@ type Setting struct {
 	Abbreviation string    `db:"abbreviation"`
 	Entity       string    `db:"entity"`
 	Description  *string   `db:"description,omitempty"`
+	ParentID     *int      `db:"parent_id"`
 	Value        *string   `db:"value,omitempty"`
 	Color        *string   `db:"color,omitempty"`
 	Icon         *string   `db:"icon,omitempty"`

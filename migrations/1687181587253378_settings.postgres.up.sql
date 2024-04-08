@@ -7,6 +7,7 @@ CREATE TABLE settings (
     value text,
     color text,
     icon text,
+    parent_id integer REFERENCES settings(id) ON DELETE CASCADE,
     created_at timestamp without time zone NOT NULL DEFAULT now(),
     updated_at timestamp without time zone NOT NULL DEFAULT now()
 );

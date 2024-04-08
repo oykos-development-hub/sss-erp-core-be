@@ -16,7 +16,7 @@ import (
 var db *sql.DB
 
 //nolint:all
-var Upper db2.Session
+var Upper up.Session
 
 type Models struct {
 	// any models inserted here (and in the New function)
@@ -30,8 +30,8 @@ type Models struct {
 	Notification    Notification
 	RolesPermission RolesPermission
 	Permission      Permission
-	BankAccount BankAccount
-	}
+	BankAccount     BankAccount
+}
 
 func New(databasePool *sql.DB) Models {
 	db = databasePool
@@ -55,7 +55,7 @@ func New(databasePool *sql.DB) Models {
 		Notification:    Notification{},
 		RolesPermission: RolesPermission{},
 		Permission:      Permission{},
-		BankAccount: BankAccount{},
+		BankAccount:     BankAccount{},
 	}
 }
 
