@@ -105,13 +105,7 @@ func (h *SettingServiceImpl) GetSettingList(data dto.GetSettingsDTO) ([]dto.Sett
 	if data.ParentID != nil {
 		conditionAndExp = up.And(conditionAndExp, &up.Cond{"parent_id": *data.ParentID})
 	} else {
-		cond := up.And(
-			up.Or(
-				up.Cond{"parent_id is": nil},
-				up.Cond{"parent_id": 0},
-			),
-		)
-		conditionAndExp = up.And(conditionAndExp, cond)
+		conditionAndExp = up.And(conditionAndExp, &up.Cond{"parent_id is": nil})
 	}
 
 	res, total, err := h.repo.GetAll(data.Page, data.Size, conditionAndExp)
