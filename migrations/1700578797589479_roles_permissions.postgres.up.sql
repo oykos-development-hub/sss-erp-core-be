@@ -12,7 +12,3 @@ CREATE TABLE IF NOT EXISTS roles_permissions (
     FOREIGN KEY (role_id) REFERENCES roles(id) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
-INSERT INTO roles_permissions (role_id, permission_id, can_create, can_update, can_read, can_delete)
-SELECT roles.id, permissions.id, true, true, true, true
-FROM roles
-CROSS JOIN permissions;
