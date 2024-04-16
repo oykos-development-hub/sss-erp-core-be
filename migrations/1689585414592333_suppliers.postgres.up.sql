@@ -8,6 +8,7 @@ CREATE TABLE IF NOT EXISTS suppliers (
     description TEXT,
     entity TEXT DEFAULT 'supplier',
     folder_id INTEGER,
+    parent_id INTEGER REFERENCES suppliers(id),
     created_at TIMESTAMP,
     updated_at TIMESTAMP
 );

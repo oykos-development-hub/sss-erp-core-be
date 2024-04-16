@@ -7,10 +7,11 @@ import (
 )
 
 type GetSupplierListInput struct {
-	Search *string `json:"search"`
-	Entity *string `json:"entity"`
-	Page   *int    `json:"page"`
-	Size   *int    `json:"size"`
+	Search   *string `json:"search"`
+	Entity   *string `json:"entity"`
+	ParentID *int    `json:"parent_id"`
+	Page     *int    `json:"page"`
+	Size     *int    `json:"size"`
 }
 
 type SupplierDTO struct {
@@ -20,6 +21,7 @@ type SupplierDTO struct {
 	Address       string   `json:"address"`
 	Description   string   `json:"description"`
 	FolderID      int      `json:"folder_id"`
+	ParentID      *int     `json:"parent_id"`
 	BankAccounts  []string `json:"bank_accounts"`
 	TaxPercentage float32  `json:"tax_percentage"`
 	Entity        string   `json:"entity"`
@@ -35,6 +37,7 @@ type SupplierResponseDTO struct {
 	Entity        string    `json:"entity"`
 	FolderID      int       `json:"folder_id"`
 	CreatedAt     time.Time `json:"created_at"`
+	ParentID      *int      `json:"parent_id"`
 	TaxPercentage float32   `json:"tax_percentage"`
 	BankAccounts  []string  `json:"bank_accounts"`
 	UpdatedAt     time.Time `json:"updated_at"`
@@ -49,6 +52,7 @@ func (dto SupplierDTO) ToSupplier() *data.Supplier {
 		Entity:        dto.Entity,
 		Description:   dto.Description,
 		FolderID:      dto.FolderID,
+		ParentID:      dto.ParentID,
 		TaxPercentage: dto.TaxPercentage,
 	}
 }
@@ -64,6 +68,7 @@ func ToSupplierResponseDTO(data data.Supplier) SupplierResponseDTO {
 		FolderID:      data.FolderID,
 		BankAccounts:  data.BankAccounts,
 		TaxPercentage: data.TaxPercentage,
+		ParentID:      data.ParentID,
 		Entity:        data.Entity,
 		CreatedAt:     data.CreatedAt,
 		UpdatedAt:     data.UpdatedAt,
