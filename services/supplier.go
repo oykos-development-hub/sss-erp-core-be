@@ -182,7 +182,6 @@ func (h *SupplierServiceImpl) GetSupplierList(input dto.GetSupplierListInput) ([
 	var combinedCond *up.AndExpr
 	if input.Search != nil {
 		search := "%" + *input.Search + "%"
-		h.App.InfoLog.Println(search)
 		searchCond := up.Or(
 			up.Cond{"title ILIKE": search},
 			up.Cond{"abbreviation ILIKE": search},
@@ -194,7 +193,7 @@ func (h *SupplierServiceImpl) GetSupplierList(input dto.GetSupplierListInput) ([
 	}
 
 	if input.Entity != nil {
-		searchCond := up.Cond{"entity": input.Entity}
+		searchCond := up.Cond{"entity": *input.Entity}
 		cond = append(cond, searchCond)
 	} else {
 		searchCond := up.Cond{"entity": "supplier"}
@@ -202,7 +201,7 @@ func (h *SupplierServiceImpl) GetSupplierList(input dto.GetSupplierListInput) ([
 	}
 
 	if input.ParentID != nil {
-		searchCond := up.Cond{"parent_id": input.Entity}
+		searchCond := up.Cond{"parent_id": *input.ParentID}
 		cond = append(cond, searchCond)
 	} else {
 		searchCond := up.Cond{"parent_id is": nil}
