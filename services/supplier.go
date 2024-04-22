@@ -199,7 +199,10 @@ func (h *SupplierServiceImpl) GetSupplierList(input dto.GetSupplierListInput) ([
 		entityCond := up.Or(
 			up.Cond{"entity": "institution"},
 			up.Cond{"entity": "municipalities"},
-			up.Cond{"entity": "subjects"},
+			up.And(
+				up.Cond{"entity": "subjects"},
+				up.Cond{"parent_id <>": nil},
+			),
 		)
 		cond = append(cond, entityCond)
 	} else {
