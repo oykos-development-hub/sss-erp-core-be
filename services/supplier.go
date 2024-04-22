@@ -192,9 +192,16 @@ func (h *SupplierServiceImpl) GetSupplierList(input dto.GetSupplierListInput) ([
 		cond = append(cond, searchCond)
 	}
 
-	if input.Entity != nil {
+	if input.Entity != nil && *input.Entity != "other" {
 		searchCond := up.Cond{"entity": *input.Entity}
 		cond = append(cond, searchCond)
+	} else if input.Entity != nil && *input.Entity == "other" {
+		entityCond := up.Or(
+			up.Cond{"entity": "institution"},
+			up.Cond{"entity": "municipalities"},
+			up.Cond{"entity": "subjects"},
+		)
+		cond = append(cond, entityCond)
 	} else {
 		searchCond := up.Cond{"entity": "supplier"}
 		cond = append(cond, searchCond)
