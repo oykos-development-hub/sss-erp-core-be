@@ -205,9 +205,6 @@ func (h *SupplierServiceImpl) GetSupplierList(input dto.GetSupplierListInput) ([
 			),
 		)
 		cond = append(cond, entityCond)
-	} else {
-		searchCond := up.Cond{"entity": "supplier"}
-		cond = append(cond, searchCond)
 	}
 
 	if input.ParentID != nil {
