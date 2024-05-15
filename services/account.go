@@ -2,6 +2,7 @@ package services
 
 import (
 	"fmt"
+	"sort"
 
 	"gitlab.sudovi.me/erp/core-ms-api/data"
 	"gitlab.sudovi.me/erp/core-ms-api/dto"
@@ -23,6 +24,20 @@ func NewAccountServiceImpl(app *celeritas.Celeritas, repo data.Account) AccountS
 	}
 }
 
+type BySerialNumberLength []dto.AccountDTO
+
+func (a BySerialNumberLength) Len() int {
+	return len(a)
+}
+
+func (a BySerialNumberLength) Less(i, j int) bool {
+	return len(a[i].SerialNumber) < len(a[j].SerialNumber)
+}
+
+func (a BySerialNumberLength) Swap(i, j int) {
+	a[i], a[j] = a[j], a[i]
+}
+
 func (h *AccountServiceImpl) CreateAccountList(input []dto.AccountDTO) ([]dto.AccountResponseDTO, error) {
 	var latestCountVersion int
 	counts, total, err := h.GetAccountList(dto.GetAccountsFilter{})
@@ -32,6 +47,8 @@ func (h *AccountServiceImpl) CreateAccountList(input []dto.AccountDTO) ([]dto.Ac
 	if total > 0 {
 		latestCountVersion = counts[0].Version
 	}
+
+	sort.Sort(BySerialNumberLength(input))
 
 	var accountData []*data.Account
 	for _, account := range input {
