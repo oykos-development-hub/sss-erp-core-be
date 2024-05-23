@@ -68,7 +68,7 @@ VALUES
 (60, 'Dinamika potrošnje', '/finance/budget/current/spending-dynamics', 59, '2024-02-19 08:44:57.265874', '2024-02-19 08:44:57.265874'),
 (61, 'Otpuštanje sredstava', '/finance/budget/current/fund-release', 59, '2024-02-19 08:44:57.265874', '2024-02-19 08:44:57.265874'),
 (62, 'Interno preusmjerenje', '/finance/budget/current/internal-reallocation', 59, '2024-02-19 08:44:57.265874', '2024-02-19 08:44:57.265874'),
-(63, 'Ekterno preusmjerenje', '/finance/budget/current/external-reallocation', 59, '2024-02-19 08:44:57.265874', '2024-02-19 08:44:57.265874'),
+(63, 'Eksterno preusmjerenje', '/finance/budget/current/external-reallocation', 59, '2024-02-19 08:44:57.265874', '2024-02-19 08:44:57.265874'),
 (64, 'Nefinansijski dio', '/finance/budget/current/non-financial', 59, '2024-02-19 08:44:57.265874', '2024-02-19 08:44:57.265874'),
 (66, 'Materijalni depozit', '/finance/deposit/fixed/material/overview', 48, '2024-02-19 08:44:57.265874', '2024-02-19 08:44:57.265874'),
 (67, 'Testamentni depozit', '/finance/deposit/fixed/wills/overview', 49, '2024-02-19 08:44:57.265874', '2024-02-19 08:44:57.265874'),

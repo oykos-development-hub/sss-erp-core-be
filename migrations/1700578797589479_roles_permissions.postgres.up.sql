@@ -12,3 +12,16 @@ CREATE TABLE IF NOT EXISTS roles_permissions (
     FOREIGN KEY (role_id) REFERENCES roles(id) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
+INSERT INTO roles_permissions (
+    permission_id, role_id, can_create, can_read, can_update, can_delete, created_at, updated_at
+)
+SELECT 
+    p.id AS permission_id, 
+    r.id AS role_id, 
+    TRUE AS can_create, 
+    TRUE AS can_read, 
+    TRUE AS can_update, 
+    TRUE AS can_delete,
+    NOW() AS created_at,
+    NOW() AS updated_at
+FROM roles r, permissions p;
