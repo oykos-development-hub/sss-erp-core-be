@@ -14,6 +14,7 @@ type GetAccountsFilter struct {
 	Page         *int    `json:"page"`
 	Size         *int    `json:"size"`
 	Version      *int    `json:"version"`
+	Leaf         bool    `json:"leaf"`
 }
 
 type AccountDTO struct {
