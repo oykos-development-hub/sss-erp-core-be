@@ -15,6 +15,7 @@ type GetAccountsFilter struct {
 	Size         *int    `json:"size"`
 	Version      *int    `json:"version"`
 	Leaf         bool    `json:"leaf"`
+	TopMost      bool    `json:"top_most"`
 }
 
 type AccountDTO struct {

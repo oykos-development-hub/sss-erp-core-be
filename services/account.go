@@ -124,6 +124,9 @@ func (h *AccountServiceImpl) GetAccountList(input dto.GetAccountsFilter) ([]dto.
 		leafSubquery := `SELECT a.id FROM accounts a LEFT JOIN accounts b ON a.id = b.parent_id WHERE b.id IS NULL`
 		conditionAndExp = up.And(conditionAndExp, up.Raw(fmt.Sprintf("id IN (%s)", leafSubquery)))
 	}
+	if input.TopMost {
+		conditionAndExp = up.And(conditionAndExp, up.Cond{"parent_id": nil})
+	}
 
 	data, total, err := h.repo.GetAll(input.Page, input.Size, conditionAndExp)
 	if err != nil {
