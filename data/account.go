@@ -110,12 +110,11 @@ func (t *Account) Delete(ctx context.Context, id int) error {
 	}
 
 	err := Upper.Tx(func(sess up.Session) error {
-		// Set the user ID in the session
 		query := fmt.Sprintf("SET myapp.user_id = %d", userID)
 		if _, err := sess.SQL().Exec(query); err != nil {
 			return err
 		}
-		// Perform the update within the transaction
+
 		collection := sess.Collection(t.Table())
 		res := collection.Find(id)
 		if err := res.Delete(); err != nil {
