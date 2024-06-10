@@ -38,7 +38,6 @@ END;
 $$ LANGUAGE plpgsql;
 
 
-
 CREATE TRIGGER users_insert
 AFTER INSERT ON users
 FOR EACH ROW
