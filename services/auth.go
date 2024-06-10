@@ -7,6 +7,7 @@ import (
 	"math/big"
 	"net/url"
 	"strconv"
+	"time"
 
 	"gitlab.sudovi.me/erp/core-ms-api/data"
 	"gitlab.sudovi.me/erp/core-ms-api/dto"
@@ -23,12 +24,14 @@ type authServiceImpl struct {
 	App      *celeritas.Celeritas
 	userRepo data.User
 	BaseService
+	logRepo data.Log
 }
 
-func NewAuthServiceImpl(app *celeritas.Celeritas, userRepo data.User) AuthService {
+func NewAuthServiceImpl(app *celeritas.Celeritas, userRepo data.User, logRepo data.Log) AuthService {
 	return &authServiceImpl{
 		App:      app,
 		userRepo: userRepo,
+		logRepo:  logRepo,
 		BaseService: BaseServiceImpl{
 			App: app,
 		},
@@ -48,6 +51,17 @@ func (s *authServiceImpl) Login(loginInput dto.LoginInput) (*dto.LoginResponse, 
 	}
 
 	userToken, err := s.generateAndSaveToken(user.ID)
+	if err != nil {
+		s.App.ErrorLog.Println(err)
+		return nil, errors.ErrInternalServer
+	}
+
+	_, err = s.logRepo.Insert(data.Log{
+		ChangedAt: time.Now(),
+		UserID:    user.ID,
+		Entity:    data.EntityLogin,
+	})
+
 	if err != nil {
 		s.App.ErrorLog.Println(err)
 		return nil, errors.ErrInternalServer
@@ -104,6 +118,16 @@ func (s *authServiceImpl) Logout(userId int) error {
 	if err != nil {
 		s.App.ErrorLog.Printf("Error revoking refresh token: %v", err)
 		return errors.ErrUnauthorized
+	}
+
+	_, err = s.logRepo.Insert(data.Log{
+		ChangedAt: time.Now(),
+		UserID:    userId,
+		Entity:    data.EntityLogout,
+	})
+
+	if err != nil {
+		return errors.ErrInternalServer
 	}
 
 	return nil

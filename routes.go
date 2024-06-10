@@ -76,6 +76,12 @@ func routes(app *celeritas.Celeritas, middleware *middleware.Middleware, handler
 		rt.Get("/bank-accounts", handlers.BankAccountHandler.GetBankAccountList)
 		rt.Put("/bank-accounts/{id}", handlers.BankAccountHandler.UpdateBankAccount)
 		rt.Delete("/bank-accounts/{title}", handlers.BankAccountHandler.DeleteBankAccount)
+	
+		rt.Post("/logs", handlers.LogHandler.CreateLog)
+rt.Get("/logs/{id}", handlers.LogHandler.GetLogById)
+rt.Get("/logs", handlers.LogHandler.GetLogList)
+rt.Put("/logs/{id}", handlers.LogHandler.UpdateLog)
+rt.Delete("/logs/{id}", handlers.LogHandler.DeleteLog)
 	})
 
 	return app.Routes

@@ -15,6 +15,7 @@ type Handlers struct {
 	RolesPermissionHandler RolesPermissionHandler
 	PermissionHandler      PermissionHandler
 	BankAccountHandler BankAccountHandler
+		LogHandler LogHandler
 	}
 
 type UserHandler interface {
@@ -94,4 +95,12 @@ type BankAccountHandler interface {
 	DeleteBankAccount(w http.ResponseWriter, r *http.Request)
 	GetBankAccountById(w http.ResponseWriter, r *http.Request)
 	GetBankAccountList(w http.ResponseWriter, r *http.Request)
+}
+
+type LogHandler interface {
+	CreateLog(w http.ResponseWriter, r *http.Request)
+	UpdateLog(w http.ResponseWriter, r *http.Request)
+	DeleteLog(w http.ResponseWriter, r *http.Request)
+	GetLogById(w http.ResponseWriter, r *http.Request)
+	GetLogList(w http.ResponseWriter, r *http.Request)
 }

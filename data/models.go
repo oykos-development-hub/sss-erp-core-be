@@ -3,7 +3,6 @@ package data
 import (
 	"fmt"
 
-	db2 "github.com/upper/db/v4"
 	up "github.com/upper/db/v4"
 	"github.com/upper/db/v4/adapter/mysql"
 	"github.com/upper/db/v4/adapter/postgresql"
@@ -31,6 +30,7 @@ type Models struct {
 	RolesPermission RolesPermission
 	Permission      Permission
 	BankAccount     BankAccount
+	Log             Log
 }
 
 func New(databasePool *sql.DB) Models {
@@ -56,10 +56,11 @@ func New(databasePool *sql.DB) Models {
 		RolesPermission: RolesPermission{},
 		Permission:      Permission{},
 		BankAccount:     BankAccount{},
+		Log:             Log{},
 	}
 }
 
-func getInsertId(i db2.ID) int {
+func getInsertId(i up.ID) int {
 	idType := fmt.Sprintf("%T", i)
 	if idType == "int64" {
 		return int(i.(int64))

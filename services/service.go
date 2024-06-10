@@ -1,6 +1,8 @@
 package services
 
 import (
+	"context"
+
 	jwtdto "github.com/oykos-development-hub/celeritas/jwt/dto"
 	"gitlab.sudovi.me/erp/core-ms-api/dto"
 )
@@ -12,11 +14,11 @@ type BaseService interface {
 }
 
 type UserService interface {
-	CreateUser(input dto.UserRegistrationDTO) (*dto.UserResponseDTO, error)
-	UpdateUser(id int, input dto.UserUpdateDTO) (*dto.UserResponseDTO, error)
+	CreateUser(ctx context.Context, input dto.UserRegistrationDTO) (*dto.UserResponseDTO, error)
+	UpdateUser(ctx context.Context, id int, input dto.UserUpdateDTO) (*dto.UserResponseDTO, error)
 	GetUser(id int) (*dto.UserResponseDTO, error)
 	GetUserList(data dto.GetUserListDTO) ([]dto.UserResponseDTO, *uint64, error)
-	DeleteUser(id int) error
+	DeleteUser(ctx context.Context, id int) error
 }
 
 type AuthService interface {
@@ -30,9 +32,9 @@ type AuthService interface {
 }
 
 type RoleService interface {
-	CreateRole(input dto.CreateRoleDTO) (*dto.RoleResponseDTO, error)
-	UpdateRole(id int, input dto.CreateRoleDTO) (*dto.RoleResponseDTO, error)
-	DeleteRole(id int) error
+	CreateRole(ctx context.Context, input dto.CreateRoleDTO) (*dto.RoleResponseDTO, error)
+	UpdateRole(ctx context.Context, id int, input dto.CreateRoleDTO) (*dto.RoleResponseDTO, error)
+	DeleteRole(ctx context.Context, id int) error
 	GetRole(id int) (*dto.RoleResponseDTO, error)
 	GetRoleList() ([]dto.RoleResponseDTO, error)
 }
@@ -59,8 +61,8 @@ type SupplierService interface {
 }
 
 type AccountService interface {
-	CreateAccountList(input []dto.AccountDTO) ([]dto.AccountResponseDTO, error)
-	DeleteAccount(id int) error
+	CreateAccountList(ctx context.Context, input []dto.AccountDTO) ([]dto.AccountResponseDTO, error)
+	DeleteAccount(ctx context.Context, id int) error
 	GetAccount(id int) (*dto.AccountResponseDTO, error)
 	GetAccountList(input dto.GetAccountsFilter) ([]dto.AccountResponseDTO, int, error)
 }
@@ -92,4 +94,12 @@ type BankAccountService interface {
 	DeleteBankAccount(title string) error
 	GetBankAccount(id int) (*dto.BankAccountResponseDTO, error)
 	GetBankAccountList(filter dto.BankAccountFilterDTO) ([]dto.BankAccountResponseDTO, *uint64, error)
+}
+
+type LogService interface {
+	CreateLog(input dto.LogDTO) (*dto.LogResponseDTO, error)
+	UpdateLog(id int, input dto.LogDTO) (*dto.LogResponseDTO, error)
+	DeleteLog(id int) error
+	GetLog(id int) (*dto.LogResponseDTO, error)
+	GetLogList(filter dto.LogFilterDTO) ([]dto.LogResponseDTO, *uint64, error)
 }

@@ -1,9 +1,11 @@
 package handlers
 
 import (
+	"context"
 	"net/http"
 	"strconv"
 
+	"gitlab.sudovi.me/erp/core-ms-api/contextutil"
 	"gitlab.sudovi.me/erp/core-ms-api/dto"
 	"gitlab.sudovi.me/erp/core-ms-api/errors"
 	"gitlab.sudovi.me/erp/core-ms-api/services"
@@ -40,7 +42,19 @@ func (h *accountHandlerImpl) CreateAccount(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
-	res, err := h.service.CreateAccountList(input)
+	userIDString := r.Header.Get("id")
+
+	userID, err := strconv.Atoi(userIDString)
+
+	if err != nil {
+		_ = h.App.WriteErrorResponseWithData(w, errors.MapErrorToStatusCode(errors.ErrUnauthorized), errors.ErrBadRequest, validator.Errors)
+		return
+	}
+
+	ctx := context.Background()
+	ctx = contextutil.SetUserIDInContext(ctx, userID)
+
+	res, err := h.service.CreateAccountList(ctx, input)
 	if err != nil {
 		_ = h.App.WriteErrorResponse(w, errors.MapErrorToStatusCode(err), err)
 		return
@@ -52,7 +66,19 @@ func (h *accountHandlerImpl) CreateAccount(w http.ResponseWriter, r *http.Reques
 func (h *accountHandlerImpl) DeleteAccount(w http.ResponseWriter, r *http.Request) {
 	id, _ := strconv.Atoi(chi.URLParam(r, "id"))
 
-	err := h.service.DeleteAccount(id)
+	userIDString := r.Header.Get("UserID")
+
+	userID, err := strconv.Atoi(userIDString)
+
+	if err != nil {
+		_ = h.App.WriteErrorResponse(w, errors.MapErrorToStatusCode(errors.ErrUnauthorized), errors.ErrUnauthorized)
+		return
+	}
+
+	ctx := context.Background()
+	ctx = contextutil.SetUserIDInContext(ctx, userID)
+
+	err = h.service.DeleteAccount(ctx, id)
 	if err != nil {
 		_ = h.App.WriteErrorResponse(w, errors.MapErrorToStatusCode(err), err)
 		return

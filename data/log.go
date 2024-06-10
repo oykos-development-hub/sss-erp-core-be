@@ -1,37 +1,52 @@
 package data
 
 import (
+	"encoding/json"
 	"time"
 
 	up "github.com/upper/db/v4"
 )
 
-// Supplier struct
-type Supplier struct {
-	ID            int    `db:"id,omitempty"`
-	Title         string `db:"title" validate:"required"`
-	Abbreviation  string `db:"abbreviation"`
-	OfficialID    string `db:"official_id"`
-	Address       string `db:"address"`
-	Description   string `db:"description"`
-	FolderID      int    `db:"folder_id"`
-	Entity        string `db:"entity"`
-	ParentID      *int   `db:"parent_id"`
-	BankAccounts  []string
-	TaxPercentage float32   `db:"tax_percentage"`
-	CreatedAt     time.Time `db:"created_at,omitempty"`
-	UpdatedAt     time.Time `db:"updated_at"`
+type LogOperation string
+type LogEntity string
+
+var (
+	OperationInsert LogOperation = "INSERT"
+	OperationUpdate LogOperation = "UPDATE"
+	OperationDelete LogOperation = "DELETE"
+)
+
+var (
+	EntityLogin       LogEntity = "login"
+	EntityLogout      LogEntity = "logout"
+	EntityUsers       LogEntity = "users"
+	EntityPermissions LogEntity = "permissions"
+	EntityRoles       LogEntity = "roles"
+	EntitySettings    LogEntity = "settings"
+	EntitySuppliers   LogEntity = "suppliers"
+)
+
+// Log struct
+type Log struct {
+	ID        int             `db:"id,omitempty"`
+	ChangedAt time.Time       `db:"changed_at"`
+	UserID    int             `db:"user_id"`
+	ItemID    int             `db:"item_id"`
+	Operation LogOperation    `db:"operation"`
+	Entity    LogEntity       `db:"entity"`
+	OldState  json.RawMessage `db:"old_state"`
+	NewState  json.RawMessage `db:"new_state"`
 }
 
 // Table returns the table name
-func (t *Supplier) Table() string {
-	return "suppliers"
+func (t *Log) Table() string {
+	return "logs"
 }
 
 // GetAll gets all records from the database, using upper
-func (t *Supplier) GetAll(page *int, size *int, condition *up.AndExpr) ([]*Supplier, *uint64, error) {
+func (t *Log) GetAll(page *int, size *int, condition *up.AndExpr, orders []interface{}) ([]*Log, *uint64, error) {
 	collection := Upper.Collection(t.Table())
-	var all []*Supplier
+	var all []*Log
 	var res up.Result
 
 	if condition != nil {
@@ -39,7 +54,6 @@ func (t *Supplier) GetAll(page *int, size *int, condition *up.AndExpr) ([]*Suppl
 	} else {
 		res = collection.Find()
 	}
-
 	total, err := res.Count()
 	if err != nil {
 		return nil, nil, err
@@ -49,7 +63,7 @@ func (t *Supplier) GetAll(page *int, size *int, condition *up.AndExpr) ([]*Suppl
 		res = paginateResult(res, *page, *size)
 	}
 
-	err = res.All(&all)
+	err = res.OrderBy(orders...).All(&all)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -58,8 +72,8 @@ func (t *Supplier) GetAll(page *int, size *int, condition *up.AndExpr) ([]*Suppl
 }
 
 // Get gets one record from the database, by id, using upper
-func (t *Supplier) Get(id int) (*Supplier, error) {
-	var one Supplier
+func (t *Log) Get(id int) (*Log, error) {
+	var one Log
 	collection := Upper.Collection(t.Table())
 
 	res := collection.Find(up.Cond{"id": id})
@@ -67,26 +81,22 @@ func (t *Supplier) Get(id int) (*Supplier, error) {
 	if err != nil {
 		return nil, err
 	}
-
 	return &one, nil
 }
 
 // Update updates a record in the database, using upper
-func (t *Supplier) Update(m Supplier) error {
-	m.UpdatedAt = time.Now()
+func (t *Log) Update(m Log) error {
 	collection := Upper.Collection(t.Table())
 	res := collection.Find(m.ID)
 	err := res.Update(&m)
-
 	if err != nil {
 		return err
 	}
-
 	return nil
 }
 
 // Delete deletes a record from the database by id, using upper
-func (t *Supplier) Delete(id int) error {
+func (t *Log) Delete(id int) error {
 	collection := Upper.Collection(t.Table())
 	res := collection.Find(id)
 	err := res.Delete()
@@ -97,10 +107,8 @@ func (t *Supplier) Delete(id int) error {
 }
 
 // Insert inserts a model into the database, using upper
-func (t *Supplier) Insert(tx up.Session, m Supplier) (int, error) {
-	m.CreatedAt = time.Now()
-	m.UpdatedAt = time.Now()
-	collection := tx.Collection(t.Table())
+func (t *Log) Insert(m Log) (int, error) {
+	collection := Upper.Collection(t.Table())
 	res, err := collection.Insert(m)
 	if err != nil {
 		return 0, err

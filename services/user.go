@@ -1,6 +1,7 @@
 package services
 
 import (
+	"context"
 	"fmt"
 	"runtime/debug"
 
@@ -24,7 +25,7 @@ func NewUserServiceImpl(app *celeritas.Celeritas, repo data.User) UserService {
 	}
 }
 
-func (h *userServiceImpl) CreateUser(userInput dto.UserRegistrationDTO) (*dto.UserResponseDTO, error) {
+func (h *userServiceImpl) CreateUser(ctx context.Context, userInput dto.UserRegistrationDTO) (*dto.UserResponseDTO, error) {
 	_, err := h.repo.GetByEmail(userInput.Email)
 	if err == nil {
 		return nil, errors.ErrUserEmailExists
@@ -32,7 +33,7 @@ func (h *userServiceImpl) CreateUser(userInput dto.UserRegistrationDTO) (*dto.Us
 
 	u := userInput.ToUser()
 
-	id, err := h.repo.Insert(*u)
+	id, err := h.repo.Insert(ctx, *u)
 	if err != nil {
 		h.App.ErrorLog.Println(err)
 		return nil, errors.ErrInternalServer
@@ -48,7 +49,7 @@ func (h *userServiceImpl) CreateUser(userInput dto.UserRegistrationDTO) (*dto.Us
 	return response, nil
 }
 
-func (h *userServiceImpl) UpdateUser(userId int, userInput dto.UserUpdateDTO) (*dto.UserResponseDTO, error) {
+func (h *userServiceImpl) UpdateUser(ctx context.Context, userId int, userInput dto.UserUpdateDTO) (*dto.UserResponseDTO, error) {
 	u, err := h.repo.Get(userId)
 	if err != nil {
 		return nil, errors.ErrNotFound
@@ -62,7 +63,7 @@ func (h *userServiceImpl) UpdateUser(userId int, userInput dto.UserUpdateDTO) (*
 	}
 
 	userInput.ToUser(u)
-	err = h.repo.Update(*u)
+	err = h.repo.Update(ctx, *u)
 	if err != nil {
 		return nil, errors.ErrInternalServer
 	}
@@ -112,8 +113,8 @@ func (h *userServiceImpl) GetUserList(data dto.GetUserListDTO) ([]dto.UserRespon
 	return response, total, nil
 }
 
-func (h *userServiceImpl) DeleteUser(id int) error {
-	err := h.repo.Delete(id)
+func (h *userServiceImpl) DeleteUser(ctx context.Context, id int) error {
+	err := h.repo.Delete(ctx, id)
 	if err != nil {
 		h.App.ErrorLog.Println(err)
 		return errors.ErrInternalServer

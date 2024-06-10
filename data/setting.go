@@ -71,12 +71,14 @@ func (t *Setting) Get(id int) (*Setting, error) {
 // Update updates a record in the database, using upper
 func (t *Setting) Update(m Setting) error {
 	m.UpdatedAt = time.Now()
+
 	collection := Upper.Collection(t.Table())
 	res := collection.Find(m.ID)
-	err := res.Update(&m)
-	if err != nil {
+	if err := res.Update(&m); err != nil {
 		return err
+
 	}
+
 	return nil
 }
 

@@ -32,9 +32,9 @@ func initApplication() *celeritas.Celeritas {
 	UserService := services.NewUserServiceImpl(cel, models.User)
 	UserHandler := handlers.NewUserHandler(cel, UserService)
 
-	AuthService := services.NewAuthServiceImpl(cel, models.User)
-	LogService := services.NewUserAccountLogServiceImpl(cel, models.UserAccountLog)
-	AuthHandler := handlers.NewAuthHandler(cel, AuthService, LogService)
+	AuthService := services.NewAuthServiceImpl(cel, models.User, models.Log)
+	UserLogService := services.NewUserAccountLogServiceImpl(cel, models.UserAccountLog)
+	AuthHandler := handlers.NewAuthHandler(cel, AuthService, UserLogService)
 
 	RoleService := services.NewRoleServiceImpl(cel, models.Role)
 	RoleHandler := handlers.NewRoleHandler(cel, RoleService)
@@ -60,6 +60,9 @@ func initApplication() *celeritas.Celeritas {
 	PermissionService := services.NewPermissionServiceImpl(cel, models.Permission)
 	PermissionHandler := handlers.NewPermissionHandler(cel, PermissionService)
 
+	LogService := services.NewLogServiceImpl(cel, models.Log)
+	LogHandler := handlers.NewLogHandler(cel, LogService)
+
 	myHandlers := &handlers.Handlers{
 		UserHandler:            UserHandler,
 		AuthHandler:            AuthHandler,
@@ -71,6 +74,7 @@ func initApplication() *celeritas.Celeritas {
 		RolesPermissionHandler: RolesPermissionHandler,
 		PermissionHandler:      PermissionHandler,
 		BankAccountHandler:     BankAccountHandler,
+		LogHandler:             LogHandler,
 	}
 
 	myMiddleware := &middleware.Middleware{

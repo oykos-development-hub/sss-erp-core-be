@@ -1,4 +1,4 @@
-package main
+package contextutil
 
 import "context"
 
@@ -15,9 +15,4 @@ func SetUserIDInContext(ctx context.Context, userID int) context.Context {
 func GetUserIDFromContext(ctx context.Context) (int, bool) {
 	userID, ok := ctx.Value(UserIDKey).(int)
 	return userID, ok
-}
-
-func main() {
-	c := initApplication()
-	c.ListenAndServe()
 }

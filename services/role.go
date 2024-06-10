@@ -1,6 +1,7 @@
 package services
 
 import (
+	"context"
 	"strings"
 
 	"gitlab.sudovi.me/erp/core-ms-api/data"
@@ -22,10 +23,10 @@ func NewRoleServiceImpl(app *celeritas.Celeritas, repo data.Role) RoleService {
 	}
 }
 
-func (h *RoleServiceImpl) CreateRole(input dto.CreateRoleDTO) (*dto.RoleResponseDTO, error) {
+func (h *RoleServiceImpl) CreateRole(ctx context.Context, input dto.CreateRoleDTO) (*dto.RoleResponseDTO, error) {
 	data := input.ToRole()
 
-	id, err := h.repo.Insert(*data)
+	id, err := h.repo.Insert(ctx, *data)
 	if err != nil {
 		return nil, errors.ErrInternalServer
 	}
@@ -40,11 +41,11 @@ func (h *RoleServiceImpl) CreateRole(input dto.CreateRoleDTO) (*dto.RoleResponse
 	return &res, nil
 }
 
-func (h *RoleServiceImpl) UpdateRole(id int, input dto.CreateRoleDTO) (*dto.RoleResponseDTO, error) {
+func (h *RoleServiceImpl) UpdateRole(ctx context.Context, id int, input dto.CreateRoleDTO) (*dto.RoleResponseDTO, error) {
 	data := input.ToRole()
 	data.ID = id
 
-	err := h.repo.Update(*data)
+	err := h.repo.Update(ctx, *data)
 	if err != nil {
 		return nil, errors.ErrInternalServer
 	}
@@ -59,8 +60,8 @@ func (h *RoleServiceImpl) UpdateRole(id int, input dto.CreateRoleDTO) (*dto.Role
 	return &response, nil
 }
 
-func (h *RoleServiceImpl) DeleteRole(id int) error {
-	err := h.repo.Delete(id)
+func (h *RoleServiceImpl) DeleteRole(ctx context.Context, id int) error {
+	err := h.repo.Delete(ctx, id)
 	if err != nil {
 		h.App.ErrorLog.Println(err)
 

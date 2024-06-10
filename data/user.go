@@ -1,11 +1,14 @@
 package data
 
 import (
+	"context"
 	"errors"
+	"fmt"
 	"regexp"
 	"time"
 
 	up "github.com/upper/db/v4"
+	"gitlab.sudovi.me/erp/core-ms-api/contextutil"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -91,11 +94,28 @@ func (u *User) Get(id int) (*User, error) {
 }
 
 // Update updates a user record in the database
-func (u *User) Update(theUser User) error {
-	theUser.UpdatedAt = time.Now()
-	collection := Upper.Collection(u.Table())
-	res := collection.Find(theUser.ID)
-	err := res.Update(&theUser)
+func (u *User) Update(ctx context.Context, theUser User) error {
+	userID, ok := contextutil.GetUserIDFromContext(ctx)
+	if !ok {
+		return errors.New("user ID not found in context")
+	}
+
+	err := Upper.Tx(func(sess up.Session) error {
+		// Set the user ID in the session
+		query := fmt.Sprintf("SET myapp.user_id = %d", userID)
+		if _, err := sess.SQL().Exec(query); err != nil {
+			return err
+		}
+		// Perform the update within the transaction
+		collection := sess.Collection(u.Table())
+		res := collection.Find(theUser.ID)
+		if err := res.Update(&theUser); err != nil {
+			return err
+		}
+
+		return nil
+	})
+
 	if err != nil {
 		return err
 	}
@@ -131,7 +151,7 @@ func ValidatePassword(password string) error {
 }
 
 // Insert inserts a new user, and returns the newly inserted id
-func (u *User) Insert(theUser User) (int, error) {
+func (u *User) Insert(ctx context.Context, theUser User) (int, error) {
 	if err := ValidatePassword(theUser.Password); err != nil {
 		return 0, err
 	}
@@ -145,13 +165,37 @@ func (u *User) Insert(theUser User) (int, error) {
 	theUser.UpdatedAt = time.Now()
 	theUser.Password = string(newHash)
 
-	collection := Upper.Collection(u.Table())
-	res, err := collection.Insert(theUser)
+	userID, ok := contextutil.GetUserIDFromContext(ctx)
+	if !ok {
+		return 0, errors.New("user ID not found in context")
+	}
+
+	var id int
+
+	err = Upper.Tx(func(sess up.Session) error {
+		// Set the user ID in the session
+		query := fmt.Sprintf("SET myapp.user_id = %d", userID)
+		if _, err := sess.SQL().Exec(query); err != nil {
+			return err
+		}
+		// Perform the update within the transaction
+		collection := sess.Collection(u.Table())
+
+		var res up.InsertResult
+		var err error
+
+		if res, err = collection.Insert(theUser); err != nil {
+			return err
+		}
+
+		id = getInsertId(res.ID())
+
+		return nil
+	})
+
 	if err != nil {
 		return 0, err
 	}
-
-	id := getInsertId(res.ID())
 
 	return id, nil
 }
@@ -170,7 +214,9 @@ func (u *User) ResetPassword(id int, password string) error {
 
 	theUser.Password = string(newHash)
 
-	err = theUser.Update(*theUser)
+	ctx := context.Background()
+
+	err = theUser.Update(ctx, *theUser)
 	if err != nil {
 		return err
 	}
@@ -199,10 +245,28 @@ func (u *User) PasswordMatches(plainText string) (bool, error) {
 }
 
 // Delete deletes a record from the database by id, using upper
-func (t *User) Delete(id int) error {
-	collection := Upper.Collection(t.Table())
-	res := collection.Find(id)
-	err := res.Delete()
+func (t *User) Delete(ctx context.Context, id int) error {
+	userID, ok := contextutil.GetUserIDFromContext(ctx)
+	if !ok {
+		return errors.New("user ID not found in context")
+	}
+
+	err := Upper.Tx(func(sess up.Session) error {
+		// Set the user ID in the session
+		query := fmt.Sprintf("SET myapp.user_id = %d", userID)
+		if _, err := sess.SQL().Exec(query); err != nil {
+			return err
+		}
+		// Perform the update within the transaction
+		collection := sess.Collection(t.Table())
+		res := collection.Find(id)
+		if err := res.Delete(); err != nil {
+			return err
+		}
+
+		return nil
+	})
+
 	if err != nil {
 		return err
 	}

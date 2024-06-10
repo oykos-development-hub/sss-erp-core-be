@@ -1,6 +1,7 @@
 package services
 
 import (
+	"context"
 	"fmt"
 	"sort"
 
@@ -38,7 +39,7 @@ func (a BySerialNumberLength) Swap(i, j int) {
 	a[i], a[j] = a[j], a[i]
 }
 
-func (h *AccountServiceImpl) CreateAccountList(input []dto.AccountDTO) ([]dto.AccountResponseDTO, error) {
+func (h *AccountServiceImpl) CreateAccountList(ctx context.Context, input []dto.AccountDTO) ([]dto.AccountResponseDTO, error) {
 	var latestCountVersion int
 	counts, total, err := h.GetAccountList(dto.GetAccountsFilter{})
 	if err != nil {
@@ -55,7 +56,7 @@ func (h *AccountServiceImpl) CreateAccountList(input []dto.AccountDTO) ([]dto.Ac
 		data := account.ToAccount()
 		data.Version = latestCountVersion + 1
 
-		id, err := h.repo.Insert(*data)
+		id, err := h.repo.Insert(ctx, *data)
 		if err != nil {
 			return nil, errors.ErrInternalServer
 		}
@@ -72,8 +73,8 @@ func (h *AccountServiceImpl) CreateAccountList(input []dto.AccountDTO) ([]dto.Ac
 	return res, nil
 }
 
-func (h *AccountServiceImpl) DeleteAccount(id int) error {
-	err := h.repo.Delete(id)
+func (h *AccountServiceImpl) DeleteAccount(ctx context.Context, id int) error {
+	err := h.repo.Delete(ctx, id)
 	if err != nil {
 		h.App.ErrorLog.Println(err)
 		return errors.ErrInternalServer

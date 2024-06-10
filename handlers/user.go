@@ -1,9 +1,11 @@
 package handlers
 
 import (
+	"context"
 	"net/http"
 	"strconv"
 
+	"gitlab.sudovi.me/erp/core-ms-api/contextutil"
 	"gitlab.sudovi.me/erp/core-ms-api/dto"
 	"gitlab.sudovi.me/erp/core-ms-api/errors"
 	"gitlab.sudovi.me/erp/core-ms-api/services"
@@ -34,7 +36,19 @@ func (h *userHandlerImpl) CreateUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	user, err := h.service.CreateUser(userInput)
+	userIDString := r.Header.Get("UserID")
+
+	userID, err := strconv.Atoi(userIDString)
+
+	if err != nil {
+		_ = h.App.WriteErrorResponseWithData(w, errors.MapErrorToStatusCode(errors.ErrUnauthorized), errors.ErrBadRequest, validator.Errors)
+		return
+	}
+
+	ctx := context.Background()
+	ctx = contextutil.SetUserIDInContext(ctx, userID)
+
+	user, err := h.service.CreateUser(ctx, userInput)
 	if err != nil {
 		_ = h.App.WriteErrorResponse(w, errors.MapErrorToStatusCode(err), err)
 		return
@@ -55,7 +69,19 @@ func (h *userHandlerImpl) UpdateUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	response, err := h.service.UpdateUser(id, userInput)
+	userIDString := r.Header.Get("UserID")
+
+	userID, err := strconv.Atoi(userIDString)
+
+	if err != nil {
+		_ = h.App.WriteErrorResponseWithData(w, errors.MapErrorToStatusCode(errors.ErrUnauthorized), errors.ErrBadRequest, validator.Errors)
+		return
+	}
+
+	ctx := context.Background()
+	ctx = contextutil.SetUserIDInContext(ctx, userID)
+
+	response, err := h.service.UpdateUser(ctx, id, userInput)
 	if err != nil {
 		_ = h.App.WriteErrorResponse(w, errors.MapErrorToStatusCode(err), err)
 		return
@@ -112,7 +138,19 @@ func (h *userHandlerImpl) GetUserList(w http.ResponseWriter, r *http.Request) {
 func (h *userHandlerImpl) DeleteUser(w http.ResponseWriter, r *http.Request) {
 	id, _ := strconv.Atoi(chi.URLParam(r, "id"))
 
-	err := h.service.DeleteUser(id)
+	userIDString := r.Header.Get("id")
+
+	userID, err := strconv.Atoi(userIDString)
+
+	if err != nil {
+		_ = h.App.WriteErrorResponse(w, errors.MapErrorToStatusCode(errors.ErrUnauthorized), errors.ErrBadRequest)
+		return
+	}
+
+	ctx := context.Background()
+	ctx = contextutil.SetUserIDInContext(ctx, userID)
+
+	err = h.service.DeleteUser(ctx, id)
 	if err != nil {
 		_ = h.App.WriteErrorResponse(w, errors.MapErrorToStatusCode(err), err)
 		return
