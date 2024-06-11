@@ -1,3 +1,4 @@
+
 # This is a basic workflow to help you get started with Actions
 
 name: Deploy to development server
@@ -28,7 +29,6 @@ jobs:
               else
                   echo "Docker is already installed."
               fi
-
               # Check if Docker Compose is already installed
               if ! [ -x "$(command -v docker-compose)" ]; then
                   # Install Docker Compose
@@ -37,7 +37,6 @@ jobs:
               else
                   echo "Docker Compose is already installed."
               fi
-
               # Display Docker Compose version
               docker-compose --version
               
@@ -60,8 +59,8 @@ jobs:
                 source ~/.bashrc
                 rm go1.22.4.linux-amd64.tar.gz
               fi
-              export PATH="/usr/bin/go/bin:$PATH"
-              go get -u github.com/oykos-development-hub/celeritas
+              export PATH="/usr/local/go/bin:$PATH"
+              go mod tidy
               go build -o coreApp
               if [ ! -f ./coreApp ]; then
                 echo "Go build "coreApp" file does not exist!"
@@ -70,9 +69,4 @@ jobs:
               rm -rf ../../coreApp
               cp ./coreApp ../../
               cp ./.env-example ../../.env
-              cp ./credentials.json ../../credentials.json
-              cp ./token.json ../../token.json
-              cp -R ./mail ../../
-              sudo systemctl restart sss-erp-core-be.service
-              
-              
+              sudo systemctl restart ${{vars.GIT_REPO}}.service
