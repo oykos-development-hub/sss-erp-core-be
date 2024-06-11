@@ -66,12 +66,12 @@ func (t *Role) Update(ctx context.Context, m Role) error {
 	}
 
 	err := Upper.Tx(func(sess up.Session) error {
-		// Set the user ID in the session
+
 		query := fmt.Sprintf("SET myapp.user_id = %d", userID)
 		if _, err := sess.SQL().Exec(query); err != nil {
 			return err
 		}
-		// Perform the update within the transaction
+
 		collection := sess.Collection(t.Table())
 		res := collection.Find(m.ID)
 		if err := res.Update(&m); err != nil {
@@ -95,12 +95,12 @@ func (t *Role) Delete(ctx context.Context, id int) error {
 	}
 
 	err := Upper.Tx(func(sess up.Session) error {
-		// Set the user ID in the session
+
 		query := fmt.Sprintf("SET myapp.user_id = %d", userID)
 		if _, err := sess.SQL().Exec(query); err != nil {
 			return err
 		}
-		// Perform the update within the transaction
+
 		collection := sess.Collection(t.Table())
 		res := collection.Find(id)
 		if err := res.Delete(); err != nil {
@@ -129,12 +129,12 @@ func (t *Role) Insert(ctx context.Context, m Role) (int, error) {
 	var id int
 
 	err := Upper.Tx(func(sess up.Session) error {
-		// Set the user ID in the session
+
 		query := fmt.Sprintf("SET myapp.user_id = %d", userID)
 		if _, err := sess.SQL().Exec(query); err != nil {
 			return err
 		}
-		// Perform the update within the transaction
+
 		collection := sess.Collection(t.Table())
 
 		var res up.InsertResult

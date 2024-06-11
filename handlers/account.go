@@ -42,7 +42,7 @@ func (h *accountHandlerImpl) CreateAccount(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
-	userIDString := r.Header.Get("id")
+	userIDString := r.Header.Get("UserID")
 
 	userID, err := strconv.Atoi(userIDString)
 

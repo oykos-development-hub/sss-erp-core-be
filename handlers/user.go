@@ -138,7 +138,7 @@ func (h *userHandlerImpl) GetUserList(w http.ResponseWriter, r *http.Request) {
 func (h *userHandlerImpl) DeleteUser(w http.ResponseWriter, r *http.Request) {
 	id, _ := strconv.Atoi(chi.URLParam(r, "id"))
 
-	userIDString := r.Header.Get("id")
+	userIDString := r.Header.Get("UserID")
 
 	userID, err := strconv.Atoi(userIDString)
 

@@ -80,12 +80,12 @@ func (t *Account) Update(ctx context.Context, m Account) error {
 	}
 
 	err := Upper.Tx(func(sess up.Session) error {
-		// Set the user ID in the session
+
 		query := fmt.Sprintf("SET myapp.user_id = %d", userID)
 		if _, err := sess.SQL().Exec(query); err != nil {
 			return err
 		}
-		// Perform the update within the transaction
+
 		collection := sess.Collection(t.Table())
 		res := collection.Find(m.ID)
 		if err := res.Update(&m); err != nil {
@@ -143,12 +143,12 @@ func (t *Account) Insert(ctx context.Context, m Account) (int, error) {
 	var id int
 
 	err := Upper.Tx(func(sess up.Session) error {
-		// Set the user ID in the session
+
 		query := fmt.Sprintf("SET myapp.user_id = %d", userID)
 		if _, err := sess.SQL().Exec(query); err != nil {
 			return err
 		}
-		// Perform the update within the transaction
+
 		collection := sess.Collection(t.Table())
 
 		var res up.InsertResult

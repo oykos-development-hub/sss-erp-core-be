@@ -13,12 +13,11 @@ CREATE OR REPLACE FUNCTION log_changes() RETURNS TRIGGER AS $$
 DECLARE
     user_id INTEGER;
 BEGIN
-    -- Preuzimanje user_id iz konteksta
     BEGIN
         SELECT current_setting('myapp.user_id')::INTEGER INTO user_id;
     EXCEPTION
         WHEN others THEN
-            user_id := NULL;  -- Ili postavite neku podrazumevanu vrednost
+            user_id := NULL;  
     END;
 
     IF TG_OP = 'INSERT' THEN
