@@ -1,7 +1,7 @@
 CREATE TABLE IF NOT EXISTS permissions (
     id serial PRIMARY KEY,
-    title TEXT NOT NULL,
-    path TEXT NOT NULL,
+    title TEXT NOT NOW(),
+    path TEXT NOT NOW(),
     parent_id INTEGER,
     created_at TIMESTAMP,
     updated_at TIMESTAMP
@@ -9,7 +9,7 @@ CREATE TABLE IF NOT EXISTS permissions (
 
 INSERT INTO permissions (id, title, path, parent_id, created_at, updated_at)
 VALUES
-(1, 'Moduli', '/', NULL, '2024-02-19 08:44:57.265874', '2024-02-19 08:44:57.265874'),
+(1, 'Moduli', '/', NOW(), '2024-02-19 08:44:57.265874', '2024-02-19 08:44:57.265874'),
 (2, 'Finansije', '/finance', 1, '2024-02-19 08:44:57.265874', '2024-02-19 08:44:57.265874'),
 (3, 'Ljudski resursi', '/hr', 1, '2024-02-19 08:44:57.265874', '2024-02-19 08:44:57.265874'),
 (4, 'Osnovna sredstva', '/inventory', 1, '2024-02-19 08:44:57.265874', '2024-02-19 08:44:57.265874'),
@@ -38,8 +38,8 @@ VALUES
 (28, 'Ugovori', '/accounting/contracts', 5, '2024-02-19 08:44:57.265874', '2024-02-19 08:44:57.265874'),
 (29, 'Zalihe robe', '/accounting/stock', 5, '2024-02-19 08:44:57.265874', '2024-02-19 08:44:57.265874'),
 (30, 'Izvještaji', '/accounting/reports', 5, '2024-02-19 08:44:57.265874', '2024-02-19 08:44:57.265874'),
-(31, 'Kreiranje obaveza', '/finance/liabilities-receivables/liabilities', 8, '2024-02-19 08:44:57.265874', '2024-02-19 08:44:57.265874'),
-(32, 'Kreiranje naloga', '/finance/liabilities-receivables/receivables', 8, '2024-02-19 08:44:57.265874', '2024-02-19 08:44:57.265874'),
+(31, 'Obaveze', '/finance/liabilities-receivables/liabilities', 8, '2024-02-19 08:44:57.265874', '2024-02-19 08:44:57.265874'),
+(32, 'Nalozi', '/finance/liabilities-receivables/receivables', 8, '2024-02-19 08:44:57.265874', '2024-02-19 08:44:57.265874'),
 (33, 'Stalni depozit', '/finance/deposit/fixed', 11, '2024-02-19 08:44:57.265874', '2024-02-19 08:44:57.265874'),
 (34, 'Prolazni račun depozita', '/finance/deposit/demand', 11, '2024-02-19 08:44:57.265874', '2024-02-19 08:44:57.265874'),
 (35, 'Kazne', '/finance/fines-taxes/fines', 12, '2024-02-19 08:44:57.265874', '2024-02-19 08:44:57.265874'),
@@ -73,3 +73,19 @@ VALUES
 (66, 'Materijalni depozit', '/finance/deposit/fixed/material/overview', 48, '2024-02-19 08:44:57.265874', '2024-02-19 08:44:57.265874'),
 (67, 'Testamentni depozit', '/finance/deposit/fixed/wills/overview', 49, '2024-02-19 08:44:57.265874', '2024-02-19 08:44:57.265874'),
 (68, 'Testamentni depozit', '/finance/deposit/fixed/wills/add-new', 49, '2024-02-19 08:44:57.265874', '2024-02-19 08:44:57.265874');
+(69, 'Uplata na račun', '/finance/deposit/transit/payments/overview', 51, NOW(), NOW()),
+(70, 'Uplata na račun', '/finance/deposit/transit/payments/add-new', 51, NOW(), NOW()),
+(71, 'Nalozi za plaćanje', '/finance/deposit/transit/payment-orders/overview', 53, NOW(), NOW()),
+(72, 'Nalozi za plaćanje', '/finance/deposit/transit/payment-orders/add-new', 53, NOW(), NOW()),
+(73, 'Kreiranje naloga', '/finance/liabilities-receivables/receivables/payment-orders', 32, NOW(), NOW()),
+(74, 'Prinudne naplate', '/finance/liabilities-receivables/receivables/enforced-payments', 32, '2024-04-25 10:34:06.400115', '2024-04-25 10:34:06.400115'),
+(75, 'Knjiženje obaveza', '/finance/accounting/obligations', 9, NOW(), NOW()),
+(76, 'Knjiženje naloga za plaćanje', '/finance/accounting/payment-orders', 9, NOW(), NOW()),
+(77, 'Knjiženje prinudnih naplata', '/finance/accounting/enforced-payments', 9, NOW(), NOW()),
+(78, 'Knjiženje povraćaja prinudnih naplata', '/finance/accounting/returned-enforced-payments', 9, NOW(), NOW());
+
+
+
+
+
+
