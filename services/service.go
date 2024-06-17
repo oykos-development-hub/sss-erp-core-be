@@ -103,3 +103,19 @@ type LogService interface {
 	GetLog(id int) (*dto.LogResponseDTO, error)
 	GetLogList(filter dto.LogFilterDTO) ([]dto.LogResponseDTO, *uint64, error)
 }
+
+type TemplateService interface {
+	CreateTemplate(input dto.TemplateDTO) (*dto.TemplateResponseDTO, error)
+	UpdateTemplate(id int, input dto.TemplateDTO) (*dto.TemplateResponseDTO, error)
+	DeleteTemplate(id int) error
+	GetTemplate(id int) (*dto.TemplateResponseDTO, error)
+	GetTemplateList(filter dto.TemplateFilterDTO) ([]dto.TemplateResponseDTO, *uint64, error)
+}
+
+type TemplateItemService interface {
+	CreateTemplateItem(ctx context.Context, input dto.TemplateItemDTO) (*dto.TemplateItemResponseDTO, error)
+	UpdateTemplateItem(ctx context.Context, id int, input dto.TemplateItemDTO) (*dto.TemplateItemResponseDTO, error)
+	DeleteTemplateItem(ctx context.Context, id int) error
+	GetTemplateItem(id int) (*dto.TemplateItemResponseDTO, error)
+	GetTemplateItemList(filter dto.TemplateItemFilterDTO) ([]dto.TemplateItemResponseDTO, *uint64, error)
+}

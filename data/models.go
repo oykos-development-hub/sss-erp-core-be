@@ -31,7 +31,9 @@ type Models struct {
 	Permission      Permission
 	BankAccount     BankAccount
 	Log             Log
-}
+	Template Template
+		TemplateItem TemplateItem
+	}
 
 func New(databasePool *sql.DB) Models {
 	db = databasePool
@@ -57,6 +59,8 @@ func New(databasePool *sql.DB) Models {
 		Permission:      Permission{},
 		BankAccount:     BankAccount{},
 		Log:             Log{},
+		Template: Template{},
+		TemplateItem: TemplateItem{},
 	}
 }
 

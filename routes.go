@@ -82,6 +82,18 @@ rt.Get("/logs/{id}", handlers.LogHandler.GetLogById)
 rt.Get("/logs", handlers.LogHandler.GetLogList)
 rt.Put("/logs/{id}", handlers.LogHandler.UpdateLog)
 rt.Delete("/logs/{id}", handlers.LogHandler.DeleteLog)
+	
+		rt.Post("/templates", handlers.TemplateHandler.CreateTemplate)
+rt.Get("/templates/{id}", handlers.TemplateHandler.GetTemplateById)
+rt.Get("/templates", handlers.TemplateHandler.GetTemplateList)
+rt.Put("/templates/{id}", handlers.TemplateHandler.UpdateTemplate)
+rt.Delete("/templates/{id}", handlers.TemplateHandler.DeleteTemplate)
+	
+		rt.Post("/template-items", handlers.TemplateItemHandler.CreateTemplateItem)
+rt.Get("/template-items/{id}", handlers.TemplateItemHandler.GetTemplateItemById)
+rt.Get("/template-items", handlers.TemplateItemHandler.GetTemplateItemList)
+rt.Put("/template-items/{id}", handlers.TemplateItemHandler.UpdateTemplateItem)
+rt.Delete("/template-items/{id}", handlers.TemplateItemHandler.DeleteTemplateItem)
 	})
 
 	return app.Routes

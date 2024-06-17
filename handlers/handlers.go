@@ -16,6 +16,8 @@ type Handlers struct {
 	PermissionHandler      PermissionHandler
 	BankAccountHandler BankAccountHandler
 		LogHandler LogHandler
+		TemplateHandler TemplateHandler
+		TemplateItemHandler TemplateItemHandler
 	}
 
 type UserHandler interface {
@@ -103,4 +105,20 @@ type LogHandler interface {
 	DeleteLog(w http.ResponseWriter, r *http.Request)
 	GetLogById(w http.ResponseWriter, r *http.Request)
 	GetLogList(w http.ResponseWriter, r *http.Request)
+}
+
+type TemplateHandler interface {
+	CreateTemplate(w http.ResponseWriter, r *http.Request)
+	UpdateTemplate(w http.ResponseWriter, r *http.Request)
+	DeleteTemplate(w http.ResponseWriter, r *http.Request)
+	GetTemplateById(w http.ResponseWriter, r *http.Request)
+	GetTemplateList(w http.ResponseWriter, r *http.Request)
+}
+
+type TemplateItemHandler interface {
+	CreateTemplateItem(w http.ResponseWriter, r *http.Request)
+	UpdateTemplateItem(w http.ResponseWriter, r *http.Request)
+	DeleteTemplateItem(w http.ResponseWriter, r *http.Request)
+	GetTemplateItemById(w http.ResponseWriter, r *http.Request)
+	GetTemplateItemList(w http.ResponseWriter, r *http.Request)
 }
