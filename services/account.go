@@ -7,7 +7,7 @@ import (
 
 	"gitlab.sudovi.me/erp/core-ms-api/data"
 	"gitlab.sudovi.me/erp/core-ms-api/dto"
-	"gitlab.sudovi.me/erp/core-ms-api/errors"
+	newErrors "gitlab.sudovi.me/erp/core-ms-api/pkg/errors"
 
 	"github.com/oykos-development-hub/celeritas"
 	up "github.com/upper/db/v4"
@@ -43,7 +43,7 @@ func (h *AccountServiceImpl) CreateAccountList(ctx context.Context, input []dto.
 	var latestCountVersion int
 	counts, total, err := h.GetAccountList(dto.GetAccountsFilter{})
 	if err != nil {
-		return nil, errors.ErrInternalServer
+		return nil, newErrors.Wrap(err, "repo get account list from accounts")
 	}
 	if total > 0 {
 		latestCountVersion = counts[0].Version
@@ -58,12 +58,12 @@ func (h *AccountServiceImpl) CreateAccountList(ctx context.Context, input []dto.
 
 		id, err := h.repo.Insert(ctx, *data)
 		if err != nil {
-			return nil, errors.ErrInternalServer
+			return nil, newErrors.Wrap(err, "repo create account from accounts")
 		}
 
 		data, err = data.Get(id)
 		if err != nil {
-			return nil, errors.ErrInternalServer
+			return nil, newErrors.Wrap(err, "repo get account from accounts")
 		}
 		accountData = append(accountData, data)
 	}
@@ -77,7 +77,7 @@ func (h *AccountServiceImpl) DeleteAccount(ctx context.Context, id int) error {
 	err := h.repo.Delete(ctx, id)
 	if err != nil {
 		h.App.ErrorLog.Println(err)
-		return errors.ErrInternalServer
+		return newErrors.Wrap(err, "repo delete account from accounts")
 	}
 
 	return nil
@@ -87,7 +87,7 @@ func (h *AccountServiceImpl) GetAccount(id int) (*dto.AccountResponseDTO, error)
 	data, err := h.repo.Get(id)
 	if err != nil {
 		h.App.ErrorLog.Println(err)
-		return nil, errors.ErrNotFound
+		return nil, newErrors.Wrap(err, "repo get account from accounts")
 	}
 	response := dto.ToAccountResponseDTO(*data)
 
@@ -132,7 +132,7 @@ func (h *AccountServiceImpl) GetAccountList(input dto.GetAccountsFilter) ([]dto.
 	data, total, err := h.repo.GetAll(input.Page, input.Size, conditionAndExp)
 	if err != nil {
 		h.App.ErrorLog.Println(err)
-		return nil, -1, errors.ErrInternalServer
+		return nil, -1, newErrors.Wrap(err, "repo get account list from accounts")
 	}
 	response := dto.ToAccountListResponseDTO(data)
 

@@ -2,11 +2,12 @@ package data
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"time"
 
 	"gitlab.sudovi.me/erp/core-ms-api/contextutil"
+
+	newErrors "gitlab.sudovi.me/erp/core-ms-api/pkg/errors"
 
 	up "github.com/upper/db/v4"
 )
@@ -41,7 +42,7 @@ func (t *Account) GetAll(page *int, size *int, condition *up.AndExpr) ([]*Accoun
 
 	total, err := res.Count()
 	if err != nil {
-		return nil, -1, err
+		return nil, -1, newErrors.Wrap(err, "upper count accounts from repo account")
 	}
 
 	if page != nil && size != nil {
@@ -50,7 +51,7 @@ func (t *Account) GetAll(page *int, size *int, condition *up.AndExpr) ([]*Accoun
 
 	err = res.OrderBy("serial_number").All(&all)
 	if err != nil {
-		return nil, -2, err
+		return nil, -2, newErrors.Wrap(err, "order accounts from repo account")
 	}
 
 	return all, int(total), err
@@ -64,7 +65,7 @@ func (t *Account) Get(id int) (*Account, error) {
 	res := collection.Find(up.Cond{"id": id})
 	err := res.One(&one)
 	if err != nil {
-		return nil, err
+		return nil, newErrors.Wrap(err, "upper get accounts from repo account")
 	}
 	return &one, nil
 }
@@ -76,20 +77,20 @@ func (t *Account) Update(ctx context.Context, m Account) error {
 
 	userID, ok := contextutil.GetUserIDFromContext(ctx)
 	if !ok {
-		return errors.New("user ID not found in context")
+		return newErrors.Wrap(nil, "context get user id from repo account")
 	}
 
 	err := Upper.Tx(func(sess up.Session) error {
 
 		query := fmt.Sprintf("SET myapp.user_id = %d", userID)
 		if _, err := sess.SQL().Exec(query); err != nil {
-			return err
+			return newErrors.Wrap(err, "upper exec query from repo account")
 		}
 
 		collection := sess.Collection(t.Table())
 		res := collection.Find(m.ID)
 		if err := res.Update(&m); err != nil {
-			return err
+			return newErrors.Wrap(err, "upper update account from repo account")
 		}
 
 		return nil
@@ -106,19 +107,19 @@ func (t *Account) Delete(ctx context.Context, id int) error {
 
 	userID, ok := contextutil.GetUserIDFromContext(ctx)
 	if !ok {
-		return errors.New("user ID not found in context")
+		return newErrors.Wrap(nil, "context get user id from repo account")
 	}
 
 	err := Upper.Tx(func(sess up.Session) error {
 		query := fmt.Sprintf("SET myapp.user_id = %d", userID)
 		if _, err := sess.SQL().Exec(query); err != nil {
-			return err
+			return newErrors.Wrap(err, "upper exec query from repo account")
 		}
 
 		collection := sess.Collection(t.Table())
 		res := collection.Find(id)
 		if err := res.Delete(); err != nil {
-			return err
+			return newErrors.Wrap(err, "upper delete account from repo account")
 		}
 
 		return nil
@@ -137,7 +138,7 @@ func (t *Account) Insert(ctx context.Context, m Account) (int, error) {
 
 	userID, ok := contextutil.GetUserIDFromContext(ctx)
 	if !ok {
-		return 0, errors.New("user ID not found in context")
+		return 0, newErrors.Wrap(nil, "context get user id from repo account")
 	}
 
 	var id int
@@ -146,7 +147,7 @@ func (t *Account) Insert(ctx context.Context, m Account) (int, error) {
 
 		query := fmt.Sprintf("SET myapp.user_id = %d", userID)
 		if _, err := sess.SQL().Exec(query); err != nil {
-			return err
+			return newErrors.Wrap(err, "upper exec query from repo account")
 		}
 
 		collection := sess.Collection(t.Table())
@@ -155,7 +156,7 @@ func (t *Account) Insert(ctx context.Context, m Account) (int, error) {
 		var err error
 
 		if res, err = collection.Insert(m); err != nil {
-			return err
+			return newErrors.Wrap(err, "upper insert account from repo account")
 		}
 
 		id = getInsertId(res.ID())

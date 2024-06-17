@@ -32,12 +32,14 @@ func (h *accountHandlerImpl) CreateAccount(w http.ResponseWriter, r *http.Reques
 	var input []dto.AccountDTO
 	err := h.App.ReadJSON(w, r, &input)
 	if err != nil {
+		h.App.ErrorLog.Print(err) //zamijenicu ovo sa slogom kad vidim kako ga koristite
 		_ = h.App.WriteErrorResponse(w, http.StatusBadRequest, err)
 		return
 	}
 
 	validator := h.App.Validator().ValidateStruct(&input)
 	if !validator.Valid() {
+		h.App.ErrorLog.Print(validator.Errors)
 		_ = h.App.WriteErrorResponseWithData(w, errors.MapErrorToStatusCode(errors.ErrBadRequest), errors.ErrBadRequest, validator.Errors)
 		return
 	}
@@ -47,6 +49,7 @@ func (h *accountHandlerImpl) CreateAccount(w http.ResponseWriter, r *http.Reques
 	userID, err := strconv.Atoi(userIDString)
 
 	if err != nil {
+		h.App.ErrorLog.Print(err)
 		_ = h.App.WriteErrorResponseWithData(w, errors.MapErrorToStatusCode(errors.ErrUnauthorized), errors.ErrBadRequest, validator.Errors)
 		return
 	}
@@ -56,6 +59,7 @@ func (h *accountHandlerImpl) CreateAccount(w http.ResponseWriter, r *http.Reques
 
 	res, err := h.service.CreateAccountList(ctx, input)
 	if err != nil {
+		h.App.ErrorLog.Print(err)
 		_ = h.App.WriteErrorResponse(w, errors.MapErrorToStatusCode(err), err)
 		return
 	}
@@ -71,6 +75,7 @@ func (h *accountHandlerImpl) DeleteAccount(w http.ResponseWriter, r *http.Reques
 	userID, err := strconv.Atoi(userIDString)
 
 	if err != nil {
+		h.App.ErrorLog.Print(err)
 		_ = h.App.WriteErrorResponse(w, errors.MapErrorToStatusCode(errors.ErrUnauthorized), errors.ErrUnauthorized)
 		return
 	}
@@ -80,6 +85,7 @@ func (h *accountHandlerImpl) DeleteAccount(w http.ResponseWriter, r *http.Reques
 
 	err = h.service.DeleteAccount(ctx, id)
 	if err != nil {
+		h.App.ErrorLog.Print(err)
 		_ = h.App.WriteErrorResponse(w, errors.MapErrorToStatusCode(err), err)
 		return
 	}
@@ -92,6 +98,7 @@ func (h *accountHandlerImpl) GetAccountById(w http.ResponseWriter, r *http.Reque
 
 	res, err := h.service.GetAccount(id)
 	if err != nil {
+		h.App.ErrorLog.Print(err)
 		_ = h.App.WriteErrorResponse(w, errors.MapErrorToStatusCode(err), err)
 		return
 	}
@@ -103,12 +110,14 @@ func (h *accountHandlerImpl) GetAccountList(w http.ResponseWriter, r *http.Reque
 	var input dto.GetAccountsFilter
 	err := h.App.ReadJSON(w, r, &input)
 	if err != nil {
+		h.App.ErrorLog.Print(err)
 		_ = h.App.WriteErrorResponse(w, http.StatusBadRequest, err)
 		return
 	}
 
 	res, total, err := h.service.GetAccountList(input)
 	if err != nil {
+		h.App.ErrorLog.Print(err)
 		_ = h.App.WriteErrorResponse(w, errors.MapErrorToStatusCode(err), err)
 		return
 	}

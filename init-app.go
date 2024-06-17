@@ -63,11 +63,9 @@ func initApplication() *celeritas.Celeritas {
 	LogService := services.NewLogServiceImpl(cel, models.Log)
 	LogHandler := handlers.NewLogHandler(cel, LogService)
 
-		
 	TemplateService := services.NewTemplateServiceImpl(cel, models.Template)
 	TemplateHandler := handlers.NewTemplateHandler(cel, TemplateService)
 
-		
 	TemplateItemService := services.NewTemplateItemServiceImpl(cel, models.TemplateItem)
 	TemplateItemHandler := handlers.NewTemplateItemHandler(cel, TemplateItemService)
 
@@ -83,8 +81,8 @@ func initApplication() *celeritas.Celeritas {
 		PermissionHandler:      PermissionHandler,
 		BankAccountHandler:     BankAccountHandler,
 		LogHandler:             LogHandler,
-		TemplateHandler: TemplateHandler,
-		TemplateItemHandler: TemplateItemHandler,
+		TemplateHandler:        TemplateHandler,
+		TemplateItemHandler:    TemplateItemHandler,
 	}
 
 	myMiddleware := &middleware.Middleware{
