@@ -85,10 +85,13 @@ func (h *TemplateItemServiceImpl) GetTemplateItemList(filter dto.TemplateItemFil
 	conditionAndExp := &up.AndExpr{}
 	var orders []interface{}
 
-	// example of making conditions
-	// if filter.Year != nil {
-	// 	conditionAndExp = up.And(conditionAndExp, &up.Cond{"year": *filter.Year})
-	// }
+	if filter.TemplateID != nil {
+		conditionAndExp = up.And(conditionAndExp, &up.Cond{"template_id": *filter.TemplateID})
+	}
+
+	if filter.OrganizationUnitID != nil {
+		conditionAndExp = up.And(conditionAndExp, &up.Cond{"organization_unit_id": *filter.OrganizationUnitID})
+	}
 
 	if filter.SortByTitle != nil {
 		if *filter.SortByTitle == "asc" {
