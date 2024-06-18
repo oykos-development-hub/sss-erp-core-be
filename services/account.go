@@ -43,7 +43,7 @@ func (h *AccountServiceImpl) CreateAccountList(ctx context.Context, input []dto.
 	var latestCountVersion int
 	counts, total, err := h.GetAccountList(dto.GetAccountsFilter{})
 	if err != nil {
-		return nil, newErrors.Wrap(err, "repo get account list from accounts")
+		return nil, newErrors.Wrap(err, "repo accounts get account list")
 	}
 	if total > 0 {
 		latestCountVersion = counts[0].Version
@@ -58,12 +58,12 @@ func (h *AccountServiceImpl) CreateAccountList(ctx context.Context, input []dto.
 
 		id, err := h.repo.Insert(ctx, *data)
 		if err != nil {
-			return nil, newErrors.Wrap(err, "repo create account from accounts")
+			return nil, newErrors.Wrap(err, "repo accounts create account")
 		}
 
 		data, err = data.Get(id)
 		if err != nil {
-			return nil, newErrors.Wrap(err, "repo get account from accounts")
+			return nil, newErrors.Wrap(err, "repo accounts get account")
 		}
 		accountData = append(accountData, data)
 	}
@@ -76,8 +76,7 @@ func (h *AccountServiceImpl) CreateAccountList(ctx context.Context, input []dto.
 func (h *AccountServiceImpl) DeleteAccount(ctx context.Context, id int) error {
 	err := h.repo.Delete(ctx, id)
 	if err != nil {
-		h.App.ErrorLog.Println(err)
-		return newErrors.Wrap(err, "repo delete account from accounts")
+		return newErrors.Wrap(err, "repo accounts delete account")
 	}
 
 	return nil
@@ -86,8 +85,7 @@ func (h *AccountServiceImpl) DeleteAccount(ctx context.Context, id int) error {
 func (h *AccountServiceImpl) GetAccount(id int) (*dto.AccountResponseDTO, error) {
 	data, err := h.repo.Get(id)
 	if err != nil {
-		h.App.ErrorLog.Println(err)
-		return nil, newErrors.Wrap(err, "repo get account from accounts")
+		return nil, newErrors.Wrap(err, "repo accounts get account")
 	}
 	response := dto.ToAccountResponseDTO(*data)
 
@@ -131,8 +129,7 @@ func (h *AccountServiceImpl) GetAccountList(input dto.GetAccountsFilter) ([]dto.
 
 	data, total, err := h.repo.GetAll(input.Page, input.Size, conditionAndExp)
 	if err != nil {
-		h.App.ErrorLog.Println(err)
-		return nil, -1, newErrors.Wrap(err, "repo get account list from accounts")
+		return nil, -1, newErrors.Wrap(err, "repo accounts get account")
 	}
 	response := dto.ToAccountListResponseDTO(data)
 
