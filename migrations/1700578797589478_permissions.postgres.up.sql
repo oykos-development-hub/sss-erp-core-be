@@ -1,7 +1,7 @@
 CREATE TABLE IF NOT EXISTS permissions (
     id serial PRIMARY KEY,
-    title TEXT NOT NOW(),
-    path TEXT NOT NOW(),
+    title TEXT NOT NULL,
+    path TEXT NOT NULL,
     parent_id INTEGER,
     created_at TIMESTAMP,
     updated_at TIMESTAMP
@@ -9,7 +9,7 @@ CREATE TABLE IF NOT EXISTS permissions (
 
 INSERT INTO permissions (id, title, path, parent_id, created_at, updated_at)
 VALUES
-(1, 'Moduli', '/', NOW(), '2024-02-19 08:44:57.265874', '2024-02-19 08:44:57.265874'),
+(1, 'Moduli', '/', NULL, '2024-02-19 08:44:57.265874', '2024-02-19 08:44:57.265874'),
 (2, 'Finansije', '/finance', 1, '2024-02-19 08:44:57.265874', '2024-02-19 08:44:57.265874'),
 (3, 'Ljudski resursi', '/hr', 1, '2024-02-19 08:44:57.265874', '2024-02-19 08:44:57.265874'),
 (4, 'Osnovna sredstva', '/inventory', 1, '2024-02-19 08:44:57.265874', '2024-02-19 08:44:57.265874'),
@@ -72,7 +72,7 @@ VALUES
 (64, 'Nefinansijski dio', '/finance/budget/current/non-financial', 59, '2024-02-19 08:44:57.265874', '2024-02-19 08:44:57.265874'),
 (66, 'Materijalni depozit', '/finance/deposit/fixed/material/overview', 48, '2024-02-19 08:44:57.265874', '2024-02-19 08:44:57.265874'),
 (67, 'Testamentni depozit', '/finance/deposit/fixed/wills/overview', 49, '2024-02-19 08:44:57.265874', '2024-02-19 08:44:57.265874'),
-(68, 'Testamentni depozit', '/finance/deposit/fixed/wills/add-new', 49, '2024-02-19 08:44:57.265874', '2024-02-19 08:44:57.265874');
+(68, 'Testamentni depozit', '/finance/deposit/fixed/wills/add-new', 49, '2024-02-19 08:44:57.265874', '2024-02-19 08:44:57.265874'),
 (69, 'Uplata na račun', '/finance/deposit/transit/payments/overview', 51, NOW(), NOW()),
 (70, 'Uplata na račun', '/finance/deposit/transit/payments/add-new', 51, NOW(), NOW()),
 (71, 'Nalozi za plaćanje', '/finance/deposit/transit/payment-orders/overview', 53, NOW(), NOW()),
