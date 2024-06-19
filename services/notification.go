@@ -3,7 +3,7 @@ package services
 import (
 	"gitlab.sudovi.me/erp/core-ms-api/data"
 	"gitlab.sudovi.me/erp/core-ms-api/dto"
-	"gitlab.sudovi.me/erp/core-ms-api/errors"
+	newErrors "gitlab.sudovi.me/erp/core-ms-api/pkg/errors"
 
 	"github.com/oykos-development-hub/celeritas"
 	"github.com/upper/db/v4"
@@ -26,14 +26,12 @@ func (h *NotificationServiceImpl) CreateNotification(input dto.NotificationDTO) 
 
 	id, err := h.repo.Insert(*data)
 	if err != nil {
-		h.App.ErrorLog.Println(err)
-		return nil, errors.ErrInternalServer
+		return nil, newErrors.Wrap(err, "repo notification insert")
 	}
 
 	data, err = data.Get(id)
 	if err != nil {
-		h.App.ErrorLog.Println(err)
-		return nil, errors.ErrInternalServer
+		return nil, newErrors.Wrap(err, "repo notification get")
 	}
 
 	res := dto.ToNotificationResponseDTO(*data)
@@ -47,12 +45,12 @@ func (h *NotificationServiceImpl) UpdateNotification(id int, input dto.Notificat
 
 	err := h.repo.Update(*data)
 	if err != nil {
-		return nil, errors.ErrInternalServer
+		return nil, newErrors.Wrap(err, "repo notification update")
 	}
 
 	data, err = h.repo.Get(id)
 	if err != nil {
-		return nil, errors.ErrInternalServer
+		return nil, newErrors.Wrap(err, "repo notification get")
 	}
 
 	response := dto.ToNotificationResponseDTO(*data)
@@ -63,8 +61,7 @@ func (h *NotificationServiceImpl) UpdateNotification(id int, input dto.Notificat
 func (h *NotificationServiceImpl) DeleteNotification(id int) error {
 	err := h.repo.Delete(id)
 	if err != nil {
-		h.App.ErrorLog.Println(err)
-		return errors.ErrInternalServer
+		return newErrors.Wrap(err, "repo notification delete")
 	}
 
 	return nil
@@ -73,8 +70,7 @@ func (h *NotificationServiceImpl) DeleteNotification(id int) error {
 func (h *NotificationServiceImpl) GetNotification(id int) (*dto.NotificationResponseDTO, error) {
 	data, err := h.repo.Get(id)
 	if err != nil {
-		h.App.ErrorLog.Println(err)
-		return nil, errors.ErrNotFound
+		return nil, newErrors.Wrap(err, "repo notification get")
 	}
 	response := dto.ToNotificationResponseDTO(*data)
 
@@ -89,8 +85,7 @@ func (h *NotificationServiceImpl) GetNotificationList(input dto.GetNotificationL
 
 	data, total, err := h.repo.GetAll(input.Page, input.Size, &cond)
 	if err != nil {
-		h.App.ErrorLog.Println(err)
-		return nil, nil, errors.ErrInternalServer
+		return nil, nil, newErrors.Wrap(err, "repo notification get all")
 	}
 	response := dto.ToNotificationListResponseDTO(data)
 

@@ -4,6 +4,7 @@ import (
 	"time"
 
 	up "github.com/upper/db/v4"
+	newErrors "gitlab.sudovi.me/erp/core-ms-api/pkg/errors"
 )
 
 // RolesPermission struct
@@ -38,7 +39,7 @@ func (t *RolesPermission) GetAll(condition *up.Cond) ([]*RolesPermission, error)
 
 	err := res.All(&all)
 	if err != nil {
-		return nil, err
+		return nil, newErrors.Wrap(err, "upper get all")
 	}
 
 	return all, err
@@ -52,7 +53,7 @@ func (t *RolesPermission) Get(id int) (*RolesPermission, error) {
 	res := collection.Find(up.Cond{"id": id})
 	err := res.One(&one)
 	if err != nil {
-		return nil, err
+		return nil, newErrors.Wrap(err, "upper get")
 	}
 	return &one, nil
 }
@@ -64,7 +65,7 @@ func (t *RolesPermission) Update(m RolesPermission) error {
 	res := collection.Find(m.ID)
 	err := res.Update(&m)
 	if err != nil {
-		return err
+		return newErrors.Wrap(err, "upper update")
 	}
 	return nil
 }
@@ -75,7 +76,7 @@ func (t *RolesPermission) Delete(id int) error {
 	res := collection.Find(id)
 	err := res.Delete()
 	if err != nil {
-		return err
+		return newErrors.Wrap(err, "upper delete")
 	}
 	return nil
 }
@@ -86,7 +87,7 @@ func (t *RolesPermission) DeleteAllPermissionsByRole(roleID int) error {
 	res := collection.Find(up.Cond{"role_id": roleID})
 	err := res.Delete()
 	if err != nil {
-		return err
+		return newErrors.Wrap(err, "upper delete")
 	}
 	return nil
 }
@@ -98,7 +99,7 @@ func (t *RolesPermission) Insert(m RolesPermission) (int, error) {
 	collection := Upper.Collection(t.Table())
 	res, err := collection.Insert(m)
 	if err != nil {
-		return 0, err
+		return 0, newErrors.Wrap(err, "upper insert")
 	}
 
 	id := getInsertId(res.ID())

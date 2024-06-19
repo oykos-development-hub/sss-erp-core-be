@@ -3,7 +3,7 @@ package services
 import (
 	"gitlab.sudovi.me/erp/core-ms-api/data"
 	"gitlab.sudovi.me/erp/core-ms-api/dto"
-	"gitlab.sudovi.me/erp/core-ms-api/errors"
+	newErrors "gitlab.sudovi.me/erp/core-ms-api/pkg/errors"
 
 	"github.com/oykos-development-hub/celeritas"
 	up "github.com/upper/db/v4"
@@ -26,12 +26,12 @@ func (h *TemplateServiceImpl) CreateTemplate(input dto.TemplateDTO) (*dto.Templa
 
 	id, err := h.repo.Insert(*data)
 	if err != nil {
-		return nil, errors.ErrInternalServer
+		return nil, newErrors.Wrap(err, "repo template create")
 	}
 
 	data, err = data.Get(id)
 	if err != nil {
-		return nil, errors.ErrInternalServer
+		return nil, newErrors.Wrap(err, "repo template get")
 	}
 
 	res := dto.ToTemplateResponseDTO(*data)
@@ -45,12 +45,12 @@ func (h *TemplateServiceImpl) UpdateTemplate(id int, input dto.TemplateDTO) (*dt
 
 	err := h.repo.Update(*data)
 	if err != nil {
-		return nil, errors.ErrInternalServer
+		return nil, newErrors.Wrap(err, "repo template update")
 	}
 
 	data, err = h.repo.Get(id)
 	if err != nil {
-		return nil, errors.ErrInternalServer
+		return nil, newErrors.Wrap(err, "repo template get")
 	}
 
 	response := dto.ToTemplateResponseDTO(*data)
@@ -61,8 +61,7 @@ func (h *TemplateServiceImpl) UpdateTemplate(id int, input dto.TemplateDTO) (*dt
 func (h *TemplateServiceImpl) DeleteTemplate(id int) error {
 	err := h.repo.Delete(id)
 	if err != nil {
-		h.App.ErrorLog.Println(err)
-		return errors.ErrInternalServer
+		return newErrors.Wrap(err, "repo template delete")
 	}
 
 	return nil
@@ -71,8 +70,7 @@ func (h *TemplateServiceImpl) DeleteTemplate(id int) error {
 func (h *TemplateServiceImpl) GetTemplate(id int) (*dto.TemplateResponseDTO, error) {
 	data, err := h.repo.Get(id)
 	if err != nil {
-		h.App.ErrorLog.Println(err)
-		return nil, errors.ErrNotFound
+		return nil, newErrors.Wrap(err, "repo template get")
 	}
 	response := dto.ToTemplateResponseDTO(*data)
 
@@ -97,12 +95,10 @@ func (h *TemplateServiceImpl) GetTemplateList(filter dto.TemplateFilterDTO) ([]d
 	}
 
 	orders = append(orders, "-created_at")
-	
 
 	data, total, err := h.repo.GetAll(filter.Page, filter.Size, conditionAndExp, orders)
 	if err != nil {
-		h.App.ErrorLog.Println(err)
-		return nil, nil, errors.ErrInternalServer
+		return nil, nil, newErrors.Wrap(err, "repo template get all")
 	}
 	response := dto.ToTemplateListResponseDTO(data)
 

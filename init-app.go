@@ -33,8 +33,7 @@ func initApplication() *celeritas.Celeritas {
 	UserHandler := handlers.NewUserHandler(cel, UserService)
 
 	AuthService := services.NewAuthServiceImpl(cel, models.User, models.Log)
-	UserLogService := services.NewUserAccountLogServiceImpl(cel, models.UserAccountLog)
-	AuthHandler := handlers.NewAuthHandler(cel, AuthService, UserLogService)
+	AuthHandler := handlers.NewAuthHandler(cel, AuthService)
 
 	RoleService := services.NewRoleServiceImpl(cel, models.Role)
 	RoleHandler := handlers.NewRoleHandler(cel, RoleService)

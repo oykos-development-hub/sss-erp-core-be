@@ -13,16 +13,14 @@ import (
 )
 
 type authHandlerImpl struct {
-	App        *celeritas.Celeritas
-	service    services.AuthService
-	logService services.UserAccountLogService
+	App     *celeritas.Celeritas
+	service services.AuthService
 }
 
-func NewAuthHandler(app *celeritas.Celeritas, authService services.AuthService, logService services.UserAccountLogService) AuthHandler {
+func NewAuthHandler(app *celeritas.Celeritas, authService services.AuthService) AuthHandler {
 	return &authHandlerImpl{
-		App:        app,
-		service:    authService,
-		logService: logService,
+		App:     app,
+		service: authService,
 	}
 }
 
@@ -33,6 +31,7 @@ func (h *authHandlerImpl) Login(w http.ResponseWriter, r *http.Request) {
 
 	loginRes, err := h.service.Login(loginInput)
 	if err != nil {
+		h.App.ErrorLog.Print(err)
 		_ = h.App.WriteErrorResponse(w, errors.MapErrorToStatusCode(err), err)
 		return
 	}
@@ -62,6 +61,7 @@ func (h *authHandlerImpl) ValidatePin(w http.ResponseWriter, r *http.Request) {
 
 	v := h.App.Validator().ValidateStruct(&input)
 	if !v.Valid() {
+		h.App.ErrorLog.Print(v.Errors)
 		_ = h.App.WriteErrorResponseWithData(w, errors.MapErrorToStatusCode(errors.ErrBadRequest), errors.ErrBadRequest, v.Errors)
 		return
 	}
@@ -69,25 +69,11 @@ func (h *authHandlerImpl) ValidatePin(w http.ResponseWriter, r *http.Request) {
 	err := h.service.ValidatePin(userId, input)
 
 	if err != nil {
+		h.App.ErrorLog.Print(err)
 		_ = h.App.WriteErrorResponse(w, errors.MapErrorToStatusCode(err), err)
 		return
 	}
-	/*
-		userLog := dto.UserAccountLogDTO{
-			TargetUserAccountID: userId,
-			SourceUserAccountID: userId,
-			ChangeType:          1,
-			PreviousValue:       json.RawMessage(`{"test": "1"}`),
-			NewValue:            json.RawMessage(`{"test": "2"}`),
-		}
 
-		_, err = h.logService.CreateUserAccountLog(userLog)
-
-		if err != nil {
-			_ = h.App.WriteErrorResponse(w, errors.MapErrorToStatusCode(err), err)
-			return
-		}
-	*/
 	_ = h.App.WriteSuccessResponse(w, http.StatusOK, "Valid pin")
 }
 
@@ -99,6 +85,7 @@ func (h *authHandlerImpl) RefreshToken(w http.ResponseWriter, r *http.Request) {
 
 	token, err := h.service.RefreshToken(userId, refreshToken, iat)
 	if err != nil {
+		h.App.ErrorLog.Print(err)
 		_ = h.App.WriteErrorResponse(w, errors.MapErrorToStatusCode(err), err)
 		return
 	}
@@ -125,6 +112,7 @@ func (h *authHandlerImpl) Logout(w http.ResponseWriter, r *http.Request) {
 
 	err := h.service.Logout(idNumber)
 	if err != nil {
+		h.App.ErrorLog.Print(err)
 		_ = h.App.WriteErrorResponse(w, errors.MapErrorToStatusCode(err), err)
 		return
 	}
@@ -138,6 +126,7 @@ func (h *authHandlerImpl) ForgotPassword(w http.ResponseWriter, r *http.Request)
 
 	err := h.service.ForgotPassword(forgotPasswordInput)
 	if err != nil {
+		h.App.ErrorLog.Print(err)
 		_ = h.App.WriteErrorResponse(w, errors.MapErrorToStatusCode(err), err)
 		return
 	}
@@ -150,18 +139,21 @@ func (h *authHandlerImpl) ResetPasswordVerify(w http.ResponseWriter, r *http.Req
 	var input dto.ResetPasswordVerify
 	err := h.App.ReadJSON(w, r, &input)
 	if err != nil {
+		h.App.ErrorLog.Print(err)
 		_ = h.App.WriteErrorResponse(w, http.StatusBadRequest, err)
 		return
 	}
 
 	validator := h.App.Validator().ValidateStruct(&input)
 	if !validator.Valid() {
+		h.App.ErrorLog.Print(validator.Errors)
 		_ = h.App.WriteErrorResponseWithData(w, errors.MapErrorToStatusCode(errors.ErrBadRequest), errors.ErrBadRequest, validator.Errors)
 		return
 	}
 
 	res, err := h.service.ResetPasswordVerify(input.Email, input.Token)
 	if err != nil {
+		h.App.ErrorLog.Print(err)
 		_ = h.App.WriteErrorResponse(w, errors.MapErrorToStatusCode(err), err)
 		return
 	}
@@ -175,12 +167,14 @@ func (h *authHandlerImpl) ResetPassword(w http.ResponseWriter, r *http.Request) 
 
 	v := h.App.Validator().ValidateStruct(&input)
 	if !v.Valid() {
+		h.App.ErrorLog.Print(v.Errors)
 		_ = h.App.WriteErrorResponseWithData(w, errors.MapErrorToStatusCode(errors.ErrBadRequest), errors.ErrBadRequest, v.Errors)
 		return
 	}
 
 	err := h.service.ResetPassword(input)
 	if err != nil {
+		h.App.ErrorLog.Print(err)
 		_ = h.App.WriteErrorResponse(w, errors.MapErrorToStatusCode(err), err)
 		return
 	}

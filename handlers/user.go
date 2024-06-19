@@ -32,6 +32,7 @@ func (h *userHandlerImpl) CreateUser(w http.ResponseWriter, r *http.Request) {
 
 	validator := h.App.Validator().ValidateStruct(&userInput)
 	if !validator.Valid() {
+		h.App.ErrorLog.Print(validator.Errors)
 		_ = h.App.WriteErrorResponseWithData(w, errors.MapErrorToStatusCode(errors.ErrBadRequest), errors.ErrBadRequest, validator.Errors)
 		return
 	}
@@ -41,6 +42,7 @@ func (h *userHandlerImpl) CreateUser(w http.ResponseWriter, r *http.Request) {
 	userID, err := strconv.Atoi(userIDString)
 
 	if err != nil {
+		h.App.ErrorLog.Print(err)
 		_ = h.App.WriteErrorResponse(w, errors.MapErrorToStatusCode(errors.ErrUnauthorized), errors.ErrBadRequest)
 		return
 	}
@@ -50,6 +52,7 @@ func (h *userHandlerImpl) CreateUser(w http.ResponseWriter, r *http.Request) {
 
 	user, err := h.service.CreateUser(ctx, userInput)
 	if err != nil {
+		h.App.ErrorLog.Print(err)
 		_ = h.App.WriteErrorResponse(w, errors.MapErrorToStatusCode(err), err)
 		return
 	}
@@ -65,6 +68,7 @@ func (h *userHandlerImpl) UpdateUser(w http.ResponseWriter, r *http.Request) {
 
 	validator := h.App.Validator().ValidateStruct(&userInput)
 	if !validator.Valid() {
+		h.App.ErrorLog.Print(validator.Errors)
 		_ = h.App.WriteErrorResponseWithData(w, errors.MapErrorToStatusCode(errors.ErrBadRequest), errors.ErrBadRequest, validator.Errors)
 		return
 	}
@@ -74,6 +78,7 @@ func (h *userHandlerImpl) UpdateUser(w http.ResponseWriter, r *http.Request) {
 	userID, err := strconv.Atoi(userIDString)
 
 	if err != nil {
+		h.App.ErrorLog.Print(err)
 		_ = h.App.WriteErrorResponse(w, errors.MapErrorToStatusCode(errors.ErrUnauthorized), errors.ErrUnauthorized)
 		return
 	}
@@ -83,6 +88,7 @@ func (h *userHandlerImpl) UpdateUser(w http.ResponseWriter, r *http.Request) {
 
 	response, err := h.service.UpdateUser(ctx, id, userInput)
 	if err != nil {
+		h.App.ErrorLog.Print(err)
 		_ = h.App.WriteErrorResponse(w, errors.MapErrorToStatusCode(err), err)
 		return
 	}
@@ -97,6 +103,7 @@ func (h *userHandlerImpl) GetLoggedInUser(w http.ResponseWriter, r *http.Request
 	user, err := h.service.GetUser(userId)
 
 	if err != nil {
+		h.App.ErrorLog.Print(err)
 		_ = h.App.WriteErrorResponse(w, errors.MapErrorToStatusCode(err), err)
 		return
 	}
@@ -109,6 +116,7 @@ func (h *userHandlerImpl) GetUserById(w http.ResponseWriter, r *http.Request) {
 
 	user, err := h.service.GetUser(id)
 	if err != nil {
+		h.App.ErrorLog.Print(err)
 		_ = h.App.WriteErrorResponse(w, errors.MapErrorToStatusCode(err), err)
 		return
 	}
@@ -122,12 +130,14 @@ func (h *userHandlerImpl) GetUserList(w http.ResponseWriter, r *http.Request) {
 
 	validator := h.App.Validator().ValidateStruct(&input)
 	if !validator.Valid() {
+		h.App.ErrorLog.Print(validator.Errors)
 		_ = h.App.WriteErrorResponseWithData(w, errors.MapErrorToStatusCode(errors.ErrBadRequest), errors.ErrBadRequest, validator.Errors)
 		return
 	}
 
 	users, total, err := h.service.GetUserList(input)
 	if err != nil {
+		h.App.ErrorLog.Print(err)
 		_ = h.App.WriteErrorResponse(w, errors.MapErrorToStatusCode(err), err)
 		return
 	}
@@ -143,6 +153,7 @@ func (h *userHandlerImpl) DeleteUser(w http.ResponseWriter, r *http.Request) {
 	userID, err := strconv.Atoi(userIDString)
 
 	if err != nil {
+		h.App.ErrorLog.Print(err)
 		_ = h.App.WriteErrorResponse(w, errors.MapErrorToStatusCode(errors.ErrUnauthorized), errors.ErrBadRequest)
 		return
 	}
@@ -152,6 +163,7 @@ func (h *userHandlerImpl) DeleteUser(w http.ResponseWriter, r *http.Request) {
 
 	err = h.service.DeleteUser(ctx, id)
 	if err != nil {
+		h.App.ErrorLog.Print(err)
 		_ = h.App.WriteErrorResponse(w, errors.MapErrorToStatusCode(err), err)
 		return
 	}

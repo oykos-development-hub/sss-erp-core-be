@@ -3,7 +3,7 @@ package services
 import (
 	"gitlab.sudovi.me/erp/core-ms-api/data"
 	"gitlab.sudovi.me/erp/core-ms-api/dto"
-	"gitlab.sudovi.me/erp/core-ms-api/errors"
+	newErrors "gitlab.sudovi.me/erp/core-ms-api/pkg/errors"
 
 	"github.com/oykos-development-hub/celeritas"
 	up "github.com/upper/db/v4"
@@ -26,12 +26,12 @@ func (h *BankAccountServiceImpl) CreateBankAccount(input dto.BankAccountDTO) (*d
 
 	id, err := h.repo.Insert(data.Upper, *createData)
 	if err != nil {
-		return nil, errors.ErrInternalServer
+		return nil, newErrors.Wrap(err, "repo bank account insert")
 	}
 
 	createData, err = createData.Get(id)
 	if err != nil {
-		return nil, errors.ErrInternalServer
+		return nil, newErrors.Wrap(err, "repo bank account create")
 	}
 
 	res := dto.ToBankAccountResponseDTO(*createData)
@@ -45,12 +45,12 @@ func (h *BankAccountServiceImpl) UpdateBankAccount(id int, input dto.BankAccount
 
 	err := h.repo.Update(*data)
 	if err != nil {
-		return nil, errors.ErrInternalServer
+		return nil, newErrors.Wrap(err, "repo bank account update")
 	}
 
 	data, err = h.repo.Get(id)
 	if err != nil {
-		return nil, errors.ErrInternalServer
+		return nil, newErrors.Wrap(err, "repo bank account get")
 	}
 
 	response := dto.ToBankAccountResponseDTO(*data)
@@ -61,8 +61,7 @@ func (h *BankAccountServiceImpl) UpdateBankAccount(id int, input dto.BankAccount
 func (h *BankAccountServiceImpl) DeleteBankAccount(title string) error {
 	err := h.repo.Delete(data.Upper, title)
 	if err != nil {
-		h.App.ErrorLog.Println(err)
-		return errors.ErrInternalServer
+		return newErrors.Wrap(err, "repo bank account delete")
 	}
 
 	return nil
@@ -71,8 +70,7 @@ func (h *BankAccountServiceImpl) DeleteBankAccount(title string) error {
 func (h *BankAccountServiceImpl) GetBankAccount(id int) (*dto.BankAccountResponseDTO, error) {
 	data, err := h.repo.Get(id)
 	if err != nil {
-		h.App.ErrorLog.Println(err)
-		return nil, errors.ErrNotFound
+		return nil, newErrors.Wrap(err, "repo bank account get")
 	}
 	response := dto.ToBankAccountResponseDTO(*data)
 
@@ -99,8 +97,7 @@ func (h *BankAccountServiceImpl) GetBankAccountList(filter dto.BankAccountFilter
 
 	data, total, err := h.repo.GetAll(filter.Page, filter.Size, conditionAndExp, orders)
 	if err != nil {
-		h.App.ErrorLog.Println(err)
-		return nil, nil, errors.ErrInternalServer
+		return nil, nil, newErrors.Wrap(err, "repo bank account get all")
 	}
 	response := dto.ToBankAccountListResponseDTO(data)
 

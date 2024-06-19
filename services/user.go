@@ -3,11 +3,11 @@ package services
 import (
 	"context"
 	"fmt"
-	"runtime/debug"
 
 	"gitlab.sudovi.me/erp/core-ms-api/data"
 	"gitlab.sudovi.me/erp/core-ms-api/dto"
 	"gitlab.sudovi.me/erp/core-ms-api/errors"
+	newErrors "gitlab.sudovi.me/erp/core-ms-api/pkg/errors"
 
 	"github.com/oykos-development-hub/celeritas"
 	up "github.com/upper/db/v4"
@@ -28,20 +28,19 @@ func NewUserServiceImpl(app *celeritas.Celeritas, repo data.User) UserService {
 func (h *userServiceImpl) CreateUser(ctx context.Context, userInput dto.UserRegistrationDTO) (*dto.UserResponseDTO, error) {
 	_, err := h.repo.GetByEmail(userInput.Email)
 	if err == nil {
-		return nil, errors.ErrUserEmailExists
+		return nil, newErrors.Wrap(errors.ErrUserEmailExists, "repo user get by email")
 	}
 
 	u := userInput.ToUser()
 
 	id, err := h.repo.Insert(ctx, *u)
 	if err != nil {
-		h.App.ErrorLog.Println(err)
-		return nil, errors.ErrInternalServer
+		return nil, newErrors.Wrap(err, "repo user create")
 	}
 
 	u, err = u.Get(id)
 	if err != nil {
-		return nil, errors.ErrInternalServer
+		return nil, newErrors.Wrap(err, "repo user get")
 	}
 
 	response := dto.ToUserResponseDTO(*u)
@@ -52,20 +51,20 @@ func (h *userServiceImpl) CreateUser(ctx context.Context, userInput dto.UserRegi
 func (h *userServiceImpl) UpdateUser(ctx context.Context, userId int, userInput dto.UserUpdateDTO) (*dto.UserResponseDTO, error) {
 	u, err := h.repo.Get(userId)
 	if err != nil {
-		return nil, errors.ErrNotFound
+		return nil, newErrors.Wrap(err, "repo user create")
 	}
 
 	if userInput.Email != nil && *userInput.Email != u.Email {
 		foundUser, _ := h.repo.GetByEmail(*userInput.Email)
 		if foundUser != nil {
-			return nil, errors.ErrUserEmailExists
+			return nil, newErrors.Wrap(errors.ErrUserEmailExists, "repo user get by email")
 		}
 	}
 
 	userInput.ToUser(u)
 	err = h.repo.Update(ctx, *u)
 	if err != nil {
-		return nil, errors.ErrInternalServer
+		return nil, newErrors.Wrap(err, "repo user update")
 	}
 
 	response := dto.ToUserResponseDTO(*u)
@@ -76,9 +75,7 @@ func (h *userServiceImpl) UpdateUser(ctx context.Context, userId int, userInput 
 func (h *userServiceImpl) GetUser(userId int) (*dto.UserResponseDTO, error) {
 	u, err := h.repo.Get(userId)
 	if err != nil {
-		h.App.InfoLog.Println(string(debug.Stack()))
-		h.App.ErrorLog.Println(err)
-		return nil, errors.ErrNotFound
+		return nil, newErrors.Wrap(err, "repo user get")
 	}
 	response := dto.ToUserResponseDTO(*u)
 
@@ -105,8 +102,7 @@ func (h *userServiceImpl) GetUserList(data dto.GetUserListDTO) ([]dto.UserRespon
 
 	u, total, err := h.repo.GetAll(data.Page, data.Size, conditionAndExp)
 	if err != nil {
-		h.App.ErrorLog.Println(err)
-		return nil, nil, errors.ErrInternalServer
+		return nil, nil, newErrors.Wrap(err, "repo user get all")
 	}
 	response := dto.ToUsersResponseDTO(u)
 
@@ -116,8 +112,7 @@ func (h *userServiceImpl) GetUserList(data dto.GetUserListDTO) ([]dto.UserRespon
 func (h *userServiceImpl) DeleteUser(ctx context.Context, id int) error {
 	err := h.repo.Delete(ctx, id)
 	if err != nil {
-		h.App.ErrorLog.Println(err)
-		return errors.ErrInternalServer
+		return newErrors.Wrap(err, "repo user delete")
 	}
 
 	return nil

@@ -4,6 +4,7 @@ import (
 	"time"
 
 	up "github.com/upper/db/v4"
+	newErrors "gitlab.sudovi.me/erp/core-ms-api/pkg/errors"
 )
 
 // Setting struct
@@ -40,7 +41,7 @@ func (t *Setting) GetAll(page *int, size *int, conditions *up.AndExpr) ([]*Setti
 
 	total, err := res.Count()
 	if err != nil {
-		return nil, nil, err
+		return nil, nil, newErrors.Wrap(err, "upper count")
 	}
 
 	if page != nil && size != nil {
@@ -49,7 +50,7 @@ func (t *Setting) GetAll(page *int, size *int, conditions *up.AndExpr) ([]*Setti
 
 	err = res.All(&all)
 	if err != nil {
-		return nil, nil, err
+		return nil, nil, newErrors.Wrap(err, "upper get all")
 	}
 
 	return all, &total, err
@@ -63,7 +64,7 @@ func (t *Setting) Get(id int) (*Setting, error) {
 	res := collection.Find(up.Cond{"id": id})
 	err := res.One(&one)
 	if err != nil {
-		return nil, err
+		return nil, newErrors.Wrap(err, "upper get")
 	}
 	return &one, nil
 }
@@ -75,7 +76,7 @@ func (t *Setting) Update(m Setting) error {
 	collection := Upper.Collection(t.Table())
 	res := collection.Find(m.ID)
 	if err := res.Update(&m); err != nil {
-		return err
+		return newErrors.Wrap(err, "upper update")
 
 	}
 
@@ -88,7 +89,7 @@ func (t *Setting) Delete(id int) error {
 	res := collection.Find(id)
 	err := res.Delete()
 	if err != nil {
-		return err
+		return newErrors.Wrap(err, "upper delete")
 	}
 	return nil
 }
@@ -100,28 +101,10 @@ func (t *Setting) Insert(m Setting) (int, error) {
 	collection := Upper.Collection(t.Table())
 	res, err := collection.Insert(m)
 	if err != nil {
-		return 0, err
+		return 0, newErrors.Wrap(err, "upper insert")
 	}
 
 	id := getInsertId(res.ID())
 
 	return id, nil
-}
-
-// Builder is an example of using upper's sql builder
-func (t *Setting) Builder(id int) ([]*Setting, error) {
-	collection := Upper.Collection(t.Table())
-
-	var result []*Setting
-
-	err := collection.Session().
-		SQL().
-		SelectFrom(t.Table()).
-		Where("id > ?", id).
-		OrderBy("id").
-		All(&result)
-	if err != nil {
-		return nil, err
-	}
-	return result, nil
 }

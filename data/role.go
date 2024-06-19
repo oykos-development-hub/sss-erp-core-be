@@ -8,6 +8,7 @@ import (
 
 	up "github.com/upper/db/v4"
 	"gitlab.sudovi.me/erp/core-ms-api/contextutil"
+	newErrors "gitlab.sudovi.me/erp/core-ms-api/pkg/errors"
 )
 
 // Role struct
@@ -39,7 +40,7 @@ func (t *Role) GetAll(condition *up.Cond) ([]*Role, error) {
 
 	err := res.All(&all)
 	if err != nil {
-		return nil, err
+		return nil, newErrors.Wrap(err, "upper get all")
 	}
 
 	return all, err
@@ -53,7 +54,7 @@ func (t *Role) Get(id int) (*Role, error) {
 	res := collection.Find(up.Cond{"id": id})
 	err := res.One(&one)
 	if err != nil {
-		return nil, err
+		return nil, newErrors.Wrap(err, "upper get")
 	}
 	return &one, nil
 }
@@ -62,20 +63,21 @@ func (t *Role) Get(id int) (*Role, error) {
 func (t *Role) Update(ctx context.Context, m Role) error {
 	userID, ok := contextutil.GetUserIDFromContext(ctx)
 	if !ok {
-		return errors.New("user ID not found in context")
+		err := errors.New("user ID not found in context")
+		return newErrors.Wrap(err, "context get user id")
 	}
 
 	err := Upper.Tx(func(sess up.Session) error {
 
 		query := fmt.Sprintf("SET myapp.user_id = %d", userID)
 		if _, err := sess.SQL().Exec(query); err != nil {
-			return err
+			return newErrors.Wrap(err, "upper exec query")
 		}
 
 		collection := sess.Collection(t.Table())
 		res := collection.Find(m.ID)
 		if err := res.Update(&m); err != nil {
-			return err
+			return newErrors.Wrap(err, "upper update")
 		}
 
 		return nil
@@ -91,20 +93,21 @@ func (t *Role) Update(ctx context.Context, m Role) error {
 func (t *Role) Delete(ctx context.Context, id int) error {
 	userID, ok := contextutil.GetUserIDFromContext(ctx)
 	if !ok {
-		return errors.New("user ID not found in context")
+		err := errors.New("user ID not found in context")
+		return newErrors.Wrap(err, "context get user id")
 	}
 
 	err := Upper.Tx(func(sess up.Session) error {
 
 		query := fmt.Sprintf("SET myapp.user_id = %d", userID)
 		if _, err := sess.SQL().Exec(query); err != nil {
-			return err
+			return newErrors.Wrap(err, "upper exec query")
 		}
 
 		collection := sess.Collection(t.Table())
 		res := collection.Find(id)
 		if err := res.Delete(); err != nil {
-			return err
+			return newErrors.Wrap(err, "upper delete")
 		}
 
 		return nil
@@ -123,7 +126,8 @@ func (t *Role) Insert(ctx context.Context, m Role) (int, error) {
 
 	userID, ok := contextutil.GetUserIDFromContext(ctx)
 	if !ok {
-		return 0, errors.New("user ID not found in context")
+		err := errors.New("user ID not found in context")
+		return 0, newErrors.Wrap(err, "context get user id")
 	}
 
 	var id int
@@ -132,7 +136,7 @@ func (t *Role) Insert(ctx context.Context, m Role) (int, error) {
 
 		query := fmt.Sprintf("SET myapp.user_id = %d", userID)
 		if _, err := sess.SQL().Exec(query); err != nil {
-			return err
+			return newErrors.Wrap(err, "upper exec query")
 		}
 
 		collection := sess.Collection(t.Table())
@@ -141,7 +145,7 @@ func (t *Role) Insert(ctx context.Context, m Role) (int, error) {
 		var err error
 
 		if res, err = collection.Insert(m); err != nil {
-			return err
+			return newErrors.Wrap(err, "upper insert")
 		}
 
 		id = getInsertId(res.ID())

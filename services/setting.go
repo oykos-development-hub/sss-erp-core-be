@@ -5,7 +5,7 @@ import (
 
 	"gitlab.sudovi.me/erp/core-ms-api/data"
 	"gitlab.sudovi.me/erp/core-ms-api/dto"
-	"gitlab.sudovi.me/erp/core-ms-api/errors"
+	newErrors "gitlab.sudovi.me/erp/core-ms-api/pkg/errors"
 
 	"github.com/oykos-development-hub/celeritas"
 	up "github.com/upper/db/v4"
@@ -28,12 +28,12 @@ func (h *SettingServiceImpl) CreateSetting(input dto.SettingDTO) (*dto.SettingRe
 
 	id, err := h.repo.Insert(*data)
 	if err != nil {
-		return nil, errors.ErrInternalServer
+		return nil, newErrors.Wrap(err, "repo role setting insert")
 	}
 
 	data, err = data.Get(id)
 	if err != nil {
-		return nil, errors.ErrInternalServer
+		return nil, newErrors.Wrap(err, "repo role setting get")
 	}
 
 	res := dto.ToSettingResponseDTO(*data)
@@ -47,14 +47,12 @@ func (h *SettingServiceImpl) UpdateSetting(id int, input dto.SettingDTO) (*dto.S
 
 	err := h.repo.Update(*data)
 	if err != nil {
-		h.App.ErrorLog.Println(err)
-		return nil, errors.ErrInternalServer
+		return nil, newErrors.Wrap(err, "repo role setting update")
 	}
 
 	data, err = h.repo.Get(id)
 	if err != nil {
-		h.App.ErrorLog.Println(err)
-		return nil, errors.ErrNotFound
+		return nil, newErrors.Wrap(err, "repo role setting get")
 	}
 
 	response := dto.ToSettingResponseDTO(*data)
@@ -65,8 +63,7 @@ func (h *SettingServiceImpl) UpdateSetting(id int, input dto.SettingDTO) (*dto.S
 func (h *SettingServiceImpl) DeleteSetting(id int) error {
 	err := h.repo.Delete(id)
 	if err != nil {
-		h.App.ErrorLog.Println(err)
-		return errors.ErrInternalServer
+		return newErrors.Wrap(err, "repo role setting delete")
 	}
 
 	return nil
@@ -75,8 +72,7 @@ func (h *SettingServiceImpl) DeleteSetting(id int) error {
 func (h *SettingServiceImpl) GetSetting(id int) (*dto.SettingResponseDTO, error) {
 	data, err := h.repo.Get(id)
 	if err != nil {
-		h.App.ErrorLog.Println(id, err)
-		return nil, errors.ErrNotFound
+		return nil, newErrors.Wrap(err, "repo role setting delete")
 	}
 	response := dto.ToSettingResponseDTO(*data)
 
@@ -110,8 +106,7 @@ func (h *SettingServiceImpl) GetSettingList(data dto.GetSettingsDTO) ([]dto.Sett
 
 	res, total, err := h.repo.GetAll(data.Page, data.Size, conditionAndExp)
 	if err != nil {
-		h.App.ErrorLog.Println(err)
-		return nil, nil, errors.ErrInternalServer
+		return nil, nil, newErrors.Wrap(err, "repo role setting get all")
 	}
 	response := dto.ToSettingListResponseDTO(res)
 

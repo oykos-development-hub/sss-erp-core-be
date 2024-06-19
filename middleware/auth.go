@@ -10,6 +10,7 @@ import (
 	"github.com/golang-jwt/jwt/request"
 	"github.com/oykos-development-hub/celeritas/rsa"
 	"gitlab.sudovi.me/erp/core-ms-api/errors"
+	newErrors "gitlab.sudovi.me/erp/core-ms-api/pkg/errors"
 )
 
 // JwtVerifyToken usefull for middleware for verify the jwt token from the Authorization
@@ -27,25 +28,24 @@ func (m *Middleware) JwtVerifyToken(next http.Handler) http.Handler {
 			tokenType := token.Claims.(jwt.MapClaims)["token_type"]
 
 			if tokenType != "access_token" {
-				return nil, fmt.Errorf("unexpected token type: %v", tokenType)
+				err := fmt.Errorf("unexpected token type: %v", tokenType)
+				return nil, newErrors.Wrap(err, "check token")
 			}
 
 			if _, ok := token.Method.(*jwt.SigningMethodRSA); !ok {
-				return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
+				err := fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
+				return nil, newErrors.Wrap(err, "check token header")
 			}
 
 			publicRsa, err := rsa.ReadPublicKeyFromEnv(m.App.JwtToken.RSAPublic)
 			if err != nil {
-				return nil, err
+				return nil, newErrors.Wrap(err, "rsa read key")
 			}
 			return publicRsa, nil
 		})
 
 		if err != nil {
-			m.App.ErrorLog.Println(err)
-		}
-
-		if err != nil || !token.Valid {
+			m.App.ErrorLog.Print(err)
 			_ = m.App.WriteErrorResponse(w, errors.MapErrorToStatusCode(errors.ErrUnauthorized), errors.ErrUnauthorized, nil)
 			return
 		}
@@ -61,6 +61,7 @@ func (m *Middleware) JwtVerifyToken(next http.Handler) http.Handler {
 		rawExp := token.Claims.(jwt.MapClaims)["exp"].(float64)
 		exp := int64(rawExp)
 		if exp < time.Now().Unix() {
+			m.App.ErrorLog.Println("Token expired")
 			_ = m.App.WriteErrorResponse(w, errors.MapErrorToStatusCode(errors.ErrUnauthorized), errors.ErrUnauthorized, nil)
 			return
 		}
@@ -93,25 +94,24 @@ func (m *Middleware) JwtVerifyRefreshToken(next http.Handler) http.Handler {
 		token, err := jwt.Parse(JwtToken, func(token *jwt.Token) (interface{}, error) {
 			tokenType := token.Claims.(jwt.MapClaims)["token_type"]
 			if _, ok := token.Method.(*jwt.SigningMethodRSA); !ok {
-				return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
+				err := fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
+				return nil, newErrors.Wrap(err, "check token method")
 			}
 			if tokenType != "refresh_token" {
-				return nil, fmt.Errorf("unexpected token type: %v", tokenType)
+				err := fmt.Errorf("unexpected token type: %v", tokenType)
+				return nil, newErrors.Wrap(err, "check token type")
 			}
 
 			privateRsa, err := rsa.ReadPublicKeyFromEnv(m.App.JwtToken.RSAPublic)
 			if err != nil {
 				m.App.ErrorLog.Printf("Error reading private key RSA from env: %v", err)
-				return nil, err
+				return nil, newErrors.Wrap(err, "rsa check public key")
 			}
 			return privateRsa, nil
 		})
 
 		if err != nil {
 			m.App.ErrorLog.Println(err)
-		}
-
-		if err != nil || !token.Valid {
 			_ = m.App.WriteErrorResponse(w, errors.MapErrorToStatusCode(errors.ErrUnauthorized), errors.ErrUnauthorized, nil)
 			return
 		}

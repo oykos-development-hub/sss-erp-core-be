@@ -34,6 +34,7 @@ func (h *RoleHandlerImpl) CreateRole(w http.ResponseWriter, r *http.Request) {
 
 	validator := h.App.Validator().ValidateStruct(&input)
 	if !validator.Valid() {
+		h.App.ErrorLog.Print(validator.Errors)
 		_ = h.App.WriteErrorResponseWithData(w, errors.MapErrorToStatusCode(errors.ErrBadRequest), errors.ErrBadRequest, validator.Errors)
 		return
 	}
@@ -43,6 +44,7 @@ func (h *RoleHandlerImpl) CreateRole(w http.ResponseWriter, r *http.Request) {
 	userID, err := strconv.Atoi(userIDString)
 
 	if err != nil {
+		h.App.ErrorLog.Print(err)
 		_ = h.App.WriteErrorResponseWithData(w, errors.MapErrorToStatusCode(errors.ErrUnauthorized), errors.ErrBadRequest, validator.Errors)
 		return
 	}
@@ -52,6 +54,7 @@ func (h *RoleHandlerImpl) CreateRole(w http.ResponseWriter, r *http.Request) {
 
 	res, err := h.service.CreateRole(ctx, input)
 	if err != nil {
+		h.App.ErrorLog.Print(err)
 		_ = h.App.WriteErrorResponse(w, errors.MapErrorToStatusCode(err), err)
 		return
 	}
@@ -67,6 +70,7 @@ func (h *RoleHandlerImpl) UpdateRole(w http.ResponseWriter, r *http.Request) {
 
 	validator := h.App.Validator().ValidateStruct(&input)
 	if !validator.Valid() {
+		h.App.ErrorLog.Print(validator.Errors)
 		_ = h.App.WriteErrorResponseWithData(w, errors.MapErrorToStatusCode(errors.ErrBadRequest), errors.ErrBadRequest, validator.Errors)
 		return
 	}
@@ -76,6 +80,7 @@ func (h *RoleHandlerImpl) UpdateRole(w http.ResponseWriter, r *http.Request) {
 	userID, err := strconv.Atoi(userIDString)
 
 	if err != nil {
+		h.App.ErrorLog.Print(err)
 		_ = h.App.WriteErrorResponseWithData(w, errors.MapErrorToStatusCode(errors.ErrUnauthorized), errors.ErrBadRequest, validator.Errors)
 		return
 	}
@@ -85,6 +90,7 @@ func (h *RoleHandlerImpl) UpdateRole(w http.ResponseWriter, r *http.Request) {
 
 	res, err := h.service.UpdateRole(ctx, id, input)
 	if err != nil {
+		h.App.ErrorLog.Print(err)
 		_ = h.App.WriteErrorResponse(w, errors.MapErrorToStatusCode(err), err)
 		return
 	}
@@ -100,6 +106,7 @@ func (h *RoleHandlerImpl) DeleteRole(w http.ResponseWriter, r *http.Request) {
 	userID, err := strconv.Atoi(userIDString)
 
 	if err != nil {
+		h.App.ErrorLog.Print(err)
 		_ = h.App.WriteErrorResponse(w, errors.MapErrorToStatusCode(errors.ErrUnauthorized), errors.ErrBadRequest)
 		return
 	}
@@ -109,6 +116,7 @@ func (h *RoleHandlerImpl) DeleteRole(w http.ResponseWriter, r *http.Request) {
 
 	err = h.service.DeleteRole(ctx, id)
 	if err != nil {
+		h.App.ErrorLog.Print(err)
 		_ = h.App.WriteErrorResponse(w, errors.MapErrorToStatusCode(err), err)
 		return
 	}
@@ -121,6 +129,7 @@ func (h *RoleHandlerImpl) GetRoleById(w http.ResponseWriter, r *http.Request) {
 
 	res, err := h.service.GetRole(id)
 	if err != nil {
+		h.App.ErrorLog.Print(err)
 		_ = h.App.WriteErrorResponse(w, errors.MapErrorToStatusCode(err), err)
 		return
 	}
@@ -131,6 +140,7 @@ func (h *RoleHandlerImpl) GetRoleById(w http.ResponseWriter, r *http.Request) {
 func (h *RoleHandlerImpl) GetRoleList(w http.ResponseWriter, r *http.Request) {
 	res, err := h.service.GetRoleList()
 	if err != nil {
+		h.App.ErrorLog.Print(err)
 		_ = h.App.WriteErrorResponse(w, errors.MapErrorToStatusCode(err), err)
 		return
 	}

@@ -23,7 +23,6 @@ type Models struct {
 	User            User
 	Role            Role
 	Setting         Setting
-	UserAccountLog  UserAccountLog
 	Supplier        Supplier
 	Account         Account
 	Notification    Notification
@@ -31,9 +30,9 @@ type Models struct {
 	Permission      Permission
 	BankAccount     BankAccount
 	Log             Log
-	Template Template
-		TemplateItem TemplateItem
-	}
+	Template        Template
+	TemplateItem    TemplateItem
+}
 
 func New(databasePool *sql.DB) Models {
 	db = databasePool
@@ -51,7 +50,6 @@ func New(databasePool *sql.DB) Models {
 		User:            User{},
 		Role:            Role{},
 		Setting:         Setting{},
-		UserAccountLog:  UserAccountLog{},
 		Supplier:        Supplier{},
 		Account:         Account{},
 		Notification:    Notification{},
@@ -59,8 +57,8 @@ func New(databasePool *sql.DB) Models {
 		Permission:      Permission{},
 		BankAccount:     BankAccount{},
 		Log:             Log{},
-		Template: Template{},
-		TemplateItem: TemplateItem{},
+		Template:        Template{},
+		TemplateItem:    TemplateItem{},
 	}
 }
 

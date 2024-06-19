@@ -9,6 +9,7 @@ import (
 
 	up "github.com/upper/db/v4"
 	"gitlab.sudovi.me/erp/core-ms-api/contextutil"
+	newErrors "gitlab.sudovi.me/erp/core-ms-api/pkg/errors"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -51,7 +52,7 @@ func (u *User) GetAll(page *int, size *int, conditions *up.AndExpr) ([]*User, *u
 
 	total, err := res.Count()
 	if err != nil {
-		return nil, nil, err
+		return nil, nil, newErrors.Wrap(err, "upper count")
 	}
 
 	if page != nil && size != nil {
@@ -60,7 +61,7 @@ func (u *User) GetAll(page *int, size *int, conditions *up.AndExpr) ([]*User, *u
 
 	err = res.All(&all)
 	if err != nil {
-		return nil, nil, err
+		return nil, nil, newErrors.Wrap(err, "upper get all")
 	}
 
 	return all, &total, nil
@@ -73,7 +74,7 @@ func (u *User) GetByEmail(email string) (*User, error) {
 	res := collection.Find(up.Cond{"email =": email})
 	err := res.One(&theUser)
 	if err != nil {
-		return nil, err
+		return nil, newErrors.Wrap(err, "upper get")
 	}
 
 	return &theUser, nil
@@ -87,7 +88,7 @@ func (u *User) Get(id int) (*User, error) {
 
 	err := res.One(&theUser)
 	if err != nil {
-		return nil, err
+		return nil, newErrors.Wrap(err, "upper get")
 	}
 
 	return &theUser, nil
@@ -104,13 +105,13 @@ func (u *User) Update(ctx context.Context, theUser User) error {
 
 		query := fmt.Sprintf("SET myapp.user_id = %d", userID)
 		if _, err := sess.SQL().Exec(query); err != nil {
-			return err
+			return newErrors.Wrap(err, "upper exec query")
 		}
 
 		collection := sess.Collection(u.Table())
 		res := collection.Find(theUser.ID)
 		if err := res.Update(&theUser); err != nil {
-			return err
+			return newErrors.Wrap(err, "upper update")
 		}
 
 		return nil
@@ -132,19 +133,24 @@ func ValidatePassword(password string) error {
 	)
 
 	if len(password) < 8 {
-		return errors.New("password must be at least 8 characters long")
+		err := errors.New("password must be at least 8 characters long")
+		return newErrors.Wrap(err, "validation")
 	}
 	if !upperCase.MatchString(password) {
-		return errors.New("password must contain at least one uppercase letter")
+		err := errors.New("password must contain at least one uppercase letter")
+		return newErrors.Wrap(err, "validation")
 	}
 	if !lowerCase.MatchString(password) {
-		return errors.New("password must contain at least one lowercase letter")
+		err := errors.New("password must contain at least one lowercase letter")
+		return newErrors.Wrap(err, "validation")
 	}
 	if !number.MatchString(password) {
-		return errors.New("password must contain at least one number")
+		err := errors.New("password must contain at least one number")
+		return newErrors.Wrap(err, "validation")
 	}
 	if !specialChars.MatchString(password) {
-		return errors.New("password must contain at least one special character")
+		err := errors.New("password must contain at least one special character")
+		return newErrors.Wrap(err, "validation")
 	}
 
 	return nil
@@ -153,12 +159,12 @@ func ValidatePassword(password string) error {
 // Insert inserts a new user, and returns the newly inserted id
 func (u *User) Insert(ctx context.Context, theUser User) (int, error) {
 	if err := ValidatePassword(theUser.Password); err != nil {
-		return 0, err
+		return 0, newErrors.Wrap(err, "validate password")
 	}
 
 	newHash, err := bcrypt.GenerateFromPassword([]byte(theUser.Password), 12)
 	if err != nil {
-		return 0, err
+		return 0, newErrors.Wrap(err, "bcrycpt generate password")
 	}
 
 	theUser.CreatedAt = time.Now()
@@ -167,7 +173,8 @@ func (u *User) Insert(ctx context.Context, theUser User) (int, error) {
 
 	userID, ok := contextutil.GetUserIDFromContext(ctx)
 	if !ok {
-		return 0, errors.New("user ID not found in context")
+		err := errors.New("user ID not found in context")
+		return 0, newErrors.Wrap(err, "context get user id")
 	}
 
 	var id int
@@ -176,7 +183,7 @@ func (u *User) Insert(ctx context.Context, theUser User) (int, error) {
 
 		query := fmt.Sprintf("SET myapp.user_id = %d", userID)
 		if _, err := sess.SQL().Exec(query); err != nil {
-			return err
+			return newErrors.Wrap(err, "upper exec query")
 		}
 
 		collection := sess.Collection(u.Table())
@@ -185,7 +192,7 @@ func (u *User) Insert(ctx context.Context, theUser User) (int, error) {
 		var err error
 
 		if res, err = collection.Insert(theUser); err != nil {
-			return err
+			return newErrors.Wrap(err, "upper insert")
 		}
 
 		id = getInsertId(res.ID())
@@ -204,12 +211,12 @@ func (u *User) Insert(ctx context.Context, theUser User) (int, error) {
 func (u *User) ResetPassword(id int, password string) error {
 	newHash, err := bcrypt.GenerateFromPassword([]byte(password), 12)
 	if err != nil {
-		return err
+		return newErrors.Wrap(err, "bcrypt generate password")
 	}
 
 	theUser, err := u.Get(id)
 	if err != nil {
-		return err
+		return newErrors.Wrap(err, "upper get")
 	}
 
 	theUser.Password = string(newHash)
@@ -218,7 +225,7 @@ func (u *User) ResetPassword(id int, password string) error {
 
 	err = theUser.Update(ctx, *theUser)
 	if err != nil {
-		return err
+		return newErrors.Wrap(err, "upper update")
 	}
 
 	return nil
@@ -237,7 +244,7 @@ func (u *User) PasswordMatches(plainText string) (bool, error) {
 			return false, nil
 		default:
 			// some kind of error occurred
-			return false, err
+			return false, newErrors.Wrap(err, "bcrypt match password")
 		}
 	}
 
@@ -248,20 +255,21 @@ func (u *User) PasswordMatches(plainText string) (bool, error) {
 func (t *User) Delete(ctx context.Context, id int) error {
 	userID, ok := contextutil.GetUserIDFromContext(ctx)
 	if !ok {
-		return errors.New("user ID not found in context")
+		err := errors.New("user ID not found in context")
+		return newErrors.Wrap(err, "context get user id")
 	}
 
 	err := Upper.Tx(func(sess up.Session) error {
 
 		query := fmt.Sprintf("SET myapp.user_id = %d", userID)
 		if _, err := sess.SQL().Exec(query); err != nil {
-			return err
+			return newErrors.Wrap(err, "upper exec")
 		}
 
 		collection := sess.Collection(t.Table())
 		res := collection.Find(id)
 		if err := res.Delete(); err != nil {
-			return err
+			return newErrors.Wrap(err, "upper delete")
 		}
 
 		return nil

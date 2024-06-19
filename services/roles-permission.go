@@ -3,7 +3,7 @@ package services
 import (
 	"gitlab.sudovi.me/erp/core-ms-api/data"
 	"gitlab.sudovi.me/erp/core-ms-api/dto"
-	"gitlab.sudovi.me/erp/core-ms-api/errors"
+	newErrors "gitlab.sudovi.me/erp/core-ms-api/pkg/errors"
 
 	"github.com/oykos-development-hub/celeritas"
 )
@@ -23,8 +23,7 @@ func NewRolesPermissionServiceImpl(app *celeritas.Celeritas, repo data.RolesPerm
 func (h *RolesPermissionServiceImpl) SyncPermissions(roleID int, input []dto.RolesPermissionDTO) ([]dto.RolesPermissionResponseDTO, error) {
 	err := h.repo.DeleteAllPermissionsByRole(roleID)
 	if err != nil {
-		h.App.ErrorLog.Println(err)
-		return nil, errors.ErrInternalServer
+		return nil, newErrors.Wrap(err, "repo role permission sync permissions")
 	}
 
 	for _, rolePermission := range input {
@@ -32,14 +31,13 @@ func (h *RolesPermissionServiceImpl) SyncPermissions(roleID int, input []dto.Rol
 
 		_, err := h.repo.Insert(*data)
 		if err != nil {
-			return nil, errors.ErrInternalServer
+			return nil, newErrors.Wrap(err, "repo role permission insert")
 		}
 	}
 
 	data, err := h.repo.GetAll(nil)
 	if err != nil {
-		h.App.ErrorLog.Println(err)
-		return nil, errors.ErrInternalServer
+		return nil, newErrors.Wrap(err, "repo role permission get all")
 	}
 
 	response := dto.ToRolesPermissionListResponseDTO(data)

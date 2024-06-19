@@ -3,7 +3,7 @@ package services
 import (
 	"gitlab.sudovi.me/erp/core-ms-api/data"
 	"gitlab.sudovi.me/erp/core-ms-api/dto"
-	"gitlab.sudovi.me/erp/core-ms-api/errors"
+	newErrors "gitlab.sudovi.me/erp/core-ms-api/pkg/errors"
 
 	"github.com/oykos-development-hub/celeritas"
 )
@@ -25,12 +25,12 @@ func (h *PermissionServiceImpl) CreatePermission(input dto.PermissionDTO) (*dto.
 
 	id, err := h.repo.Insert(*data)
 	if err != nil {
-		return nil, errors.ErrInternalServer
+		return nil, newErrors.Wrap(err, "repo permission insert")
 	}
 
 	data, err = data.Get(id)
 	if err != nil {
-		return nil, errors.ErrInternalServer
+		return nil, newErrors.Wrap(err, "repo permission get")
 	}
 
 	res := dto.ToPermissionResponseDTO(*data)
@@ -44,12 +44,12 @@ func (h *PermissionServiceImpl) UpdatePermission(id int, input dto.PermissionDTO
 
 	err := h.repo.Update(*data)
 	if err != nil {
-		return nil, errors.ErrInternalServer
+		return nil, newErrors.Wrap(err, "repo permission update")
 	}
 
 	data, err = h.repo.Get(id)
 	if err != nil {
-		return nil, errors.ErrInternalServer
+		return nil, newErrors.Wrap(err, "repo permission get")
 	}
 
 	response := dto.ToPermissionResponseDTO(*data)
@@ -60,8 +60,7 @@ func (h *PermissionServiceImpl) UpdatePermission(id int, input dto.PermissionDTO
 func (h *PermissionServiceImpl) DeletePermission(id int) error {
 	err := h.repo.Delete(id)
 	if err != nil {
-		h.App.ErrorLog.Println(err)
-		return errors.ErrInternalServer
+		return newErrors.Wrap(err, "repo permission delete")
 	}
 
 	return nil
@@ -70,8 +69,7 @@ func (h *PermissionServiceImpl) DeletePermission(id int) error {
 func (h *PermissionServiceImpl) GetPermission(id int) (*dto.PermissionResponseDTO, error) {
 	data, err := h.repo.Get(id)
 	if err != nil {
-		h.App.ErrorLog.Println(err)
-		return nil, errors.ErrNotFound
+		return nil, newErrors.Wrap(err, "repo permission get")
 	}
 	response := dto.ToPermissionResponseDTO(*data)
 
@@ -81,8 +79,7 @@ func (h *PermissionServiceImpl) GetPermission(id int) (*dto.PermissionResponseDT
 func (h *PermissionServiceImpl) GetPermissionList() ([]dto.PermissionResponseDTO, error) {
 	data, err := h.repo.GetAll(nil)
 	if err != nil {
-		h.App.ErrorLog.Println(err)
-		return nil, errors.ErrInternalServer
+		return nil, newErrors.Wrap(err, "repo permission get all")
 	}
 	response := dto.ToPermissionListResponseDTO(data)
 
@@ -93,8 +90,7 @@ func (h *PermissionServiceImpl) GetPermissionListForRole(roleID int) ([]dto.Perm
 	data, err := h.repo.GetAllPermissionOfRole(roleID)
 	data[0].CanRead = true
 	if err != nil {
-		h.App.ErrorLog.Println(err)
-		return nil, errors.ErrInternalServer
+		return nil, newErrors.Wrap(err, "repo permission get permission list for role")
 	}
 	response := dto.ToPermissionListWithRoleResponseDTO(data)
 

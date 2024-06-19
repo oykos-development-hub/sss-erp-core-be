@@ -11,7 +11,7 @@ import (
 
 	"gitlab.sudovi.me/erp/core-ms-api/data"
 	"gitlab.sudovi.me/erp/core-ms-api/dto"
-	"gitlab.sudovi.me/erp/core-ms-api/errors"
+	newErrors "gitlab.sudovi.me/erp/core-ms-api/pkg/errors"
 
 	"github.com/golang-jwt/jwt"
 	"github.com/oykos-development-hub/celeritas"
@@ -41,19 +41,17 @@ func NewAuthServiceImpl(app *celeritas.Celeritas, userRepo data.User, logRepo da
 func (s *authServiceImpl) Login(loginInput dto.LoginInput) (*dto.LoginResponse, error) {
 	user, err := s.userRepo.GetByEmail(loginInput.Email)
 	if err != nil {
-		s.App.ErrorLog.Println(err.Error())
-		return nil, errors.ErrEmailNotFound
+		return nil, newErrors.Wrap(err, "repo auth get by email")
 	}
 
 	matches, err := user.PasswordMatches(loginInput.Password)
 	if err != nil || !matches {
-		return nil, errors.ErrIncorrectPassword
+		return nil, newErrors.Wrap(err, "repo auth password matches")
 	}
 
 	userToken, err := s.generateAndSaveToken(user.ID)
 	if err != nil {
-		s.App.ErrorLog.Println(err)
-		return nil, errors.ErrInternalServer
+		return nil, newErrors.Wrap(err, "repo auth generate token")
 	}
 
 	_, err = s.logRepo.Insert(data.Log{
@@ -63,8 +61,7 @@ func (s *authServiceImpl) Login(loginInput dto.LoginInput) (*dto.LoginResponse, 
 	})
 
 	if err != nil {
-		s.App.ErrorLog.Println(err)
-		return nil, errors.ErrInternalServer
+		return nil, newErrors.Wrap(err, "repo auth insert log")
 	}
 
 	return &dto.LoginResponse{
@@ -76,15 +73,14 @@ func (s *authServiceImpl) Login(loginInput dto.LoginInput) (*dto.LoginResponse, 
 func (s *authServiceImpl) ValidatePin(id int, pinInput dto.ValidatePinInput) error {
 	user, err := s.userRepo.Get(id)
 	if err != nil {
-		s.App.ErrorLog.Println(err)
-		return errors.ErrNotFound
+		return newErrors.Wrap(err, "repo auth get")
 	}
 
 	pinNum, _ := strconv.Atoi(user.Pin)
 	pinInputNum, _ := strconv.Atoi(pinInput.Pin)
 
 	if pinNum != pinInputNum {
-		return errors.ErrUnauthorized
+		return newErrors.Wrap(nil, "repo auth pin match")
 	}
 
 	return nil
@@ -94,20 +90,17 @@ func (s *authServiceImpl) RefreshToken(userId int, refreshToken string, iat stri
 
 	t, err := s.App.Cache.Get(buildRefreshTokenKey(userId, iat))
 	if err != nil || t != refreshToken {
-		s.App.ErrorLog.Printf("Refresh token is revoked: %v", err)
-		return nil, errors.ErrUnauthorized
+		return nil, newErrors.Wrap(err, "repo auth build token")
 	}
 
 	err = s.revokeRefreshToken(userId, iat)
 	if err != nil {
-		s.App.ErrorLog.Printf("Error rotating refresh tokens: %v", err)
-		return nil, errors.ErrInternalServer
+		return nil, newErrors.Wrap(err, "repo auth revoke token")
 	}
 
 	newToken, err := s.generateAndSaveToken(userId)
 	if err != nil {
-		s.App.ErrorLog.Printf("Error generating new refresh token: %v", err)
-		return nil, errors.ErrInternalServer
+		return nil, newErrors.Wrap(err, "repo auth generate token")
 	}
 
 	return newToken, nil
@@ -116,8 +109,7 @@ func (s *authServiceImpl) RefreshToken(userId int, refreshToken string, iat stri
 func (s *authServiceImpl) Logout(userId int) error {
 	err := s.revokeAllRefreshTokens(userId)
 	if err != nil {
-		s.App.ErrorLog.Printf("Error revoking refresh token: %v", err)
-		return errors.ErrUnauthorized
+		return newErrors.Wrap(err, "repo auth revoke token")
 	}
 
 	_, err = s.logRepo.Insert(data.Log{
@@ -127,7 +119,7 @@ func (s *authServiceImpl) Logout(userId int) error {
 	})
 
 	if err != nil {
-		return errors.ErrInternalServer
+		return newErrors.Wrap(err, "repo auth log insert")
 	}
 
 	return nil
@@ -138,7 +130,7 @@ func RandomCharset(charset string) (string, error) {
 	max := big.NewInt(int64(len(charset)))
 	n, err := rand.Int(rand.Reader, max)
 	if err != nil {
-		return "", err
+		return "", newErrors.Wrap(err, "repo auth random")
 	}
 	return string(charset[n.Int64()]), nil
 }
@@ -148,7 +140,7 @@ func (s *authServiceImpl) ForgotPassword(input dto.ForgotPassword) error {
 	var u *data.User
 	u, err := u.GetByEmail(input.Email)
 	if err != nil {
-		return errors.ErrNotFound
+		return newErrors.Wrap(err, "repo auth get by email")
 	}
 
 	// create and sign the link to password reset form
@@ -173,7 +165,7 @@ func (s *authServiceImpl) ForgotPassword(input dto.ForgotPassword) error {
 	s.App.Mail.Jobs <- msg
 	res := <-s.App.Mail.Results
 	if res.Error != nil {
-		return err
+		return newErrors.Wrap(err, "repo auth insert mail result")
 	}
 
 	return nil
@@ -188,13 +180,13 @@ func (s *authServiceImpl) ResetPasswordVerify(email, token string) (*dto.ResetPa
 	}
 	valid := signer.VerifyToken(link)
 	if !valid {
-		return nil, errors.ErrUnauthorized
+		return nil, newErrors.Wrap(nil, "repo auth verify token")
 	}
 
 	// make sure it's not expired
 	expired := signer.Expired(link, 60)
 	if expired {
-		return nil, errors.ErrExpired
+		return nil, newErrors.Wrap(nil, "repo auth expired")
 	}
 
 	encryptedEmail, _ := s.Encrypt(email)
@@ -207,23 +199,20 @@ func (s *authServiceImpl) ResetPasswordVerify(email, token string) (*dto.ResetPa
 func (s *authServiceImpl) ResetPassword(input dto.ResetPassword) error {
 	email, err := s.Decrypt(input.EncryptedEmail)
 	if err != nil {
-		s.App.ErrorLog.Printf("Failed to decrypt email: %v", err)
-		return errors.ErrInternalServer
+		return newErrors.Wrap(err, "repo auth decrypt")
 	}
 
 	// get the user
 	var u data.User
 	user, err := u.GetByEmail(email)
 	if err != nil {
-		s.App.ErrorLog.Printf("Failed to retrieve user: %v", err)
-		return errors.ErrInternalServer
+		return newErrors.Wrap(err, "repo auth get by email")
 	}
 
 	// reset the password
 	err = user.ResetPassword(user.ID, input.Password)
 	if err != nil {
-		s.App.ErrorLog.Printf("Failed to reset password: %v", err)
-		return errors.ErrInternalServer
+		return newErrors.Wrap(err, "repo auth reset password")
 	}
 
 	return nil
@@ -245,7 +234,7 @@ func (s *authServiceImpl) generateAndSaveToken(userID int) (*jwtdto.Token, error
 	})
 
 	if err != nil {
-		return nil, err
+		return nil, newErrors.Wrap(err, "repo auth jwt token sign")
 	}
 
 	_ = s.App.Cache.Set(
@@ -265,12 +254,12 @@ func (s *authServiceImpl) revokeRefreshToken(userID int, iat string) error {
 	err := s.App.Cache.Forget(
 		buildRefreshTokenKey(userID, iat),
 	)
-	return err
+	return newErrors.Wrap(err, "repo auth cache forget")
 }
 
 func (s *authServiceImpl) revokeAllRefreshTokens(userID int) error {
 	err := s.App.Cache.EmptyByMatch(
 		buildRefreshTokenKey(userID, ""),
 	)
-	return err
+	return newErrors.Wrap(err, "repo auth empty cache")
 }

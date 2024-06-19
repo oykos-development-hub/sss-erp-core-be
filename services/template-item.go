@@ -5,7 +5,7 @@ import (
 
 	"gitlab.sudovi.me/erp/core-ms-api/data"
 	"gitlab.sudovi.me/erp/core-ms-api/dto"
-	"gitlab.sudovi.me/erp/core-ms-api/errors"
+	newErrors "gitlab.sudovi.me/erp/core-ms-api/pkg/errors"
 
 	"github.com/oykos-development-hub/celeritas"
 	up "github.com/upper/db/v4"
@@ -28,12 +28,12 @@ func (h *TemplateItemServiceImpl) CreateTemplateItem(ctx context.Context, input 
 
 	id, err := h.repo.Insert(ctx, *data)
 	if err != nil {
-		return nil, errors.ErrInternalServer
+		return nil, newErrors.Wrap(err, "repo template item create")
 	}
 
 	data, err = data.Get(id)
 	if err != nil {
-		return nil, errors.ErrInternalServer
+		return nil, newErrors.Wrap(err, "repo template item get")
 	}
 
 	res := dto.ToTemplateItemResponseDTO(*data)
@@ -47,12 +47,12 @@ func (h *TemplateItemServiceImpl) UpdateTemplateItem(ctx context.Context, id int
 
 	err := h.repo.Update(ctx, *data)
 	if err != nil {
-		return nil, errors.ErrInternalServer
+		return nil, newErrors.Wrap(err, "repo template item update")
 	}
 
 	data, err = h.repo.Get(id)
 	if err != nil {
-		return nil, errors.ErrInternalServer
+		return nil, newErrors.Wrap(err, "repo template item get")
 	}
 
 	response := dto.ToTemplateItemResponseDTO(*data)
@@ -63,8 +63,7 @@ func (h *TemplateItemServiceImpl) UpdateTemplateItem(ctx context.Context, id int
 func (h *TemplateItemServiceImpl) DeleteTemplateItem(ctx context.Context, id int) error {
 	err := h.repo.Delete(ctx, id)
 	if err != nil {
-		h.App.ErrorLog.Println(err)
-		return errors.ErrInternalServer
+		return newErrors.Wrap(err, "repo template item delete")
 	}
 
 	return nil
@@ -73,8 +72,7 @@ func (h *TemplateItemServiceImpl) DeleteTemplateItem(ctx context.Context, id int
 func (h *TemplateItemServiceImpl) GetTemplateItem(id int) (*dto.TemplateItemResponseDTO, error) {
 	data, err := h.repo.Get(id)
 	if err != nil {
-		h.App.ErrorLog.Println(err)
-		return nil, errors.ErrNotFound
+		return nil, newErrors.Wrap(err, "repo template item get")
 	}
 	response := dto.ToTemplateItemResponseDTO(*data)
 
@@ -105,8 +103,7 @@ func (h *TemplateItemServiceImpl) GetTemplateItemList(filter dto.TemplateItemFil
 
 	data, total, err := h.repo.GetAll(filter.Page, filter.Size, conditionAndExp, orders)
 	if err != nil {
-		h.App.ErrorLog.Println(err)
-		return nil, nil, errors.ErrInternalServer
+		return nil, nil, newErrors.Wrap(err, "repo template item get all")
 	}
 	response := dto.ToTemplateItemListResponseDTO(data)
 

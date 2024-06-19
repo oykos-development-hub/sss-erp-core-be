@@ -47,11 +47,6 @@ type SettingService interface {
 	GetSettingList(dto.GetSettingsDTO) ([]dto.SettingResponseDTO, *uint64, error)
 }
 
-type UserAccountLogService interface {
-	CreateUserAccountLog(input dto.UserAccountLogDTO) (*dto.UserAccountLogResponseDTO, error)
-	DeleteUserAccountLog(id int) error
-}
-
 type SupplierService interface {
 	CreateSupplier(input dto.SupplierDTO) (*dto.SupplierResponseDTO, error)
 	UpdateSupplier(id int, input dto.SupplierDTO) (*dto.SupplierResponseDTO, error)

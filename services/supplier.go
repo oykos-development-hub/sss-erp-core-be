@@ -5,7 +5,7 @@ import (
 
 	"gitlab.sudovi.me/erp/core-ms-api/data"
 	"gitlab.sudovi.me/erp/core-ms-api/dto"
-	"gitlab.sudovi.me/erp/core-ms-api/errors"
+	newErrors "gitlab.sudovi.me/erp/core-ms-api/pkg/errors"
 
 	"github.com/oykos-development-hub/celeritas"
 	up "github.com/upper/db/v4"
@@ -37,7 +37,7 @@ func (h *SupplierServiceImpl) CreateSupplier(input dto.SupplierDTO) (*dto.Suppli
 		var err error
 		id, err = h.repo.Insert(tx, *supplier)
 		if err != nil {
-			return errors.ErrInternalServer
+			return newErrors.Wrap(err, "repo supplier create")
 		}
 
 		for _, account := range input.BankAccounts {
@@ -49,7 +49,7 @@ func (h *SupplierServiceImpl) CreateSupplier(input dto.SupplierDTO) (*dto.Suppli
 			}
 
 			if _, err = h.bankAccountRepo.Insert(tx, newAccount); err != nil {
-				return err
+				return newErrors.Wrap(err, "repo bank account create")
 			}
 		}
 
@@ -62,7 +62,7 @@ func (h *SupplierServiceImpl) CreateSupplier(input dto.SupplierDTO) (*dto.Suppli
 
 	supplier, err = supplier.Get(id)
 	if err != nil {
-		return nil, errors.ErrInternalServer
+		return nil, newErrors.Wrap(err, "repo supplier get")
 	}
 
 	supplier.BankAccounts = input.BankAccounts
@@ -79,7 +79,7 @@ func (h *SupplierServiceImpl) UpdateSupplier(id int, input dto.SupplierDTO) (*dt
 		// Get existing bank accounts for the supplier
 		existingBankAccounts, err := h.bankAccountRepo.GetSupplierBankAccounts(id)
 		if err != nil {
-			return err
+			return newErrors.Wrap(err, "repo bank account get")
 		}
 
 		existingBankAccountSet := make(map[string]struct{})
@@ -103,7 +103,7 @@ func (h *SupplierServiceImpl) UpdateSupplier(id int, input dto.SupplierDTO) (*dt
 				}
 
 				if _, err = h.bankAccountRepo.Insert(tx, newAccount); err != nil {
-					return err
+					return newErrors.Wrap(err, "repo bank account create")
 				}
 			}
 		}
@@ -112,7 +112,7 @@ func (h *SupplierServiceImpl) UpdateSupplier(id int, input dto.SupplierDTO) (*dt
 		for account := range existingBankAccountSet {
 			if _, ok := receivedAccountSet[account]; !ok {
 				if err = h.bankAccountRepo.Delete(tx, account); err != nil {
-					return err
+					return newErrors.Wrap(err, "repo bank account delete")
 				}
 			}
 		}
@@ -125,7 +125,7 @@ func (h *SupplierServiceImpl) UpdateSupplier(id int, input dto.SupplierDTO) (*dt
 
 		err = h.repo.Update(*updatedData)
 		if err != nil {
-			return errors.ErrInternalServer
+			return newErrors.Wrap(err, "repo supplier update")
 		}
 
 		return nil
@@ -137,7 +137,7 @@ func (h *SupplierServiceImpl) UpdateSupplier(id int, input dto.SupplierDTO) (*dt
 
 	updatedData, err = h.repo.Get(id)
 	if err != nil {
-		return nil, errors.ErrInternalServer
+		return nil, newErrors.Wrap(err, "repo supplier get")
 	}
 
 	updatedData.BankAccounts = input.BankAccounts
@@ -150,8 +150,7 @@ func (h *SupplierServiceImpl) UpdateSupplier(id int, input dto.SupplierDTO) (*dt
 func (h *SupplierServiceImpl) DeleteSupplier(id int) error {
 	err := h.repo.Delete(id)
 	if err != nil {
-		h.App.ErrorLog.Println(err)
-		return errors.ErrInternalServer
+		return newErrors.Wrap(err, "repo supplier delete")
 	}
 
 	return nil
@@ -160,14 +159,13 @@ func (h *SupplierServiceImpl) DeleteSupplier(id int) error {
 func (h *SupplierServiceImpl) GetSupplier(id int) (*dto.SupplierResponseDTO, error) {
 	data, err := h.repo.Get(id)
 	if err != nil {
-		h.App.ErrorLog.Println(err)
-		return nil, errors.ErrNotFound
+		return nil, newErrors.Wrap(err, "repo supplier get")
 	}
 
 	// Get bank account for the supplier
 	accounts, err := h.bankAccountRepo.GetSupplierBankAccounts(id)
 	if err != nil {
-		return nil, err
+		return nil, newErrors.Wrap(err, "repo bank account get")
 	}
 
 	data.BankAccounts = accounts
@@ -222,15 +220,14 @@ func (h *SupplierServiceImpl) GetSupplierList(input dto.GetSupplierListInput) ([
 	data, total, err := h.repo.GetAll(input.Page, input.Size, combinedCond)
 
 	if err != nil {
-		h.App.ErrorLog.Println(err)
-		return nil, nil, errors.ErrInternalServer
+		return nil, nil, newErrors.Wrap(err, "repo supplier get all")
 	}
 
 	// Get bank accounts for each supplier
 	for _, supplier := range data {
 		accounts, err := h.bankAccountRepo.GetSupplierBankAccounts(supplier.ID)
 		if err != nil {
-			return nil, nil, err
+			return nil, nil, newErrors.Wrap(err, "repo bank account get all")
 		}
 
 		supplier.BankAccounts = accounts

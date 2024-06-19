@@ -4,6 +4,7 @@ import (
 	"time"
 
 	up "github.com/upper/db/v4"
+	newErrors "gitlab.sudovi.me/erp/core-ms-api/pkg/errors"
 )
 
 // Permission struct
@@ -43,7 +44,7 @@ func (t *Permission) GetAll(condition *up.Cond) ([]*Permission, error) {
 
 	err := res.OrderBy("id").All(&all)
 	if err != nil {
-		return nil, err
+		return nil, newErrors.Wrap(err, "upper order")
 	}
 
 	return all, err
@@ -69,7 +70,7 @@ func (p *Permission) GetAllPermissionOfRole(roleID int) ([]*PermissionWithRoles,
 		All(&all)
 
 	if err != nil {
-		return nil, err
+		return nil, newErrors.Wrap(err, "upper exec query")
 	}
 
 	return all, err
@@ -83,7 +84,7 @@ func (t *Permission) Get(id int) (*Permission, error) {
 	res := collection.Find(up.Cond{"id": id})
 	err := res.One(&one)
 	if err != nil {
-		return nil, err
+		return nil, newErrors.Wrap(err, "upper get")
 	}
 	return &one, nil
 }
@@ -94,7 +95,7 @@ func (t *Permission) Update(m Permission) error {
 	res := collection.Find(m.ID)
 	err := res.Update(&m)
 	if err != nil {
-		return err
+		return newErrors.Wrap(err, "upper update")
 	}
 	return nil
 }
@@ -105,7 +106,7 @@ func (t *Permission) Delete(id int) error {
 	res := collection.Find(id)
 	err := res.Delete()
 	if err != nil {
-		return err
+		return newErrors.Wrap(err, "upper delete")
 	}
 	return nil
 }
@@ -115,7 +116,7 @@ func (t *Permission) Insert(m Permission) (int, error) {
 	collection := Upper.Collection(t.Table())
 	res, err := collection.Insert(m)
 	if err != nil {
-		return 0, err
+		return 0, newErrors.Wrap(err, "upper insert")
 	}
 
 	id := getInsertId(res.ID())

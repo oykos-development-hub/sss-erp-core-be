@@ -2,11 +2,10 @@ package services
 
 import (
 	"context"
-	"strings"
 
 	"gitlab.sudovi.me/erp/core-ms-api/data"
 	"gitlab.sudovi.me/erp/core-ms-api/dto"
-	"gitlab.sudovi.me/erp/core-ms-api/errors"
+	newErrors "gitlab.sudovi.me/erp/core-ms-api/pkg/errors"
 
 	"github.com/oykos-development-hub/celeritas"
 )
@@ -28,12 +27,13 @@ func (h *RoleServiceImpl) CreateRole(ctx context.Context, input dto.CreateRoleDT
 
 	id, err := h.repo.Insert(ctx, *data)
 	if err != nil {
-		return nil, errors.ErrInternalServer
+		return nil, newErrors.Wrap(err, "repo role insert")
+
 	}
 
 	data, err = data.Get(id)
 	if err != nil {
-		return nil, errors.ErrInternalServer
+		return nil, newErrors.Wrap(err, "repo role get")
 	}
 
 	res := dto.ToRoleResponseDTO(*data)
@@ -47,12 +47,12 @@ func (h *RoleServiceImpl) UpdateRole(ctx context.Context, id int, input dto.Crea
 
 	err := h.repo.Update(ctx, *data)
 	if err != nil {
-		return nil, errors.ErrInternalServer
+		return nil, newErrors.Wrap(err, "repo role update")
 	}
 
 	data, err = h.repo.Get(id)
 	if err != nil {
-		return nil, errors.ErrInternalServer
+		return nil, newErrors.Wrap(err, "repo role get")
 	}
 
 	response := dto.ToRoleResponseDTO(*data)
@@ -63,13 +63,8 @@ func (h *RoleServiceImpl) UpdateRole(ctx context.Context, id int, input dto.Crea
 func (h *RoleServiceImpl) DeleteRole(ctx context.Context, id int) error {
 	err := h.repo.Delete(ctx, id)
 	if err != nil {
-		h.App.ErrorLog.Println(err)
 
-		if strings.Contains(err.Error(), "violates foreign key constraint") {
-			return errors.ErrRoleStillAssigned
-		}
-
-		return errors.ErrInternalServer
+		return newErrors.Wrap(err, "repo role delete")
 	}
 
 	return nil
@@ -78,8 +73,7 @@ func (h *RoleServiceImpl) DeleteRole(ctx context.Context, id int) error {
 func (h *RoleServiceImpl) GetRole(id int) (*dto.RoleResponseDTO, error) {
 	data, err := h.repo.Get(id)
 	if err != nil {
-		h.App.ErrorLog.Println(err)
-		return nil, errors.ErrNotFound
+		return nil, newErrors.Wrap(err, "repo role get")
 	}
 	response := dto.ToRoleResponseDTO(*data)
 
@@ -89,8 +83,7 @@ func (h *RoleServiceImpl) GetRole(id int) (*dto.RoleResponseDTO, error) {
 func (h *RoleServiceImpl) GetRoleList() ([]dto.RoleResponseDTO, error) {
 	data, err := h.repo.GetAll(nil)
 	if err != nil {
-		h.App.ErrorLog.Println(err)
-		return nil, errors.ErrInternalServer
+		return nil, newErrors.Wrap(err, "repo role get all")
 	}
 	response := dto.ToRoleListResponseDTO(data)
 
