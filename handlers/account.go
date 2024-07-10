@@ -16,15 +16,17 @@ import (
 
 // AccountHandler is a concrete type that implements AccountHandler
 type accountHandlerImpl struct {
-	App     *celeritas.Celeritas
-	service services.AccountService
+	App             *celeritas.Celeritas
+	service         services.AccountService
+	errorLogService services.ErrorLogService
 }
 
 // NewAccountHandler initializes a new AccountHandler with its dependencies
-func NewAccountHandler(app *celeritas.Celeritas, accountService services.AccountService) AccountHandler {
+func NewAccountHandler(app *celeritas.Celeritas, accountService services.AccountService, errorLogService services.ErrorLogService) AccountHandler {
 	return &accountHandlerImpl{
-		App:     app,
-		service: accountService,
+		App:             app,
+		service:         accountService,
+		errorLogService: errorLogService,
 	}
 }
 
@@ -32,7 +34,8 @@ func (h *accountHandlerImpl) CreateAccount(w http.ResponseWriter, r *http.Reques
 	var input []dto.AccountDTO
 	err := h.App.ReadJSON(w, r, &input)
 	if err != nil {
-		h.App.ErrorLog.Print(err) //zamijenicu ovo sa slogom kad vidim kako ga koristite
+		h.errorLogService.CreateErrorLog(err)
+		h.App.ErrorLog.Print(err)
 		_ = h.App.WriteErrorResponse(w, http.StatusBadRequest, err)
 		return
 	}
@@ -49,6 +52,7 @@ func (h *accountHandlerImpl) CreateAccount(w http.ResponseWriter, r *http.Reques
 	userID, err := strconv.Atoi(userIDString)
 
 	if err != nil {
+		h.errorLogService.CreateErrorLog(err)
 		h.App.ErrorLog.Print(err)
 		_ = h.App.WriteErrorResponseWithData(w, errors.MapErrorToStatusCode(errors.ErrUnauthorized), errors.ErrBadRequest, validator.Errors)
 		return
@@ -59,6 +63,7 @@ func (h *accountHandlerImpl) CreateAccount(w http.ResponseWriter, r *http.Reques
 
 	res, err := h.service.CreateAccountList(ctx, input)
 	if err != nil {
+		h.errorLogService.CreateErrorLog(err)
 		h.App.ErrorLog.Print(err)
 		_ = h.App.WriteErrorResponse(w, errors.MapErrorToStatusCode(err), err)
 		return
@@ -75,6 +80,7 @@ func (h *accountHandlerImpl) DeleteAccount(w http.ResponseWriter, r *http.Reques
 	userID, err := strconv.Atoi(userIDString)
 
 	if err != nil {
+		h.errorLogService.CreateErrorLog(err)
 		h.App.ErrorLog.Print(err)
 		_ = h.App.WriteErrorResponse(w, errors.MapErrorToStatusCode(errors.ErrUnauthorized), errors.ErrUnauthorized)
 		return
@@ -85,6 +91,7 @@ func (h *accountHandlerImpl) DeleteAccount(w http.ResponseWriter, r *http.Reques
 
 	err = h.service.DeleteAccount(ctx, id)
 	if err != nil {
+		h.errorLogService.CreateErrorLog(err)
 		h.App.ErrorLog.Print(err)
 		_ = h.App.WriteErrorResponse(w, errors.MapErrorToStatusCode(err), err)
 		return
@@ -98,6 +105,7 @@ func (h *accountHandlerImpl) GetAccountById(w http.ResponseWriter, r *http.Reque
 
 	res, err := h.service.GetAccount(id)
 	if err != nil {
+		h.errorLogService.CreateErrorLog(err)
 		h.App.ErrorLog.Print(err)
 		_ = h.App.WriteErrorResponse(w, errors.MapErrorToStatusCode(err), err)
 		return
@@ -110,6 +118,7 @@ func (h *accountHandlerImpl) GetAccountList(w http.ResponseWriter, r *http.Reque
 	var input dto.GetAccountsFilter
 	err := h.App.ReadJSON(w, r, &input)
 	if err != nil {
+		h.errorLogService.CreateErrorLog(err)
 		h.App.ErrorLog.Print(err)
 		_ = h.App.WriteErrorResponse(w, http.StatusBadRequest, err)
 		return
@@ -117,6 +126,7 @@ func (h *accountHandlerImpl) GetAccountList(w http.ResponseWriter, r *http.Reque
 
 	res, total, err := h.service.GetAccountList(input)
 	if err != nil {
+		h.errorLogService.CreateErrorLog(err)
 		h.App.ErrorLog.Print(err)
 		_ = h.App.WriteErrorResponse(w, errors.MapErrorToStatusCode(err), err)
 		return

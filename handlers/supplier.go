@@ -14,15 +14,17 @@ import (
 
 // SupplierHandler is a concrete type that implements SupplierHandler
 type supplierHandlerImpl struct {
-	App     *celeritas.Celeritas
-	service services.SupplierService
+	App             *celeritas.Celeritas
+	service         services.SupplierService
+	errorLogService services.ErrorLogService
 }
 
 // NewSupplierHandler initializes a new SupplierHandler with its dependencies
-func NewSupplierHandler(app *celeritas.Celeritas, supplierService services.SupplierService) SupplierHandler {
+func NewSupplierHandler(app *celeritas.Celeritas, supplierService services.SupplierService, errorLogService services.ErrorLogService) SupplierHandler {
 	return &supplierHandlerImpl{
-		App:     app,
-		service: supplierService,
+		App:             app,
+		service:         supplierService,
+		errorLogService: errorLogService,
 	}
 }
 
@@ -30,6 +32,7 @@ func (h *supplierHandlerImpl) CreateSupplier(w http.ResponseWriter, r *http.Requ
 	var input dto.SupplierDTO
 	err := h.App.ReadJSON(w, r, &input)
 	if err != nil {
+		h.errorLogService.CreateErrorLog(err)
 		h.App.ErrorLog.Print(err)
 		_ = h.App.WriteErrorResponse(w, http.StatusBadRequest, err)
 		return
@@ -44,6 +47,7 @@ func (h *supplierHandlerImpl) CreateSupplier(w http.ResponseWriter, r *http.Requ
 
 	res, err := h.service.CreateSupplier(input)
 	if err != nil {
+		h.errorLogService.CreateErrorLog(err)
 		h.App.ErrorLog.Print(err)
 		_ = h.App.WriteErrorResponse(w, errors.MapErrorToStatusCode(err), err)
 		return
@@ -58,6 +62,7 @@ func (h *supplierHandlerImpl) UpdateSupplier(w http.ResponseWriter, r *http.Requ
 	var input dto.SupplierDTO
 	err := h.App.ReadJSON(w, r, &input)
 	if err != nil {
+		h.errorLogService.CreateErrorLog(err)
 		h.App.ErrorLog.Print(err)
 		_ = h.App.WriteErrorResponse(w, http.StatusBadRequest, err)
 		return
@@ -72,6 +77,7 @@ func (h *supplierHandlerImpl) UpdateSupplier(w http.ResponseWriter, r *http.Requ
 
 	res, err := h.service.UpdateSupplier(id, input)
 	if err != nil {
+		h.errorLogService.CreateErrorLog(err)
 		h.App.ErrorLog.Print(err)
 		_ = h.App.WriteErrorResponse(w, errors.MapErrorToStatusCode(err), err)
 		return
@@ -85,6 +91,7 @@ func (h *supplierHandlerImpl) DeleteSupplier(w http.ResponseWriter, r *http.Requ
 
 	err := h.service.DeleteSupplier(id)
 	if err != nil {
+		h.errorLogService.CreateErrorLog(err)
 		h.App.ErrorLog.Print(err)
 		_ = h.App.WriteErrorResponse(w, errors.MapErrorToStatusCode(err), err)
 		return
@@ -98,6 +105,7 @@ func (h *supplierHandlerImpl) GetSupplierById(w http.ResponseWriter, r *http.Req
 
 	res, err := h.service.GetSupplier(id)
 	if err != nil {
+		h.errorLogService.CreateErrorLog(err)
 		h.App.ErrorLog.Print(err)
 		_ = h.App.WriteErrorResponse(w, errors.MapErrorToStatusCode(err), err)
 		return
@@ -117,6 +125,7 @@ func (h *supplierHandlerImpl) GetSupplierList(w http.ResponseWriter, r *http.Req
 
 	res, total, err := h.service.GetSupplierList(input)
 	if err != nil {
+		h.errorLogService.CreateErrorLog(err)
 		h.App.ErrorLog.Print(err)
 		_ = h.App.WriteErrorResponse(w, errors.MapErrorToStatusCode(err), err)
 		return

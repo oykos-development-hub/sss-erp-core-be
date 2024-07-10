@@ -14,15 +14,17 @@ import (
 
 // RolesPermissionHandler is a concrete type that implements RolesPermissionHandler
 type rolespermissionHandlerImpl struct {
-	App     *celeritas.Celeritas
-	service services.RolesPermissionService
+	App             *celeritas.Celeritas
+	service         services.RolesPermissionService
+	errorLogService services.ErrorLogService
 }
 
 // NewRolesPermissionHandler initializes a new RolesPermissionHandler with its dependencies
-func NewRolesPermissionHandler(app *celeritas.Celeritas, rolespermissionService services.RolesPermissionService) RolesPermissionHandler {
+func NewRolesPermissionHandler(app *celeritas.Celeritas, rolespermissionService services.RolesPermissionService, errorLogService services.ErrorLogService) RolesPermissionHandler {
 	return &rolespermissionHandlerImpl{
-		App:     app,
-		service: rolespermissionService,
+		App:             app,
+		service:         rolespermissionService,
+		errorLogService: errorLogService,
 	}
 }
 
@@ -32,6 +34,7 @@ func (h *rolespermissionHandlerImpl) SyncPermissions(w http.ResponseWriter, r *h
 	var input []dto.RolesPermissionDTO
 	err := h.App.ReadJSON(w, r, &input)
 	if err != nil {
+		h.errorLogService.CreateErrorLog(err)
 		h.App.ErrorLog.Print(err)
 		_ = h.App.WriteErrorResponse(w, http.StatusBadRequest, err)
 		return
@@ -46,6 +49,7 @@ func (h *rolespermissionHandlerImpl) SyncPermissions(w http.ResponseWriter, r *h
 
 	res, err := h.service.SyncPermissions(roleID, input)
 	if err != nil {
+		h.errorLogService.CreateErrorLog(err)
 		h.App.ErrorLog.Print(err)
 		_ = h.App.WriteErrorResponse(w, errors.MapErrorToStatusCode(err), err)
 		return

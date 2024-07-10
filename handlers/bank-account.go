@@ -14,15 +14,17 @@ import (
 
 // BankAccountHandler is a concrete type that implements BankAccountHandler
 type bankaccountHandlerImpl struct {
-	App     *celeritas.Celeritas
-	service services.BankAccountService
+	App             *celeritas.Celeritas
+	service         services.BankAccountService
+	errorLogService services.ErrorLogService
 }
 
 // NewBankAccountHandler initializes a new BankAccountHandler with its dependencies
-func NewBankAccountHandler(app *celeritas.Celeritas, bankAccountService services.BankAccountService) BankAccountHandler {
+func NewBankAccountHandler(app *celeritas.Celeritas, bankAccountService services.BankAccountService, errorLogService services.ErrorLogService) BankAccountHandler {
 	return &bankaccountHandlerImpl{
-		App:     app,
-		service: bankAccountService,
+		App:             app,
+		service:         bankAccountService,
+		errorLogService: errorLogService,
 	}
 }
 
@@ -30,6 +32,7 @@ func (h *bankaccountHandlerImpl) CreateBankAccount(w http.ResponseWriter, r *htt
 	var input dto.BankAccountDTO
 	err := h.App.ReadJSON(w, r, &input)
 	if err != nil {
+		h.errorLogService.CreateErrorLog(err)
 		h.App.ErrorLog.Print(err)
 		_ = h.App.WriteErrorResponse(w, http.StatusBadRequest, err)
 		return
@@ -44,6 +47,7 @@ func (h *bankaccountHandlerImpl) CreateBankAccount(w http.ResponseWriter, r *htt
 
 	res, err := h.service.CreateBankAccount(input)
 	if err != nil {
+		h.errorLogService.CreateErrorLog(err)
 		h.App.ErrorLog.Print(err)
 		_ = h.App.WriteErrorResponse(w, errors.MapErrorToStatusCode(err), err)
 		return
@@ -58,6 +62,7 @@ func (h *bankaccountHandlerImpl) UpdateBankAccount(w http.ResponseWriter, r *htt
 	var input dto.BankAccountDTO
 	err := h.App.ReadJSON(w, r, &input)
 	if err != nil {
+		h.errorLogService.CreateErrorLog(err)
 		h.App.ErrorLog.Print(err)
 		_ = h.App.WriteErrorResponse(w, http.StatusBadRequest, err)
 		return
@@ -72,6 +77,7 @@ func (h *bankaccountHandlerImpl) UpdateBankAccount(w http.ResponseWriter, r *htt
 
 	res, err := h.service.UpdateBankAccount(id, input)
 	if err != nil {
+		h.errorLogService.CreateErrorLog(err)
 		h.App.ErrorLog.Print(err)
 		_ = h.App.WriteErrorResponse(w, errors.MapErrorToStatusCode(err), err)
 		return
@@ -85,6 +91,7 @@ func (h *bankaccountHandlerImpl) DeleteBankAccount(w http.ResponseWriter, r *htt
 
 	err := h.service.DeleteBankAccount(title)
 	if err != nil {
+		h.errorLogService.CreateErrorLog(err)
 		h.App.ErrorLog.Print(err)
 		_ = h.App.WriteErrorResponse(w, errors.MapErrorToStatusCode(err), err)
 		return
@@ -98,6 +105,7 @@ func (h *bankaccountHandlerImpl) GetBankAccountById(w http.ResponseWriter, r *ht
 
 	res, err := h.service.GetBankAccount(id)
 	if err != nil {
+		h.errorLogService.CreateErrorLog(err)
 		h.App.ErrorLog.Print(err)
 		_ = h.App.WriteErrorResponse(w, errors.MapErrorToStatusCode(err), err)
 		return
@@ -120,6 +128,7 @@ func (h *bankaccountHandlerImpl) GetBankAccountList(w http.ResponseWriter, r *ht
 
 	res, total, err := h.service.GetBankAccountList(filter)
 	if err != nil {
+		h.errorLogService.CreateErrorLog(err)
 		h.App.ErrorLog.Print(err)
 		_ = h.App.WriteErrorResponse(w, errors.MapErrorToStatusCode(err), err)
 		return

@@ -114,3 +114,19 @@ type TemplateItemService interface {
 	GetTemplateItem(id int) (*dto.TemplateItemResponseDTO, error)
 	GetTemplateItemList(filter dto.TemplateItemFilterDTO) ([]dto.TemplateItemResponseDTO, *uint64, error)
 }
+
+type ErrorLogService interface {
+	CreateErrorLog(err error)
+	UpdateErrorLog(id int, input dto.ErrorLogDTO) (*dto.ErrorLogResponseDTO, error)
+	DeleteErrorLog(id int) error
+	GetErrorLog(id int) (*dto.ErrorLogResponseDTO, error)
+	GetErrorLogList(filter dto.ErrorLogFilterDTO) ([]dto.ErrorLogResponseDTO, *uint64, error)
+}
+
+type BffErrorLogService interface {
+	CreateBffErrorLog(input dto.BffErrorLogDTO) (*dto.BffErrorLogResponseDTO, error)
+	UpdateBffErrorLog(id int, input dto.BffErrorLogDTO) (*dto.BffErrorLogResponseDTO, error)
+	DeleteBffErrorLog(id int) error
+	GetBffErrorLog(id int) (*dto.BffErrorLogResponseDTO, error)
+	GetBffErrorLogList(filter dto.BffErrorLogFilterDTO) ([]dto.BffErrorLogResponseDTO, *uint64, error)
+}

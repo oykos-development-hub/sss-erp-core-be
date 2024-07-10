@@ -14,10 +14,12 @@ type Handlers struct {
 	NotificationHandler    NotificationHandler
 	RolesPermissionHandler RolesPermissionHandler
 	PermissionHandler      PermissionHandler
-	BankAccountHandler BankAccountHandler
-		LogHandler LogHandler
-		TemplateHandler TemplateHandler
-		TemplateItemHandler TemplateItemHandler
+	BankAccountHandler     BankAccountHandler
+	LogHandler             LogHandler
+	TemplateHandler        TemplateHandler
+	TemplateItemHandler    TemplateItemHandler
+	ErrorLogHandler        ErrorLogHandler
+	BffErrorLogHandler BffErrorLogHandler
 	}
 
 type UserHandler interface {
@@ -121,4 +123,19 @@ type TemplateItemHandler interface {
 	DeleteTemplateItem(w http.ResponseWriter, r *http.Request)
 	GetTemplateItemById(w http.ResponseWriter, r *http.Request)
 	GetTemplateItemList(w http.ResponseWriter, r *http.Request)
+}
+
+type ErrorLogHandler interface {
+	UpdateErrorLog(w http.ResponseWriter, r *http.Request)
+	DeleteErrorLog(w http.ResponseWriter, r *http.Request)
+	GetErrorLogById(w http.ResponseWriter, r *http.Request)
+	GetErrorLogList(w http.ResponseWriter, r *http.Request)
+}
+
+type BffErrorLogHandler interface {
+	CreateBffErrorLog(w http.ResponseWriter, r *http.Request)
+	UpdateBffErrorLog(w http.ResponseWriter, r *http.Request)
+	DeleteBffErrorLog(w http.ResponseWriter, r *http.Request)
+	GetBffErrorLogById(w http.ResponseWriter, r *http.Request)
+	GetBffErrorLogList(w http.ResponseWriter, r *http.Request)
 }

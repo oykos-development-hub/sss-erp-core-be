@@ -1,0 +1,1 @@
+DROP TABLE IF EXISTS bff_error_logs;

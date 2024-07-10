@@ -16,15 +16,17 @@ import (
 
 // RoleHandler is a concrete type that implements RoleHandler
 type RoleHandlerImpl struct {
-	App     *celeritas.Celeritas
-	service services.RoleService
+	App             *celeritas.Celeritas
+	service         services.RoleService
+	errorLogService services.ErrorLogService
 }
 
 // NewRoleHandler initializes a new RoleHandler with its dependencies
-func NewRoleHandler(app *celeritas.Celeritas, RoleService services.RoleService) RoleHandler {
+func NewRoleHandler(app *celeritas.Celeritas, RoleService services.RoleService, errorLogService services.ErrorLogService) RoleHandler {
 	return &RoleHandlerImpl{
-		App:     app,
-		service: RoleService,
+		App:             app,
+		service:         RoleService,
+		errorLogService: errorLogService,
 	}
 }
 
@@ -44,6 +46,7 @@ func (h *RoleHandlerImpl) CreateRole(w http.ResponseWriter, r *http.Request) {
 	userID, err := strconv.Atoi(userIDString)
 
 	if err != nil {
+		h.errorLogService.CreateErrorLog(err)
 		h.App.ErrorLog.Print(err)
 		_ = h.App.WriteErrorResponseWithData(w, errors.MapErrorToStatusCode(errors.ErrUnauthorized), errors.ErrBadRequest, validator.Errors)
 		return
@@ -54,6 +57,7 @@ func (h *RoleHandlerImpl) CreateRole(w http.ResponseWriter, r *http.Request) {
 
 	res, err := h.service.CreateRole(ctx, input)
 	if err != nil {
+		h.errorLogService.CreateErrorLog(err)
 		h.App.ErrorLog.Print(err)
 		_ = h.App.WriteErrorResponse(w, errors.MapErrorToStatusCode(err), err)
 		return
@@ -80,6 +84,7 @@ func (h *RoleHandlerImpl) UpdateRole(w http.ResponseWriter, r *http.Request) {
 	userID, err := strconv.Atoi(userIDString)
 
 	if err != nil {
+		h.errorLogService.CreateErrorLog(err)
 		h.App.ErrorLog.Print(err)
 		_ = h.App.WriteErrorResponseWithData(w, errors.MapErrorToStatusCode(errors.ErrUnauthorized), errors.ErrBadRequest, validator.Errors)
 		return
@@ -90,6 +95,7 @@ func (h *RoleHandlerImpl) UpdateRole(w http.ResponseWriter, r *http.Request) {
 
 	res, err := h.service.UpdateRole(ctx, id, input)
 	if err != nil {
+		h.errorLogService.CreateErrorLog(err)
 		h.App.ErrorLog.Print(err)
 		_ = h.App.WriteErrorResponse(w, errors.MapErrorToStatusCode(err), err)
 		return
@@ -106,6 +112,7 @@ func (h *RoleHandlerImpl) DeleteRole(w http.ResponseWriter, r *http.Request) {
 	userID, err := strconv.Atoi(userIDString)
 
 	if err != nil {
+		h.errorLogService.CreateErrorLog(err)
 		h.App.ErrorLog.Print(err)
 		_ = h.App.WriteErrorResponse(w, errors.MapErrorToStatusCode(errors.ErrUnauthorized), errors.ErrBadRequest)
 		return
@@ -116,6 +123,7 @@ func (h *RoleHandlerImpl) DeleteRole(w http.ResponseWriter, r *http.Request) {
 
 	err = h.service.DeleteRole(ctx, id)
 	if err != nil {
+		h.errorLogService.CreateErrorLog(err)
 		h.App.ErrorLog.Print(err)
 		_ = h.App.WriteErrorResponse(w, errors.MapErrorToStatusCode(err), err)
 		return
@@ -129,6 +137,7 @@ func (h *RoleHandlerImpl) GetRoleById(w http.ResponseWriter, r *http.Request) {
 
 	res, err := h.service.GetRole(id)
 	if err != nil {
+		h.errorLogService.CreateErrorLog(err)
 		h.App.ErrorLog.Print(err)
 		_ = h.App.WriteErrorResponse(w, errors.MapErrorToStatusCode(err), err)
 		return
@@ -140,6 +149,7 @@ func (h *RoleHandlerImpl) GetRoleById(w http.ResponseWriter, r *http.Request) {
 func (h *RoleHandlerImpl) GetRoleList(w http.ResponseWriter, r *http.Request) {
 	res, err := h.service.GetRoleList()
 	if err != nil {
+		h.errorLogService.CreateErrorLog(err)
 		h.App.ErrorLog.Print(err)
 		_ = h.App.WriteErrorResponse(w, errors.MapErrorToStatusCode(err), err)
 		return

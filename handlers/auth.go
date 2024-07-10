@@ -13,14 +13,16 @@ import (
 )
 
 type authHandlerImpl struct {
-	App     *celeritas.Celeritas
-	service services.AuthService
+	App             *celeritas.Celeritas
+	service         services.AuthService
+	errorLogService services.ErrorLogService
 }
 
-func NewAuthHandler(app *celeritas.Celeritas, authService services.AuthService) AuthHandler {
+func NewAuthHandler(app *celeritas.Celeritas, authService services.AuthService, errorLogService services.ErrorLogService) AuthHandler {
 	return &authHandlerImpl{
-		App:     app,
-		service: authService,
+		App:             app,
+		service:         authService,
+		errorLogService: errorLogService,
 	}
 }
 
@@ -31,6 +33,7 @@ func (h *authHandlerImpl) Login(w http.ResponseWriter, r *http.Request) {
 
 	loginRes, err := h.service.Login(loginInput)
 	if err != nil {
+		h.errorLogService.CreateErrorLog(err)
 		h.App.ErrorLog.Print(err)
 		_ = h.App.WriteErrorResponse(w, errors.MapErrorToStatusCode(err), err)
 		return
@@ -69,6 +72,7 @@ func (h *authHandlerImpl) ValidatePin(w http.ResponseWriter, r *http.Request) {
 	err := h.service.ValidatePin(userId, input)
 
 	if err != nil {
+		h.errorLogService.CreateErrorLog(err)
 		h.App.ErrorLog.Print(err)
 		_ = h.App.WriteErrorResponse(w, errors.MapErrorToStatusCode(err), err)
 		return
@@ -85,6 +89,7 @@ func (h *authHandlerImpl) RefreshToken(w http.ResponseWriter, r *http.Request) {
 
 	token, err := h.service.RefreshToken(userId, refreshToken, iat)
 	if err != nil {
+		h.errorLogService.CreateErrorLog(err)
 		h.App.ErrorLog.Print(err)
 		_ = h.App.WriteErrorResponse(w, errors.MapErrorToStatusCode(err), err)
 		return
@@ -112,6 +117,7 @@ func (h *authHandlerImpl) Logout(w http.ResponseWriter, r *http.Request) {
 
 	err := h.service.Logout(idNumber)
 	if err != nil {
+		h.errorLogService.CreateErrorLog(err)
 		h.App.ErrorLog.Print(err)
 		_ = h.App.WriteErrorResponse(w, errors.MapErrorToStatusCode(err), err)
 		return
@@ -126,6 +132,7 @@ func (h *authHandlerImpl) ForgotPassword(w http.ResponseWriter, r *http.Request)
 
 	err := h.service.ForgotPassword(forgotPasswordInput)
 	if err != nil {
+		h.errorLogService.CreateErrorLog(err)
 		h.App.ErrorLog.Print(err)
 		_ = h.App.WriteErrorResponse(w, errors.MapErrorToStatusCode(err), err)
 		return
@@ -139,6 +146,7 @@ func (h *authHandlerImpl) ResetPasswordVerify(w http.ResponseWriter, r *http.Req
 	var input dto.ResetPasswordVerify
 	err := h.App.ReadJSON(w, r, &input)
 	if err != nil {
+		h.errorLogService.CreateErrorLog(err)
 		h.App.ErrorLog.Print(err)
 		_ = h.App.WriteErrorResponse(w, http.StatusBadRequest, err)
 		return
@@ -153,6 +161,7 @@ func (h *authHandlerImpl) ResetPasswordVerify(w http.ResponseWriter, r *http.Req
 
 	res, err := h.service.ResetPasswordVerify(input.Email, input.Token)
 	if err != nil {
+		h.errorLogService.CreateErrorLog(err)
 		h.App.ErrorLog.Print(err)
 		_ = h.App.WriteErrorResponse(w, errors.MapErrorToStatusCode(err), err)
 		return
@@ -174,6 +183,7 @@ func (h *authHandlerImpl) ResetPassword(w http.ResponseWriter, r *http.Request) 
 
 	err := h.service.ResetPassword(input)
 	if err != nil {
+		h.errorLogService.CreateErrorLog(err)
 		h.App.ErrorLog.Print(err)
 		_ = h.App.WriteErrorResponse(w, errors.MapErrorToStatusCode(err), err)
 		return

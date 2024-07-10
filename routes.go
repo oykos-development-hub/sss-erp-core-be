@@ -94,6 +94,17 @@ func routes(app *celeritas.Celeritas, middleware *middleware.Middleware, handler
 		rt.Get("/template-items", handlers.TemplateItemHandler.GetTemplateItemList)
 		rt.Put("/template-items/{id}", handlers.TemplateItemHandler.UpdateTemplateItem)
 		rt.Delete("/template-items/{id}", handlers.TemplateItemHandler.DeleteTemplateItem)
+
+		rt.Get("/error-logs/{id}", handlers.ErrorLogHandler.GetErrorLogById)
+		rt.Get("/error-logs", handlers.ErrorLogHandler.GetErrorLogList)
+		rt.Put("/error-logs/{id}", handlers.ErrorLogHandler.UpdateErrorLog)
+		rt.Delete("/error-logs/{id}", handlers.ErrorLogHandler.DeleteErrorLog)
+	
+		rt.Post("/bff-error-logs", handlers.BffErrorLogHandler.CreateBffErrorLog)
+rt.Get("/bff-error-logs/{id}", handlers.BffErrorLogHandler.GetBffErrorLogById)
+rt.Get("/bff-error-logs", handlers.BffErrorLogHandler.GetBffErrorLogList)
+rt.Put("/bff-error-logs/{id}", handlers.BffErrorLogHandler.UpdateBffErrorLog)
+rt.Delete("/bff-error-logs/{id}", handlers.BffErrorLogHandler.DeleteBffErrorLog)
 	})
 
 	return app.Routes

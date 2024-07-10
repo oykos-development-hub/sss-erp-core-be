@@ -16,15 +16,17 @@ import (
 
 // TemplateItemHandler is a concrete type that implements TemplateItemHandler
 type templateitemHandlerImpl struct {
-	App     *celeritas.Celeritas
-	service services.TemplateItemService
+	App             *celeritas.Celeritas
+	service         services.TemplateItemService
+	errorLogService services.ErrorLogService
 }
 
 // NewTemplateItemHandler initializes a new TemplateItemHandler with its dependencies
-func NewTemplateItemHandler(app *celeritas.Celeritas, templateitemService services.TemplateItemService) TemplateItemHandler {
+func NewTemplateItemHandler(app *celeritas.Celeritas, templateitemService services.TemplateItemService, errorLogService services.ErrorLogService) TemplateItemHandler {
 	return &templateitemHandlerImpl{
-		App:     app,
-		service: templateitemService,
+		App:             app,
+		service:         templateitemService,
+		errorLogService: errorLogService,
 	}
 }
 
@@ -32,6 +34,7 @@ func (h *templateitemHandlerImpl) CreateTemplateItem(w http.ResponseWriter, r *h
 	var input dto.TemplateItemDTO
 	err := h.App.ReadJSON(w, r, &input)
 	if err != nil {
+		h.errorLogService.CreateErrorLog(err)
 		h.App.ErrorLog.Print(err)
 		_ = h.App.WriteErrorResponse(w, http.StatusBadRequest, err)
 		return
@@ -49,6 +52,7 @@ func (h *templateitemHandlerImpl) CreateTemplateItem(w http.ResponseWriter, r *h
 	userID, err := strconv.Atoi(userIDString)
 
 	if err != nil {
+		h.errorLogService.CreateErrorLog(err)
 		h.App.ErrorLog.Print(err)
 		_ = h.App.WriteErrorResponse(w, errors.MapErrorToStatusCode(errors.ErrUnauthorized), errors.ErrBadRequest)
 		return
@@ -59,6 +63,7 @@ func (h *templateitemHandlerImpl) CreateTemplateItem(w http.ResponseWriter, r *h
 
 	res, err := h.service.CreateTemplateItem(ctx, input)
 	if err != nil {
+		h.errorLogService.CreateErrorLog(err)
 		h.App.ErrorLog.Print(err)
 		_ = h.App.WriteErrorResponse(w, errors.MapErrorToStatusCode(err), err)
 		return
@@ -73,6 +78,7 @@ func (h *templateitemHandlerImpl) UpdateTemplateItem(w http.ResponseWriter, r *h
 	var input dto.TemplateItemDTO
 	err := h.App.ReadJSON(w, r, &input)
 	if err != nil {
+		h.errorLogService.CreateErrorLog(err)
 		h.App.ErrorLog.Print(err)
 		_ = h.App.WriteErrorResponse(w, http.StatusBadRequest, err)
 		return
@@ -90,6 +96,7 @@ func (h *templateitemHandlerImpl) UpdateTemplateItem(w http.ResponseWriter, r *h
 	userID, err := strconv.Atoi(userIDString)
 
 	if err != nil {
+		h.errorLogService.CreateErrorLog(err)
 		h.App.ErrorLog.Print(err)
 		_ = h.App.WriteErrorResponse(w, errors.MapErrorToStatusCode(errors.ErrUnauthorized), errors.ErrBadRequest)
 		return
@@ -100,6 +107,7 @@ func (h *templateitemHandlerImpl) UpdateTemplateItem(w http.ResponseWriter, r *h
 
 	res, err := h.service.UpdateTemplateItem(ctx, id, input)
 	if err != nil {
+		h.errorLogService.CreateErrorLog(err)
 		h.App.ErrorLog.Print(err)
 		_ = h.App.WriteErrorResponse(w, errors.MapErrorToStatusCode(err), err)
 		return
@@ -116,6 +124,7 @@ func (h *templateitemHandlerImpl) DeleteTemplateItem(w http.ResponseWriter, r *h
 	userID, err := strconv.Atoi(userIDString)
 
 	if err != nil {
+		h.errorLogService.CreateErrorLog(err)
 		h.App.ErrorLog.Print(err)
 		_ = h.App.WriteErrorResponse(w, errors.MapErrorToStatusCode(errors.ErrUnauthorized), errors.ErrBadRequest)
 		return
@@ -126,6 +135,7 @@ func (h *templateitemHandlerImpl) DeleteTemplateItem(w http.ResponseWriter, r *h
 
 	err = h.service.DeleteTemplateItem(ctx, id)
 	if err != nil {
+		h.errorLogService.CreateErrorLog(err)
 		h.App.ErrorLog.Print(err)
 		_ = h.App.WriteErrorResponse(w, errors.MapErrorToStatusCode(err), err)
 		return
@@ -139,6 +149,7 @@ func (h *templateitemHandlerImpl) GetTemplateItemById(w http.ResponseWriter, r *
 
 	res, err := h.service.GetTemplateItem(id)
 	if err != nil {
+		h.errorLogService.CreateErrorLog(err)
 		h.App.ErrorLog.Print(err)
 		_ = h.App.WriteErrorResponse(w, errors.MapErrorToStatusCode(err), err)
 		return
@@ -161,6 +172,7 @@ func (h *templateitemHandlerImpl) GetTemplateItemList(w http.ResponseWriter, r *
 
 	res, total, err := h.service.GetTemplateItemList(filter)
 	if err != nil {
+		h.errorLogService.CreateErrorLog(err)
 		h.App.ErrorLog.Print(err)
 		_ = h.App.WriteErrorResponse(w, errors.MapErrorToStatusCode(err), err)
 		return

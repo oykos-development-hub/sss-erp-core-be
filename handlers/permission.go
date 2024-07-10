@@ -14,15 +14,17 @@ import (
 
 // PermissionHandler is a concrete type that implements PermissionHandler
 type permissionHandlerImpl struct {
-	App     *celeritas.Celeritas
-	service services.PermissionService
+	App             *celeritas.Celeritas
+	service         services.PermissionService
+	errorLogService services.ErrorLogService
 }
 
 // NewPermissionHandler initializes a new PermissionHandler with its dependencies
-func NewPermissionHandler(app *celeritas.Celeritas, permissionService services.PermissionService) PermissionHandler {
+func NewPermissionHandler(app *celeritas.Celeritas, permissionService services.PermissionService, errorLogService services.ErrorLogService) PermissionHandler {
 	return &permissionHandlerImpl{
-		App:     app,
-		service: permissionService,
+		App:             app,
+		service:         permissionService,
+		errorLogService: errorLogService,
 	}
 }
 
@@ -30,6 +32,7 @@ func (h *permissionHandlerImpl) CreatePermission(w http.ResponseWriter, r *http.
 	var input dto.PermissionDTO
 	err := h.App.ReadJSON(w, r, &input)
 	if err != nil {
+		h.errorLogService.CreateErrorLog(err)
 		h.App.ErrorLog.Print(err)
 		_ = h.App.WriteErrorResponse(w, http.StatusBadRequest, err)
 		return
@@ -44,6 +47,7 @@ func (h *permissionHandlerImpl) CreatePermission(w http.ResponseWriter, r *http.
 
 	res, err := h.service.CreatePermission(input)
 	if err != nil {
+		h.errorLogService.CreateErrorLog(err)
 		h.App.ErrorLog.Print(err)
 		_ = h.App.WriteErrorResponse(w, errors.MapErrorToStatusCode(err), err)
 		return
@@ -58,6 +62,7 @@ func (h *permissionHandlerImpl) UpdatePermission(w http.ResponseWriter, r *http.
 	var input dto.PermissionDTO
 	err := h.App.ReadJSON(w, r, &input)
 	if err != nil {
+		h.errorLogService.CreateErrorLog(err)
 		h.App.ErrorLog.Print(err)
 		_ = h.App.WriteErrorResponse(w, http.StatusBadRequest, err)
 		return
@@ -72,6 +77,7 @@ func (h *permissionHandlerImpl) UpdatePermission(w http.ResponseWriter, r *http.
 
 	res, err := h.service.UpdatePermission(id, input)
 	if err != nil {
+		h.errorLogService.CreateErrorLog(err)
 		h.App.ErrorLog.Print(err)
 		_ = h.App.WriteErrorResponse(w, errors.MapErrorToStatusCode(err), err)
 		return
@@ -85,6 +91,7 @@ func (h *permissionHandlerImpl) DeletePermission(w http.ResponseWriter, r *http.
 
 	err := h.service.DeletePermission(id)
 	if err != nil {
+		h.errorLogService.CreateErrorLog(err)
 		h.App.ErrorLog.Print(err)
 		_ = h.App.WriteErrorResponse(w, errors.MapErrorToStatusCode(err), err)
 		return
@@ -98,6 +105,7 @@ func (h *permissionHandlerImpl) GetPermissionById(w http.ResponseWriter, r *http
 
 	res, err := h.service.GetPermission(id)
 	if err != nil {
+		h.errorLogService.CreateErrorLog(err)
 		h.App.ErrorLog.Print(err)
 		_ = h.App.WriteErrorResponse(w, errors.MapErrorToStatusCode(err), err)
 		return
@@ -109,6 +117,7 @@ func (h *permissionHandlerImpl) GetPermissionById(w http.ResponseWriter, r *http
 func (h *permissionHandlerImpl) GetPermissionList(w http.ResponseWriter, r *http.Request) {
 	res, err := h.service.GetPermissionList()
 	if err != nil {
+		h.errorLogService.CreateErrorLog(err)
 		h.App.ErrorLog.Print(err)
 		_ = h.App.WriteErrorResponse(w, errors.MapErrorToStatusCode(err), err)
 		return
@@ -122,6 +131,7 @@ func (h *permissionHandlerImpl) GetPermissionListForRole(w http.ResponseWriter, 
 
 	res, err := h.service.GetPermissionListForRole(id)
 	if err != nil {
+		h.errorLogService.CreateErrorLog(err)
 		h.App.ErrorLog.Print(err)
 		_ = h.App.WriteErrorResponse(w, errors.MapErrorToStatusCode(err), err)
 		return

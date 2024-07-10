@@ -14,15 +14,17 @@ import (
 
 // SettingHandler is a concrete type that implements SettingHandler
 type settingHandlerImpl struct {
-	App     *celeritas.Celeritas
-	service services.SettingService
+	App             *celeritas.Celeritas
+	service         services.SettingService
+	errorLogService services.ErrorLogService
 }
 
 // NewSettingHandler initializes a new SettingHandler with its dependencies
-func NewSettingHandler(app *celeritas.Celeritas, settingService services.SettingService) SettingHandler {
+func NewSettingHandler(app *celeritas.Celeritas, settingService services.SettingService, errorLogService services.ErrorLogService) SettingHandler {
 	return &settingHandlerImpl{
-		App:     app,
-		service: settingService,
+		App:             app,
+		service:         settingService,
+		errorLogService: errorLogService,
 	}
 }
 
@@ -39,6 +41,7 @@ func (h *settingHandlerImpl) CreateSetting(w http.ResponseWriter, r *http.Reques
 
 	res, err := h.service.CreateSetting(input)
 	if err != nil {
+		h.errorLogService.CreateErrorLog(err)
 		h.App.ErrorLog.Print(err)
 		_ = h.App.WriteErrorResponse(w, errors.MapErrorToStatusCode(err), err)
 		return
@@ -62,6 +65,7 @@ func (h *settingHandlerImpl) UpdateSetting(w http.ResponseWriter, r *http.Reques
 
 	res, err := h.service.UpdateSetting(id, input)
 	if err != nil {
+		h.errorLogService.CreateErrorLog(err)
 		h.App.ErrorLog.Print(err)
 		_ = h.App.WriteErrorResponse(w, errors.MapErrorToStatusCode(err), err)
 		return
@@ -75,6 +79,7 @@ func (h *settingHandlerImpl) DeleteSetting(w http.ResponseWriter, r *http.Reques
 
 	err := h.service.DeleteSetting(id)
 	if err != nil {
+		h.errorLogService.CreateErrorLog(err)
 		h.App.ErrorLog.Print(err)
 		_ = h.App.WriteErrorResponse(w, errors.MapErrorToStatusCode(err), err)
 		return
@@ -88,6 +93,7 @@ func (h *settingHandlerImpl) GetSettingById(w http.ResponseWriter, r *http.Reque
 
 	res, err := h.service.GetSetting(id)
 	if err != nil {
+		h.errorLogService.CreateErrorLog(err)
 		h.App.ErrorLog.Print(err)
 		_ = h.App.WriteErrorResponse(w, errors.MapErrorToStatusCode(err), err)
 		return
@@ -109,6 +115,7 @@ func (h *settingHandlerImpl) GetSettingList(w http.ResponseWriter, r *http.Reque
 
 	res, total, err := h.service.GetSettingList(input)
 	if err != nil {
+		h.errorLogService.CreateErrorLog(err)
 		h.App.ErrorLog.Print(err)
 		_ = h.App.WriteErrorResponse(w, errors.MapErrorToStatusCode(err), err)
 		return

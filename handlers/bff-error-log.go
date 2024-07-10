@@ -12,101 +12,93 @@ import (
 	"github.com/oykos-development-hub/celeritas"
 )
 
-// TemplateHandler is a concrete type that implements TemplateHandler
-type templateHandlerImpl struct {
+// BffErrorLogHandler is a concrete type that implements BffErrorLogHandler
+type bfferrorlogHandlerImpl struct {
 	App             *celeritas.Celeritas
-	service         services.TemplateService
+	service         services.BffErrorLogService
 	errorLogService services.ErrorLogService
 }
 
-// NewTemplateHandler initializes a new TemplateHandler with its dependencies
-func NewTemplateHandler(app *celeritas.Celeritas, templateService services.TemplateService, errorLogService services.ErrorLogService) TemplateHandler {
-	return &templateHandlerImpl{
+// NewBffErrorLogHandler initializes a new BffErrorLogHandler with its dependencies
+func NewBffErrorLogHandler(app *celeritas.Celeritas, bfferrorlogService services.BffErrorLogService, errorLogService services.ErrorLogService) BffErrorLogHandler {
+	return &bfferrorlogHandlerImpl{
 		App:             app,
-		service:         templateService,
+		service:         bfferrorlogService,
 		errorLogService: errorLogService,
 	}
 }
 
-func (h *templateHandlerImpl) CreateTemplate(w http.ResponseWriter, r *http.Request) {
-	var input dto.TemplateDTO
+func (h *bfferrorlogHandlerImpl) CreateBffErrorLog(w http.ResponseWriter, r *http.Request) {
+	var input dto.BffErrorLogDTO
 	err := h.App.ReadJSON(w, r, &input)
 	if err != nil {
 		h.errorLogService.CreateErrorLog(err)
-		h.App.ErrorLog.Print(err)
 		_ = h.App.WriteErrorResponse(w, http.StatusBadRequest, err)
 		return
 	}
 
 	validator := h.App.Validator().ValidateStruct(&input)
 	if !validator.Valid() {
-		h.App.ErrorLog.Print(validator.Errors)
 		_ = h.App.WriteErrorResponseWithData(w, errors.MapErrorToStatusCode(errors.ErrBadRequest), errors.ErrBadRequest, validator.Errors)
 		return
 	}
 
-	res, err := h.service.CreateTemplate(input)
+	res, err := h.service.CreateBffErrorLog(input)
 	if err != nil {
 		h.errorLogService.CreateErrorLog(err)
-		h.App.ErrorLog.Print(err)
 		_ = h.App.WriteErrorResponse(w, errors.MapErrorToStatusCode(err), err)
 		return
 	}
 
-	_ = h.App.WriteDataResponse(w, http.StatusOK, "Template created successfuly", res)
+	_ = h.App.WriteDataResponse(w, http.StatusOK, "BffErrorLog created successfuly", res)
 }
 
-func (h *templateHandlerImpl) UpdateTemplate(w http.ResponseWriter, r *http.Request) {
+func (h *bfferrorlogHandlerImpl) UpdateBffErrorLog(w http.ResponseWriter, r *http.Request) {
 	id, _ := strconv.Atoi(chi.URLParam(r, "id"))
 
-	var input dto.TemplateDTO
+	var input dto.BffErrorLogDTO
 	err := h.App.ReadJSON(w, r, &input)
 	if err != nil {
 		h.errorLogService.CreateErrorLog(err)
-		h.App.ErrorLog.Print(err)
 		_ = h.App.WriteErrorResponse(w, http.StatusBadRequest, err)
 		return
 	}
 
 	validator := h.App.Validator().ValidateStruct(&input)
 	if !validator.Valid() {
-		h.App.ErrorLog.Print(validator.Errors)
 		_ = h.App.WriteErrorResponseWithData(w, errors.MapErrorToStatusCode(errors.ErrBadRequest), errors.ErrBadRequest, validator.Errors)
 		return
 	}
 
-	res, err := h.service.UpdateTemplate(id, input)
+	res, err := h.service.UpdateBffErrorLog(id, input)
 	if err != nil {
 		h.errorLogService.CreateErrorLog(err)
-		h.App.ErrorLog.Print(err)
 		_ = h.App.WriteErrorResponse(w, errors.MapErrorToStatusCode(err), err)
 		return
 	}
 
-	_ = h.App.WriteDataResponse(w, http.StatusOK, "Template updated successfuly", res)
+	_ = h.App.WriteDataResponse(w, http.StatusOK, "BffErrorLog updated successfuly", res)
 }
 
-func (h *templateHandlerImpl) DeleteTemplate(w http.ResponseWriter, r *http.Request) {
+func (h *bfferrorlogHandlerImpl) DeleteBffErrorLog(w http.ResponseWriter, r *http.Request) {
 	id, _ := strconv.Atoi(chi.URLParam(r, "id"))
 
-	err := h.service.DeleteTemplate(id)
+	err := h.service.DeleteBffErrorLog(id)
 	if err != nil {
 		h.errorLogService.CreateErrorLog(err)
-		h.App.ErrorLog.Print(err)
 		_ = h.App.WriteErrorResponse(w, errors.MapErrorToStatusCode(err), err)
 		return
 	}
 
-	_ = h.App.WriteSuccessResponse(w, http.StatusOK, "Template deleted successfuly")
+	_ = h.App.WriteSuccessResponse(w, http.StatusOK, "BffErrorLog deleted successfuly")
 }
 
-func (h *templateHandlerImpl) GetTemplateById(w http.ResponseWriter, r *http.Request) {
+func (h *bfferrorlogHandlerImpl) GetBffErrorLogById(w http.ResponseWriter, r *http.Request) {
 	id, _ := strconv.Atoi(chi.URLParam(r, "id"))
 
-	res, err := h.service.GetTemplate(id)
+	res, err := h.service.GetBffErrorLog(id)
 	if err != nil {
 		h.errorLogService.CreateErrorLog(err)
-		h.App.ErrorLog.Print(err)
 		_ = h.App.WriteErrorResponse(w, errors.MapErrorToStatusCode(err), err)
 		return
 	}
@@ -114,22 +106,20 @@ func (h *templateHandlerImpl) GetTemplateById(w http.ResponseWriter, r *http.Req
 	_ = h.App.WriteDataResponse(w, http.StatusOK, "", res)
 }
 
-func (h *templateHandlerImpl) GetTemplateList(w http.ResponseWriter, r *http.Request) {
-	var filter dto.TemplateFilterDTO
+func (h *bfferrorlogHandlerImpl) GetBffErrorLogList(w http.ResponseWriter, r *http.Request) {
+	var filter dto.BffErrorLogFilterDTO
 
 	_ = h.App.ReadJSON(w, r, &filter)
 
 	validator := h.App.Validator().ValidateStruct(&filter)
 	if !validator.Valid() {
-		h.App.ErrorLog.Print(validator.Errors)
 		_ = h.App.WriteErrorResponseWithData(w, errors.MapErrorToStatusCode(errors.ErrBadRequest), errors.ErrBadRequest, validator.Errors)
 		return
 	}
 
-	res, total, err := h.service.GetTemplateList(filter)
+	res, total, err := h.service.GetBffErrorLogList(filter)
 	if err != nil {
 		h.errorLogService.CreateErrorLog(err)
-		h.App.ErrorLog.Print(err)
 		_ = h.App.WriteErrorResponse(w, errors.MapErrorToStatusCode(err), err)
 		return
 	}
