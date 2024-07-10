@@ -88,15 +88,15 @@ func (s *authServiceImpl) ValidatePin(id int, pinInput dto.ValidatePinInput) err
 
 func (s *authServiceImpl) RefreshToken(userId int, refreshToken string, iat string) (*jwtdto.Token, error) {
 
-	t, err := s.App.Cache.Get(buildRefreshTokenKey(userId, iat))
+	/*t, err := s.App.Cache.Get(buildRefreshTokenKey(userId, iat))
 	if err != nil || t != refreshToken {
 		return nil, newErrors.Wrap(err, "repo auth build token")
 	}
 
-	err = s.revokeRefreshToken(userId, iat)
+	err := s.revokeRefreshToken(userId, iat)
 	if err != nil {
 		return nil, newErrors.Wrap(err, "repo auth revoke token")
-	}
+	}*/
 
 	newToken, err := s.generateAndSaveToken(userId)
 	if err != nil {
@@ -250,12 +250,13 @@ func buildRefreshTokenKey(userID int, issuedAt string) string {
 	return fmt.Sprintf("refresh_token_%d_%s", userID, issuedAt)
 }
 
+/*
 func (s *authServiceImpl) revokeRefreshToken(userID int, iat string) error {
 	err := s.App.Cache.Forget(
 		buildRefreshTokenKey(userID, iat),
 	)
 	return newErrors.Wrap(err, "repo auth cache forget")
-}
+}*/
 
 func (s *authServiceImpl) revokeAllRefreshTokens(userID int) error {
 	err := s.App.Cache.EmptyByMatch(
