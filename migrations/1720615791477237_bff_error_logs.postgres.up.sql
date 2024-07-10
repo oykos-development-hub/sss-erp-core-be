@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS error_logs (
+CREATE TABLE IF NOT EXISTS bff_error_logs (
     id serial PRIMARY KEY,
     error VARCHAR ( 255 ) NOT NULL,
     code INTEGER,
