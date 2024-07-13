@@ -28,7 +28,7 @@ func (h *BffErrorLogServiceImpl) CreateBffErrorLog(input dto.BffErrorLogDTO) (*d
 
 	err := data.Upper.Tx(func(tx up.Session) error {
 		var err error
-		_, err = h.repo.Insert(tx, *dataToInsert)
+		id, err = h.repo.Insert(tx, *dataToInsert)
 		if err != nil {
 			return newErrors.Wrap(err, "repo insert")
 		}
