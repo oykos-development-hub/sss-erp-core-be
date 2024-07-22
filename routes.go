@@ -105,6 +105,12 @@ func routes(app *celeritas.Celeritas, middleware *middleware.Middleware, handler
 		rt.Get("/bff-error-logs", handlers.BffErrorLogHandler.GetBffErrorLogList)
 		rt.Put("/bff-error-logs/{id}", handlers.BffErrorLogHandler.UpdateBffErrorLog)
 		rt.Delete("/bff-error-logs/{id}", handlers.BffErrorLogHandler.DeleteBffErrorLog)
+	
+		rt.Post("/customer-supports", handlers.CustomerSupportHandler.CreateCustomerSupport)
+rt.Get("/customer-supports/{id}", handlers.CustomerSupportHandler.GetCustomerSupportById)
+rt.Get("/customer-supports", handlers.CustomerSupportHandler.GetCustomerSupportList)
+rt.Put("/customer-supports/{id}", handlers.CustomerSupportHandler.UpdateCustomerSupport)
+rt.Delete("/customer-supports/{id}", handlers.CustomerSupportHandler.DeleteCustomerSupport)
 	})
 
 	return app.Routes

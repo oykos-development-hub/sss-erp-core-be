@@ -130,3 +130,11 @@ type BffErrorLogService interface {
 	GetBffErrorLog(id int) (*dto.BffErrorLogResponseDTO, error)
 	GetBffErrorLogList(filter dto.BffErrorLogFilterDTO) ([]dto.BffErrorLogResponseDTO, *uint64, error)
 }
+
+type CustomerSupportService interface {
+	CreateCustomerSupport(input dto.CustomerSupportDTO) (*dto.CustomerSupportResponseDTO, error)
+	UpdateCustomerSupport(id int, input dto.CustomerSupportDTO) (*dto.CustomerSupportResponseDTO, error)
+	DeleteCustomerSupport(id int) error
+	GetCustomerSupport(id int) (*dto.CustomerSupportResponseDTO, error)
+	GetCustomerSupportList(filter dto.CustomerSupportFilterDTO) ([]dto.CustomerSupportResponseDTO, *uint64, error)
+}

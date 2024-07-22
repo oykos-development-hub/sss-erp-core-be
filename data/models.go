@@ -34,6 +34,7 @@ type Models struct {
 	TemplateItem    TemplateItem
 	ErrorLog ErrorLog
 		BffErrorLog BffErrorLog
+		CustomerSupport CustomerSupport
 	}
 
 func New(databasePool *sql.DB) Models {
@@ -63,6 +64,7 @@ func New(databasePool *sql.DB) Models {
 		TemplateItem:    TemplateItem{},
 		ErrorLog: ErrorLog{},
 		BffErrorLog: BffErrorLog{},
+		CustomerSupport: CustomerSupport{},
 	}
 }
 

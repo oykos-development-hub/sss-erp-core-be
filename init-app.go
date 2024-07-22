@@ -74,6 +74,10 @@ func initApplication() *celeritas.Celeritas {
 	BffErrorLogService := services.NewBffErrorLogServiceImpl(cel, models.BffErrorLog)
 	BffErrorLogHandler := handlers.NewBffErrorLogHandler(cel, BffErrorLogService, ErrorLogService)
 
+		
+	CustomerSupportService := services.NewCustomerSupportServiceImpl(cel, models.CustomerSupport)
+	CustomerSupportHandler := handlers.NewCustomerSupportHandler(cel, CustomerSupportService)
+
 	myHandlers := &handlers.Handlers{
 		UserHandler:            UserHandler,
 		AuthHandler:            AuthHandler,
@@ -90,6 +94,7 @@ func initApplication() *celeritas.Celeritas {
 		TemplateItemHandler:    TemplateItemHandler,
 		ErrorLogHandler:        ErrorLogHandler,
 		BffErrorLogHandler:     BffErrorLogHandler,
+		CustomerSupportHandler: CustomerSupportHandler,
 	}
 
 	myMiddleware := &middleware.Middleware{

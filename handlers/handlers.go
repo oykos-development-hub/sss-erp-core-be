@@ -20,6 +20,7 @@ type Handlers struct {
 	TemplateItemHandler    TemplateItemHandler
 	ErrorLogHandler        ErrorLogHandler
 	BffErrorLogHandler BffErrorLogHandler
+		CustomerSupportHandler CustomerSupportHandler
 	}
 
 type UserHandler interface {
@@ -138,4 +139,12 @@ type BffErrorLogHandler interface {
 	DeleteBffErrorLog(w http.ResponseWriter, r *http.Request)
 	GetBffErrorLogById(w http.ResponseWriter, r *http.Request)
 	GetBffErrorLogList(w http.ResponseWriter, r *http.Request)
+}
+
+type CustomerSupportHandler interface {
+	CreateCustomerSupport(w http.ResponseWriter, r *http.Request)
+	UpdateCustomerSupport(w http.ResponseWriter, r *http.Request)
+	DeleteCustomerSupport(w http.ResponseWriter, r *http.Request)
+	GetCustomerSupportById(w http.ResponseWriter, r *http.Request)
+	GetCustomerSupportList(w http.ResponseWriter, r *http.Request)
 }
