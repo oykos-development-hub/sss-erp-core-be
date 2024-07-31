@@ -45,7 +45,7 @@ type UserUpdateDTO struct {
 	LastName       *string `json:"last_name" validate:"omitempty"`
 	Email          *string `json:"email" validate:"omitempty,email"`
 	Active         *bool   `json:"active" validate:"omitempty,boolean"`
-	SecondaryEmail *string `json:"secondary_email" validate:"omitempty,email"`
+	SecondaryEmail *string `json:"secondary_email"`
 	Phone          *string `json:"phone" validate:"omitempty"`
 	FolderId       *int    `json:"folder_id" validate:"omitempty"`
 	RoleId         *int    `json:"role_id" validate:"omitempty"`
