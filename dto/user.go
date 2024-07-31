@@ -11,7 +11,7 @@ type UserRegistrationDTO struct {
 	LastName       string  `json:"last_name" validate:"required"`
 	Email          string  `json:"email" validate:"required"`
 	Password       string  `json:"password" validate:"required"`
-	SecondaryEmail *string `json:"secondary_email" validate:"omitempty"`
+	SecondaryEmail *string `json:"secondary_email"`
 	Phone          string  `json:"phone" validate:"required"`
 	Pin            string  `json:"pin" validate:"len=4"`
 	Active         *bool   `json:"active" validate:"omitempty,boolean"`
