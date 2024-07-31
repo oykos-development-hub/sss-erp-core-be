@@ -18,7 +18,7 @@ type UserRegistrationDTO struct {
 	VerifiedEmail  *bool   `json:"verified_email" validate:"omitempty,boolean"`
 	VerifiedPhone  *bool   `json:"verified_phone" validate:"omitempty,boolean"`
 	FolderId       *int    `json:"folder_id" validate:"omitempty"`
-	RoleId         int     `json:"role_id" validate:"omitempty"`
+	RoleId         *int    `json:"role_id" validate:"omitempty"`
 }
 
 func (dto *UserRegistrationDTO) ToUser() *data.User {
@@ -72,7 +72,7 @@ func (dto *UserUpdateDTO) ToUser(u *data.User) {
 		u.Active = *dto.Active
 	}
 	if dto.RoleId != nil {
-		u.RoleId = *dto.RoleId
+		u.RoleId = dto.RoleId
 	}
 
 	u.SecondaryEmail = dto.SecondaryEmail
@@ -92,7 +92,7 @@ type UserResponseDTO struct {
 	VerifiedEmail  bool      `json:"verified_email"`
 	VerifiedPhone  bool      `json:"verified_phone"`
 	FolderId       *int      `json:"folder_id"`
-	RoleId         int       `json:"role_id"`
+	RoleId         *int      `json:"role_id"`
 	CreatedAt      time.Time `json:"created_at"`
 	UpdatedAt      time.Time `json:"updated_at"`
 }

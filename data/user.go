@@ -29,7 +29,7 @@ type User struct {
 	FolderId       *int      `db:"folder_id"`
 	CreatedAt      time.Time `db:"created_at,omitempty"`
 	UpdatedAt      time.Time `db:"updated_at"`
-	RoleId         int       `db:"role_id"`
+	RoleId         *int      `db:"role_id"`
 }
 
 // Table returns the table name associated with this model in the database
