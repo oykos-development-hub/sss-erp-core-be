@@ -76,6 +76,35 @@ func (p *Permission) GetAllPermissionOfRole(roleID int) ([]*PermissionWithRoles,
 	return all, err
 }
 
+func (p *Permission) GetUsersByPermission(title string) ([]User, error) {
+	query1 := `select u.id from users u 
+	           left join roles r on r.id = u.role_id 
+			   left join roles_permissions rp on rp.role_id = r.id
+			   left join permissions p on p.id = rp.permission_id
+			   where p.path = $1;`
+
+	rows1, err := Upper.SQL().Query(query1, title)
+	if err != nil {
+		return nil, newErrors.Wrap(err, "upper exec")
+	}
+	defer rows1.Close()
+
+	var users []User
+
+	for rows1.Next() {
+		var user User
+		err = rows1.Scan(&user.ID)
+
+		if err != nil {
+			return nil, newErrors.Wrap(err, "upper scan")
+		}
+
+		users = append(users, user)
+
+	}
+	return users, nil
+}
+
 // Get gets one record from the database, by id, using upper
 func (t *Permission) Get(id int) (*Permission, error) {
 	var one Permission

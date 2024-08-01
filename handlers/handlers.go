@@ -19,9 +19,9 @@ type Handlers struct {
 	TemplateHandler        TemplateHandler
 	TemplateItemHandler    TemplateItemHandler
 	ErrorLogHandler        ErrorLogHandler
-	BffErrorLogHandler BffErrorLogHandler
-		CustomerSupportHandler CustomerSupportHandler
-	}
+	BffErrorLogHandler     BffErrorLogHandler
+	CustomerSupportHandler CustomerSupportHandler
+}
 
 type UserHandler interface {
 	CreateUser(w http.ResponseWriter, r *http.Request)
@@ -92,6 +92,7 @@ type PermissionHandler interface {
 	GetPermissionById(w http.ResponseWriter, r *http.Request)
 	GetPermissionList(w http.ResponseWriter, r *http.Request)
 	GetPermissionListForRole(w http.ResponseWriter, r *http.Request)
+	GetUsersByPermission(w http.ResponseWriter, r *http.Request)
 }
 
 type BankAccountHandler interface {

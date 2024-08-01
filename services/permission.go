@@ -96,3 +96,20 @@ func (h *PermissionServiceImpl) GetPermissionListForRole(roleID int) ([]dto.Perm
 
 	return response, nil
 }
+
+func (h *PermissionServiceImpl) GetUsersByPermission(title string) ([]dto.UserResponseDTO, error) {
+	data, err := h.repo.GetUsersByPermission(title)
+	if err != nil {
+		return nil, newErrors.Wrap(err, "repo permission get users by permission")
+	}
+
+	var response []dto.UserResponseDTO
+
+	for _, item := range data {
+		response = append(response, dto.UserResponseDTO{
+			ID: item.ID,
+		})
+	}
+
+	return response, nil
+}

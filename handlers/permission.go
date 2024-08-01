@@ -139,3 +139,31 @@ func (h *permissionHandlerImpl) GetPermissionListForRole(w http.ResponseWriter, 
 
 	_ = h.App.WriteDataResponse(w, http.StatusOK, "", res)
 }
+
+func (h *permissionHandlerImpl) GetUsersByPermission(w http.ResponseWriter, r *http.Request) {
+	var input dto.PermissionDTO
+	err := h.App.ReadJSON(w, r, &input)
+	if err != nil {
+		h.errorLogService.CreateErrorLog(err)
+		h.App.ErrorLog.Print(err)
+		_ = h.App.WriteErrorResponse(w, http.StatusBadRequest, err)
+		return
+	}
+
+	validator := h.App.Validator().ValidateStruct(&input)
+	if !validator.Valid() {
+		h.App.ErrorLog.Print(validator.Errors)
+		_ = h.App.WriteErrorResponseWithData(w, errors.MapErrorToStatusCode(errors.ErrBadRequest), errors.ErrBadRequest, validator.Errors)
+		return
+	}
+
+	res, err := h.service.GetUsersByPermission(input.Title)
+	if err != nil {
+		h.errorLogService.CreateErrorLog(err)
+		h.App.ErrorLog.Print(err)
+		_ = h.App.WriteErrorResponse(w, errors.MapErrorToStatusCode(err), err)
+		return
+	}
+
+	_ = h.App.WriteDataResponse(w, http.StatusOK, "", res)
+}
