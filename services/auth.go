@@ -165,7 +165,7 @@ func (s *authServiceImpl) ForgotPassword(input dto.ForgotPassword) error {
 	s.App.Mail.Jobs <- msg
 	res := <-s.App.Mail.Results
 	if res.Error != nil {
-		return newErrors.Wrap(err, "repo auth insert mail result")
+		return newErrors.Wrap(res.Error, "repo auth insert mail result")
 	}
 
 	return nil
