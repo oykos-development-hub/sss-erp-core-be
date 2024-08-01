@@ -157,7 +157,7 @@ func (h *permissionHandlerImpl) GetUsersByPermission(w http.ResponseWriter, r *h
 		return
 	}
 
-	res, err := h.service.GetUsersByPermission(input.Title)
+	res, err := h.service.GetUsersByPermission(input.Route, input.Title)
 	if err != nil {
 		h.errorLogService.CreateErrorLog(err)
 		h.App.ErrorLog.Print(err)

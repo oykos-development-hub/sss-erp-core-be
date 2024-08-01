@@ -76,14 +76,30 @@ func (p *Permission) GetAllPermissionOfRole(roleID int) ([]*PermissionWithRoles,
 	return all, err
 }
 
-func (p *Permission) GetUsersByPermission(title string) ([]User, error) {
+func (p *Permission) GetUsersByPermission(operation string, title string) ([]User, error) {
 	query1 := `select u.id from users u 
 	           left join roles r on r.id = u.role_id 
 			   left join roles_permissions rp on rp.role_id = r.id
 			   left join permissions p on p.id = rp.permission_id
-			   where p.path = $1;`
+			   where p.path = $1 `
 
-	rows1, err := Upper.SQL().Query(query1, title)
+	var whereCond string
+
+	if operation == "full_access" {
+		whereCond = " and rp.can_create = true and rp.can_delete = true and rp.can_update = true and rp.can_read = true"
+	} else if operation == "can_create" {
+		whereCond = " and rp.can_create = true"
+	} else if operation == "can_update" {
+		whereCond = " and rp.can_update = true"
+	} else if operation == "can_delete" {
+		whereCond = " and rp.can_delete = true"
+	} else if operation == "can_read" {
+		whereCond = " and rp.can_read = true"
+	}
+
+	query := query1 + whereCond + ";"
+
+	rows1, err := Upper.SQL().Query(query, title)
 	if err != nil {
 		return nil, newErrors.Wrap(err, "upper exec")
 	}

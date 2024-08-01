@@ -97,8 +97,8 @@ func (h *PermissionServiceImpl) GetPermissionListForRole(roleID int) ([]dto.Perm
 	return response, nil
 }
 
-func (h *PermissionServiceImpl) GetUsersByPermission(title string) ([]dto.UserResponseDTO, error) {
-	data, err := h.repo.GetUsersByPermission(title)
+func (h *PermissionServiceImpl) GetUsersByPermission(operation string, title string) ([]dto.UserResponseDTO, error) {
+	data, err := h.repo.GetUsersByPermission(operation, title)
 	if err != nil {
 		return nil, newErrors.Wrap(err, "repo permission get users by permission")
 	}

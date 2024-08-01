@@ -11,6 +11,7 @@ type GetPermissionListInput struct {
 type PermissionDTO struct {
 	Title    string `json:"title"`
 	ParentID *int   `json:"parent_id"`
+	Route    string `json:"route"`
 }
 
 type PermissionResponseDTO struct {

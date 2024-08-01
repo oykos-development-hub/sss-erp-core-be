@@ -81,7 +81,7 @@ type PermissionService interface {
 	GetPermission(id int) (*dto.PermissionResponseDTO, error)
 	GetPermissionList() ([]dto.PermissionResponseDTO, error)
 	GetPermissionListForRole(roleID int) ([]dto.PermissionWithRolesResponseDTO, error)
-	GetUsersByPermission(title string) ([]dto.UserResponseDTO, error)
+	GetUsersByPermission(operation string, title string) ([]dto.UserResponseDTO, error)
 }
 
 type BankAccountService interface {
