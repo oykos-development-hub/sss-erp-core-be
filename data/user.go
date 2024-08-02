@@ -222,6 +222,7 @@ func (u *User) ResetPassword(id int, password string) error {
 	theUser.Password = string(newHash)
 
 	ctx := context.Background()
+	ctx = contextutil.SetUserIDInContext(ctx, id)
 
 	err = theUser.Update(ctx, *theUser)
 	if err != nil {
