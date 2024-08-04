@@ -139,3 +139,11 @@ type CustomerSupportService interface {
 	GetCustomerSupport(id int) (*dto.CustomerSupportResponseDTO, error)
 	GetCustomerSupportList(filter dto.CustomerSupportFilterDTO) ([]dto.CustomerSupportResponseDTO, *uint64, error)
 }
+
+type ListOfParameterService interface {
+	CreateListOfParameter(input dto.ListOfParameterDTO) (*dto.ListOfParameterResponseDTO, error)
+	UpdateListOfParameter(id int, input dto.ListOfParameterDTO) (*dto.ListOfParameterResponseDTO, error)
+	DeleteListOfParameter(id int) error
+	GetListOfParameter(id int) (*dto.ListOfParameterResponseDTO, error)
+	GetListOfParameterList(filter dto.ListOfParameterFilterDTO) ([]dto.ListOfParameterResponseDTO, *uint64, error)
+}

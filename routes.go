@@ -112,6 +112,12 @@ func routes(app *celeritas.Celeritas, middleware *middleware.Middleware, handler
 		rt.Get("/customer-supports", handlers.CustomerSupportHandler.GetCustomerSupportList)
 		rt.Put("/customer-supports/{id}", handlers.CustomerSupportHandler.UpdateCustomerSupport)
 		rt.Delete("/customer-supports/{id}", handlers.CustomerSupportHandler.DeleteCustomerSupport)
+	
+		rt.Post("/list-of-parameters", handlers.ListOfParameterHandler.CreateListOfParameter)
+rt.Get("/list-of-parameters/{id}", handlers.ListOfParameterHandler.GetListOfParameterById)
+rt.Get("/list-of-parameters", handlers.ListOfParameterHandler.GetListOfParameterList)
+rt.Put("/list-of-parameters/{id}", handlers.ListOfParameterHandler.UpdateListOfParameter)
+rt.Delete("/list-of-parameters/{id}", handlers.ListOfParameterHandler.DeleteListOfParameter)
 	})
 
 	return app.Routes

@@ -78,6 +78,10 @@ func initApplication() *celeritas.Celeritas {
 	CustomerSupportService := services.NewCustomerSupportServiceImpl(cel, models.CustomerSupport)
 	CustomerSupportHandler := handlers.NewCustomerSupportHandler(cel, CustomerSupportService)
 
+		
+	ListOfParameterService := services.NewListOfParameterServiceImpl(cel, models.ListOfParameter)
+	ListOfParameterHandler := handlers.NewListOfParameterHandler(cel, ListOfParameterService)
+
 	myHandlers := &handlers.Handlers{
 		UserHandler:            UserHandler,
 		AuthHandler:            AuthHandler,
@@ -95,6 +99,7 @@ func initApplication() *celeritas.Celeritas {
 		ErrorLogHandler:        ErrorLogHandler,
 		BffErrorLogHandler:     BffErrorLogHandler,
 		CustomerSupportHandler: CustomerSupportHandler,
+		ListOfParameterHandler: ListOfParameterHandler,
 	}
 
 	myMiddleware := &middleware.Middleware{

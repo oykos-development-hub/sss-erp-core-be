@@ -21,7 +21,8 @@ type Handlers struct {
 	ErrorLogHandler        ErrorLogHandler
 	BffErrorLogHandler     BffErrorLogHandler
 	CustomerSupportHandler CustomerSupportHandler
-}
+	ListOfParameterHandler ListOfParameterHandler
+	}
 
 type UserHandler interface {
 	CreateUser(w http.ResponseWriter, r *http.Request)
@@ -148,4 +149,12 @@ type CustomerSupportHandler interface {
 	DeleteCustomerSupport(w http.ResponseWriter, r *http.Request)
 	GetCustomerSupportById(w http.ResponseWriter, r *http.Request)
 	GetCustomerSupportList(w http.ResponseWriter, r *http.Request)
+}
+
+type ListOfParameterHandler interface {
+	CreateListOfParameter(w http.ResponseWriter, r *http.Request)
+	UpdateListOfParameter(w http.ResponseWriter, r *http.Request)
+	DeleteListOfParameter(w http.ResponseWriter, r *http.Request)
+	GetListOfParameterById(w http.ResponseWriter, r *http.Request)
+	GetListOfParameterList(w http.ResponseWriter, r *http.Request)
 }
