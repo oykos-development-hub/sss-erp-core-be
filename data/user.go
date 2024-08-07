@@ -101,6 +101,10 @@ func (u *User) Update(ctx context.Context, theUser User) error {
 		return errors.New("user ID not found in context")
 	}
 
+	if theUser.RoleId != nil && *theUser.RoleId == 0 {
+		theUser.RoleId = nil
+	}
+
 	err := Upper.Tx(func(sess up.Session) error {
 
 		query := fmt.Sprintf("SET myapp.user_id = %d", userID)
@@ -170,6 +174,9 @@ func (u *User) Insert(ctx context.Context, theUser User) (int, error) {
 	theUser.CreatedAt = time.Now()
 	theUser.UpdatedAt = time.Now()
 	theUser.Password = string(newHash)
+	if theUser.RoleId != nil && *theUser.RoleId == 0 {
+		theUser.RoleId = nil
+	}
 
 	userID, ok := contextutil.GetUserIDFromContext(ctx)
 	if !ok {
