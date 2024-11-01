@@ -101,8 +101,10 @@ func (h *SettingServiceImpl) GetSettingList(data dto.GetSettingsDTO) ([]dto.Sett
 	if data.ParentID != nil {
 		conditionAndExp = up.And(conditionAndExp, &up.Cond{"parent_id": *data.ParentID})
 	} else {
-		conditionAndExp = up.And(conditionAndExp, &up.Cond{"parent_id is": nil})
+		conditionAndExp = up.And(conditionAndExp, &up.Cond{"parent_id IS": nil})
 	}
+
+	conditionAndExp = up.And(conditionAndExp, &up.Cond{"deleted_at IS": nil})
 
 	res, total, err := h.repo.GetAll(data.Page, data.Size, conditionAndExp)
 	if err != nil {

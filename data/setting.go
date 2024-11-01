@@ -1,6 +1,7 @@
 package data
 
 import (
+	"database/sql"
 	"time"
 
 	up "github.com/upper/db/v4"
@@ -9,17 +10,18 @@ import (
 
 // Setting struct
 type Setting struct {
-	ID           int       `db:"id,omitempty"`
-	Title        string    `db:"title"`
-	Abbreviation string    `db:"abbreviation"`
-	Entity       string    `db:"entity"`
-	Description  *string   `db:"description,omitempty"`
-	ParentID     *int      `db:"parent_id"`
-	Value        *string   `db:"value,omitempty"`
-	Color        *string   `db:"color,omitempty"`
-	Icon         *string   `db:"icon,omitempty"`
-	CreatedAt    time.Time `db:"created_at,omitempty"`
-	UpdatedAt    time.Time `db:"updated_at,omitempty"`
+	ID           int          `db:"id,omitempty"`
+	Title        string       `db:"title"`
+	Abbreviation string       `db:"abbreviation"`
+	Entity       string       `db:"entity"`
+	Description  *string      `db:"description,omitempty"`
+	ParentID     *int         `db:"parent_id"`
+	Value        *string      `db:"value,omitempty"`
+	Color        *string      `db:"color,omitempty"`
+	Icon         *string      `db:"icon,omitempty"`
+	CreatedAt    time.Time    `db:"created_at,omitempty"`
+	UpdatedAt    time.Time    `db:"updated_at,omitempty"`
+	DeletedAt    sql.NullTime `db:"deleted_at,omitempty"`
 }
 
 // Table returns the table name
@@ -77,7 +79,6 @@ func (t *Setting) Update(m Setting) error {
 	res := collection.Find(m.ID)
 	if err := res.Update(&m); err != nil {
 		return newErrors.Wrap(err, "upper update")
-
 	}
 
 	return nil
@@ -85,12 +86,23 @@ func (t *Setting) Update(m Setting) error {
 
 // Delete deletes a record from the database by id, using upper
 func (t *Setting) Delete(id int) error {
+	var setting Setting
+
 	collection := Upper.Collection(t.Table())
-	res := collection.Find(id)
-	err := res.Delete()
+
+	res := collection.Find(up.Cond{"id": id})
+
+	err := res.One(&setting)
 	if err != nil {
-		return newErrors.Wrap(err, "upper delete")
+		return newErrors.WrapNotFoundError(err, "get setting")
 	}
+
+	setting.DeletedAt = sql.NullTime{Time: time.Now()}
+
+	if err := res.Update(&setting); err != nil {
+		return newErrors.Wrap(err, "upper update")
+	}
+
 	return nil
 }
 
