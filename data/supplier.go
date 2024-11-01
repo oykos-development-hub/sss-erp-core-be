@@ -101,7 +101,7 @@ func (t *Supplier) Delete(id int) error {
 		return newErrors.WrapNotFoundError(err, "get data")
 	}
 
-	dbData.DeletedAt = sql.NullTime{Time: time.Now()}
+	dbData.DeletedAt = sql.NullTime{Time: time.Now(), Valid: true}
 
 	if err := res.Update(&dbData); err != nil {
 		return newErrors.Wrap(err, "upper update")
