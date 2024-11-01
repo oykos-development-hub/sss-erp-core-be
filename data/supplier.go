@@ -1,6 +1,7 @@
 package data
 
 import (
+	"database/sql"
 	"time"
 
 	up "github.com/upper/db/v4"
@@ -19,9 +20,10 @@ type Supplier struct {
 	Entity        string `db:"entity"`
 	ParentID      *int   `db:"parent_id"`
 	BankAccounts  []string
-	TaxPercentage float32   `db:"tax_percentage"`
-	CreatedAt     time.Time `db:"created_at,omitempty"`
-	UpdatedAt     time.Time `db:"updated_at"`
+	TaxPercentage float32      `db:"tax_percentage"`
+	CreatedAt     time.Time    `db:"created_at,omitempty"`
+	UpdatedAt     time.Time    `db:"updated_at"`
+	DeletedAt     sql.NullTime `db:"deleted_at,omitempty"`
 }
 
 // Table returns the table name
@@ -88,12 +90,23 @@ func (t *Supplier) Update(m Supplier) error {
 
 // Delete deletes a record from the database by id, using upper
 func (t *Supplier) Delete(id int) error {
+	var dbData Supplier
+
 	collection := Upper.Collection(t.Table())
-	res := collection.Find(id)
-	err := res.Delete()
+
+	res := collection.Find(up.Cond{"id": id})
+
+	err := res.One(&dbData)
 	if err != nil {
-		return newErrors.Wrap(err, "upper delete")
+		return newErrors.WrapNotFoundError(err, "get data")
 	}
+
+	dbData.DeletedAt = sql.NullTime{Time: time.Now()}
+
+	if err := res.Update(&dbData); err != nil {
+		return newErrors.Wrap(err, "upper update")
+	}
+
 	return nil
 }
 

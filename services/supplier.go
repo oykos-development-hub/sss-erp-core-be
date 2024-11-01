@@ -213,6 +213,9 @@ func (h *SupplierServiceImpl) GetSupplierList(input dto.GetSupplierListInput) ([
 		cond = append(cond, searchCond)
 	}
 
+	softDeleteCond := &up.Cond{"deleted_at IS": nil}
+	cond = append(cond, softDeleteCond)
+
 	if len(cond) > 0 {
 		combinedCond = up.And(cond...)
 	}

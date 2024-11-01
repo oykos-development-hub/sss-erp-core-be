@@ -86,20 +86,20 @@ func (t *Setting) Update(m Setting) error {
 
 // Delete deletes a record from the database by id, using upper
 func (t *Setting) Delete(id int) error {
-	var setting Setting
+	var dbData Setting
 
 	collection := Upper.Collection(t.Table())
 
 	res := collection.Find(up.Cond{"id": id})
 
-	err := res.One(&setting)
+	err := res.One(&dbData)
 	if err != nil {
-		return newErrors.WrapNotFoundError(err, "get setting")
+		return newErrors.WrapNotFoundError(err, "get data")
 	}
 
-	setting.DeletedAt = sql.NullTime{Time: time.Now()}
+	dbData.DeletedAt = sql.NullTime{Time: time.Now()}
 
-	if err := res.Update(&setting); err != nil {
+	if err := res.Update(&dbData); err != nil {
 		return newErrors.Wrap(err, "upper update")
 	}
 
